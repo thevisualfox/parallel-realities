@@ -1,0 +1,110 @@
+# App configuration
+app:
+  default:
+    - watch
+
+  build:
+    - css
+    - js
+    - img
+    - symbols
+    - assets
+    - copy
+
+  deploy:
+    - css
+    - js
+    - img
+    - symbols
+    - assets
+
+  watch:
+    tasks:
+      - source:
+          - web-src/assets/scss/**/*.scss
+        task:
+          - css
+
+      - source:
+          - web-src/assets/js/**/*.js
+        task:
+          - js
+
+      - source:
+          - web-src/assets/img/**/*
+        task:
+          - img
+
+      - source:
+          - web-src/symbols/**/*
+        task:
+          - symbols
+
+      - source:
+          - web-src/assets/audio/**/*
+          - web-src/assets/fonts/**/*
+          - web-src/assets/video/**/*
+        task:
+          - assets
+
+      - source:
+          - web-src/test/**/*
+        task:
+          - copy
+
+  clean:
+    dir:
+      - web/app
+      - web/mail
+
+  css:
+    source: web-src/assets/scss/app.scss
+    destination: web/assets/css
+    plugins:
+      ? sass
+    #     includePaths:
+    #       - node_modules/bootstrap/scss
+
+  js:
+    source: web-src/assets/js/app.js
+    destination: web/assets/js
+
+  img:
+    source: web-src/assets/img/**/*
+    destination: web/assets/img
+    plugins:
+      imagemin:
+        progressive: true
+        interlaced: true
+
+  symbols:
+    source: web-src/symbols/**/*.svg
+    destination: web/assets/img
+    plugins:
+      svgSprite:
+        mode:
+          symbol:
+            dest: "."
+            example: false # Set to true for an example file
+            inline: false
+            prefix: ".icon--%s"
+            sprite: symbols.svg
+          svg:
+            xmlDeclaration: false
+            doctypeDeclaration: false
+            namespaceClassnames: false
+
+  assets:
+    source:
+      - web-src/assets/audio/**/*
+      - web-src/assets/fonts/**/*
+      - web-src/assets/video/**/*
+      - web-src/assets/manifest.json
+    base: web-src/assets
+    destination: web/assets
+
+  copy:
+    source:
+      - web-src/test/**/*
+    base: web-src
+    destination: web

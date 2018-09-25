@@ -1,0 +1,63 @@
+{
+  "name": "parallel-realities",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "babel": {
+    "compact": false,
+    "presets": [
+      "env"
+    ]
+  },
+  "browserslist": [
+    "last 2 versions",
+    "> 1%",
+    "ie >= 10",
+    "ios >= 7"
+  ],
+  "dependencies": {
+    "bootstrap": "^4.1.3",
+    "jquery": "^3.3.1",
+    "object-fit-images": "^3.2.3",
+    "object-merge": "^2.5.1",
+    "svg4everybody": "^2.1.9"
+  },
+  "devDependencies": {
+    "autoprefixer": "^8.0.0",
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.7.0",
+    "del": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-changed": "^3.2.0",
+    "gulp-cssnano": "^2.1.1",
+    "gulp-data": "^1.2.1",
+    "gulp-if": "^2.0.2",
+    "gulp-imagemin": "^4.1.0",
+    "gulp-inline-css": "^3.1.0",
+    "gulp-load-plugins": "^1.4.0",
+    "gulp-notify": "^3.2.0",
+    "gulp-plumber": "^1.2.0",
+    "gulp-postcss": "^7.0.1",
+    "gulp-replace": "^0.6.1",
+    "gulp-sass": "^3.0.0",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-svg-sprite": "^1.3.6",
+    "gulp-twig": "^1.1.1",
+    "gulp-uglify": "^3.0.0",
+    "js-yaml": "^3.7.0",
+    "lazypipe": "^1.0.1",
+    "path": "^0.12.7",
+    "siphon-media-query": "^1.0.0",
+    "vinyl-named": "^1.1.0",
+    "webpack": "^3.11.0",
+    "webpack-stream": "^4.0.1",
+    "yargs": "^11.0.0"
+  },
+  "scripts": {
+    "build": "yarn && gulp clean && gulp build && gulp build --channel mail && gulp inline --channel mail",
+    "deploy": "yarn && gulp clean && gulp deploy --production && gulp deploy --channel mail --production",
+    "watch": "yarn && gulp clean && gulp --development",
+    "watch:mail": "yarn && gulp clean && gulp --channel mail"
+  }
+}

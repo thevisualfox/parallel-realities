@@ -1,0 +1,15 @@
+/.env
+/.idea
+/vendor
+.DS_Store
+
+#node files
+/node_modules/*
+
+# web
+/web/assets/*
+/web/uploads/*
+
+# composer
+/composer.phar
+/vendor
