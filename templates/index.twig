@@ -1,16 +1,13 @@
 {% extends "_layouts/default" %}
+{% set entry = craft.entries.section('homepage').one() %}
 
 {% block main %}
-    {% for block in entry.testimonials.all() %}
-        <div class="g1-flex4 g2-flex2 g3-flex4 bubble">
-            <blockquote>{{ block.quote }}</blockquote>
-            {% set photo = block.photo.one() %}
-            {% if photo %}
-                <img class="" src="{{ photo.url({ width: 184, height: 184 }) }}" alt="{{ photo.title }}">
+    <div class="hero">
+        <div class="hero__video-wrapper">
+            {% set video = entry.videoUrl.one() %}
+            {% if video %}
+                <video class="hero__video" src="{{video.getUrl()}}" autoplay="autoplay" loop="loop" muted="muted"></video>
             {% endif %}
-            <p>
-                <cite class="gamma reverse">{{ block.cite }}</cite>
-            </p>
         </div>
-    {% endfor %}
+    </div>
 {% endblock %}

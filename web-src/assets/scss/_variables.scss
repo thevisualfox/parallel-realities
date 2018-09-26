@@ -136,8 +136,8 @@ $sizes: (
 
 // Body
 
-$body-color: $base;
-$body-bg: $white;
+$body-color: $white;
+$body-bg: $black;
 
 // Links
 
@@ -230,7 +230,7 @@ $transition-collapse: height 0.35s ease;
 
 // Fonts
 
-$font-family-sans-serif: Arial, Helvatica, sans-serif;
+$font-family-sans-serif: "roboto", Arial, Helvatica, sans-serif;
 $font-family-monospace: "Courier New", monospace;
 $font-family-base: $font-family-sans-serif;
 
