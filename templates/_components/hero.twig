@@ -1,0 +1,8 @@
+<section class="hero">
+    <div class="hero__video-wrapper">
+        {% set video = entry.videoUrl.one() %}
+        {% if video %}
+            <video class="hero__video" src="{{video.getUrl()}}" autoplay="autoplay" loop="loop" muted="muted"></video>
+        {% endif %}
+    </div>
+</section>

@@ -1,0 +1,63 @@
+/**
+ * Base
+ *
+ * @author Webstores <info at webstores dot nl>
+ *         Copyright (c) Webstores Digital Partner <https://www.webstores.nl/>
+ */
+
+html {
+    font-size: 0.8rem;
+
+    // Medium and up
+
+    @include media-breakpoint-up(md) {
+        font-size: 0.9rem;
+    }
+
+    // Large and up
+
+    @include media-breakpoint-up(lg) {
+        font-size: 1rem;
+    }
+}
+
+body,
+button,
+input,
+select,
+textarea {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s, opacity 0.2s;
+}
+
+[href^="tel:"],
+[href^="tel:"]:hover {
+    color: inherit;
+}
+
+[href^="tel:"] {
+    text-decoration: none;
+}
+
+label[for] {
+    cursor: pointer;
+}
+
+p {
+    &:not(:last-child) {
+        margin-bottom: 1rem;
+    }
+
+    &:empty {
+        display: none;
+    }
+}
+
+table {
+    width: 100%;
+    empty-cells: show;
+}

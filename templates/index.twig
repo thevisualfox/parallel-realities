@@ -2,12 +2,10 @@
 {% set entry = craft.entries.section('homepage').one() %}
 
 {% block main %}
-    <div class="hero">
-        <div class="hero__video-wrapper">
-            {% set video = entry.videoUrl.one() %}
-            {% if video %}
-                <video class="hero__video" src="{{video.getUrl()}}" autoplay="autoplay" loop="loop" muted="muted"></video>
-            {% endif %}
-        </div>
-    </div>
+    {% include '_components/hero.twig' %}
+
+    {% for block in entry.textBlock.all() %}
+        {% include '_components/text.twig' %}
+    {% endfor %}
+
 {% endblock %}

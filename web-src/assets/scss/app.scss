@@ -7,10 +7,18 @@
 @import "functions";
 @import "node_modules/bootstrap/scss/functions";
 
+// Mixins
+
+@import "mixins/breakpoints";
+
 // Variables
 
 @import "variables";
 
+
+// base
+
+@import 'base/base';
 // Vendor
 
 @import "node_modules/bootstrap/scss/mixins";
@@ -49,3 +57,4 @@
 // Components
 
 @import "./components/hero/hero";
+@import "./components/panes/pane";
