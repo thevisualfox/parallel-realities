@@ -55,8 +55,8 @@
     "yargs": "^11.0.0"
   },
   "scripts": {
-    "build": "yarn && gulp clean && gulp build && gulp build --channel mail && gulp inline --channel mail",
-    "deploy": "yarn && gulp clean && gulp deploy --production && gulp deploy --channel mail --production",
+    "build": "yarn && gulp clean && gulp build && gulp build",
+    "deploy": "yarn && gulp clean && gulp deploy --production",
     "watch": "yarn && gulp clean && gulp --development",
     "watch:mail": "yarn && gulp clean && gulp --channel mail"
   }

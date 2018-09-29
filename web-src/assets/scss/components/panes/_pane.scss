@@ -1,0 +1,27 @@
+.pane {
+    padding-top: 20px;
+    padding-bottom: 20px;
+
+    // Medium and up
+
+    @include media-breakpoint-up(md) {
+        padding-top: 60px;
+        padding-bottom: 60px;
+    }
+
+    // Extra large and up
+
+    @include media-breakpoint-up(xl) {
+        padding-top: 100px;
+        padding-bottom: 100px;
+    }
+}
+
+// Pane colors
+
+@each $name, $color in $theme-colors {
+    .pane--#{$name} {
+        background-color: $color;
+        color: color-yiq($color);
+    }
+}

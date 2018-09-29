@@ -1,16 +1,11 @@
 {% extends "_layouts/default" %}
+{% set entry = craft.entries.section('homepage').one() %}
 
 {% block main %}
-    {% for block in entry.testimonials.all() %}
-        <div class="g1-flex4 g2-flex2 g3-flex4 bubble">
-            <blockquote>{{ block.quote }}</blockquote>
-            {% set photo = block.photo.one() %}
-            {% if photo %}
-                <img class="" src="{{ photo.url({ width: 184, height: 184 }) }}" alt="{{ photo.title }}">
-            {% endif %}
-            <p>
-                <cite class="gamma reverse">{{ block.cite }}</cite>
-            </p>
-        </div>
+    {% include '_components/hero.twig' %}
+
+    {% for block in entry.textBlock.all() %}
+        {% include '_components/text.twig' %}
     {% endfor %}
+
 {% endblock %}
