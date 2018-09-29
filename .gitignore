@@ -7,7 +7,7 @@
 /node_modules/*
 
 # web
-/web/assets/*
+/web/app/*
 /web/uploads/*
 
 # composer

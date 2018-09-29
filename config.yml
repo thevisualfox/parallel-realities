@@ -1,8 +1,8 @@
+---
 # App configuration
 app:
   default:
     - watch
-
   build:
     - css
     - js
@@ -10,76 +10,64 @@ app:
     - symbols
     - assets
     - copy
-
   deploy:
     - css
     - js
     - img
     - symbols
     - assets
-
   watch:
     tasks:
-      - source:
+      -
+        source:
           - web-src/assets/scss/**/*.scss
         task:
           - css
-
-      - source:
+      -
+        source:
           - web-src/assets/js/**/*.js
         task:
           - js
-
-      - source:
+      -
+        source:
           - web-src/assets/img/**/*
         task:
           - img
-
-      - source:
+      -
+        source:
           - web-src/symbols/**/*
         task:
           - symbols
-
-      - source:
+      -
+        source:
           - web-src/assets/audio/**/*
           - web-src/assets/fonts/**/*
           - web-src/assets/video/**/*
         task:
           - assets
-
-      - source:
+      -
+        source:
           - web-src/test/**/*
         task:
           - copy
-
   clean:
     dir:
       - web/app
       - web/mail
-
   css:
     source: web-src/assets/scss/app.scss
-    destination: web/assets/css
+    destination: web/app/assets/css
     plugins:
-      ? sass
-    #     includePaths:
-    #       - node_modules/bootstrap/scss
-
+      sass:
   js:
     source: web-src/assets/js/app.js
-    destination: web/assets/js
-
+    destination: web/app/assets/js
   img:
     source: web-src/assets/img/**/*
-    destination: web/assets/img
-    plugins:
-      imagemin:
-        progressive: true
-        interlaced: true
-
+    destination: web/app/assets/img
   symbols:
     source: web-src/symbols/**/*.svg
-    destination: web/assets/img
+    destination: web/app/assets/img
     plugins:
       svgSprite:
         mode:
@@ -93,7 +81,6 @@ app:
             xmlDeclaration: false
             doctypeDeclaration: false
             namespaceClassnames: false
-
   assets:
     source:
       - web-src/assets/audio/**/*
@@ -101,10 +88,125 @@ app:
       - web-src/assets/video/**/*
       - web-src/assets/manifest.json
     base: web-src/assets
-    destination: web/assets
-
+    destination: web/app/assets
   copy:
     source:
       - web-src/test/**/*
-    base: web-src
-    destination: web
+    base: web-src/app
+    destination: web/app
+
+# Status page configuration
+statuspage:
+  default:
+    - watch
+  build:
+    - css
+    - js
+    - img
+    - copy
+  deploy:
+    - css
+    - js
+    - img
+  watch:
+    tasks:
+      -
+        source:
+          - web-src/statuspage/assets/scss/**/*.scss
+        task:
+          - css
+      -
+        source:
+          - web-src/statuspage/assets/js/**/*.js
+        task:
+          - js
+      -
+        source:
+          - web-src/statuspage/assets/img/**/*
+        task:
+          - img
+      -
+        source:
+          - web-src/statuspage/html/**/*
+        task:
+          - copy
+  css:
+    source: web-src/statuspage/assets/scss/app.scss
+    destination: web/statuspage/assets/css
+    plugins:
+      sass:
+  js:
+    source: web-src/statuspage/assets/js/app.js
+    destination: web/statuspage/assets/js
+  img:
+    source: web-src/statuspage/assets/img/**/*
+    destination: web/statuspage/assets/img
+  copy:
+    source: web-src/statuspage/html/**/*
+    base: web-src/statuspage
+    destination: web/statuspage
+
+# Mail configuration
+mail:
+  default:
+    - watch
+  build:
+    - html
+    - css
+    - img
+    - copy
+  deploy:
+    - css
+    - img
+  watch:
+    tasks:
+      -
+        source:
+          - web-src/mail/html/**/*.twig
+          - web-src/mail/html/data/**/*.yml
+        task:
+          - html
+      -
+        source:
+          - web-src/mail/assets/scss/**/*.scss
+        task:
+          - css
+      -
+        source:
+          - web-src/mail/assets/img/**/*
+        task:
+          - img
+      -
+        source:
+          - web-src/mail/temp/**/*
+        task:
+          - copy
+  html:
+    source: web-src/mail/html/pages/**/*.twig
+    data: web-src/mail/html/data
+    destination: web/mail/html
+    plugins:
+      twig:
+        base: web-src/mail/html
+        extensions: web-src/twig
+  css:
+    source: web-src/mail/assets/scss/mail.scss
+    destination: web/mail/assets/css
+    plugins:
+      sass:
+        includePaths:
+          - node_modules/foundation-emails/scss
+  img:
+    source: web-src/mail/assets/img/**/*
+    destination: web/mail/assets/img
+    plugins:
+      imagemin:
+        progressive: true
+        interlaced: true
+  copy:
+    source: web-src/mail/test/**/*
+    base: web-src/mail
+    destination: web/mail
+  inline:
+    source: web/html/mail/*.html
+    destination: web/mail/html
