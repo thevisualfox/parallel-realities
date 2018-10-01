@@ -13,10 +13,11 @@
         {% endblock %}
     </head>
     <body {% if bodyClass is defined %} class="{{ bodyClass }}" {% endif %}>
-        {% block body %}{% endblock %}
+        {% block body %}
+        {% endblock %}
+
         {% block foot %}
             <script src="{{ siteUrl }}app/assets/js/app.js"></script>
         {% endblock %}
-
     </body>
 </html>

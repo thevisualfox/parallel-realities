@@ -7,18 +7,18 @@
 
         {% case 'left' %}
         <div class="row justify-content-start">
-            <div class="col-lg-8">
+            <div class="col-md-10 col-xl-9">
                 <article class="text-left">
-                    <h1>{{ block.heading }}</h1>
+                    <h4>{{ block.heading }}</h4>
                     {{ block.textBlock }}
                 </article>
             </div>
         </div>
         {% case 'center' %}
         <div class="row justify-content-center">
-            <div class="col-lg-8 text-center">
+            <div class="col-md-10 col-xl-9 text-center">
                 <article class="text-center">
-                    <h1>{{ block.heading }}</h1>
+                    <h4>{{ block.heading }}</h4>
                     {{ block.textBlock }}
                 </article>
             </div>
@@ -26,9 +26,9 @@
 
         {% case 'right' %}
         <div class="row justify-content-end">
-            <div class="col-lg-8">
+            <div class="col-md-10 col-xl-9">
                 <article class="text-right">
-                    <h1>{{ block.heading }}</h1>
+                    <h4>{{ block.heading }}</h4>
                     {{ block.textBlock }}
                 </article>
             </div>

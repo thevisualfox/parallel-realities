@@ -7,15 +7,23 @@
 {# Set the `title` variable to the nav item that matches the first segment #}
 {% if nav[bodyClass] is defined %}
     {% set title %}
-    {% if title is defined %}{{ title }}
-        -
-    {% endif %}{{ nav[bodyClass].title }}{% endset %}
+        {% if title is defined %}{{ title }}
+            -
+        {% endif %}{{ nav[bodyClass].title }}{% endset %}
 {% endif %}
 
 {% block body %}
+    <header id="main-header" class="main-footer" role="header">
+        {% include '_compositions/main-header.twig' %}
+    </header>
 
     <main id="main" role="main">
         {% block main %}{% endblock %}
     </main>
 
+    <footer id="main-footer" class="main-footer" role="footer">
+        {% include '_compositions/main-footer.twig' %}
+    </footer>
+
 {% endblock %}
+

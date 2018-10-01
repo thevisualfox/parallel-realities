@@ -1,6 +1,6 @@
 // Fonts
 
-@import url("https://fonts.googleapis.com/css?family=Roboto");
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400');
 
 // Functions
 
@@ -15,10 +15,11 @@
 
 @import "variables";
 
-
 // base
 
 @import 'base/base';
+@import 'base/text';
+
 // Vendor
 
 @import "node_modules/bootstrap/scss/mixins";
@@ -54,7 +55,15 @@
 @import "node_modules/bootstrap/scss/print";
 @import "node_modules/object-fit-images/preprocessors/mixin.scss";
 
+// Elements
+
+@import "./elements/icons/icons";
+
 // Components
 
 @import "./components/hero/hero";
 @import "./components/panes/pane";
+
+// Compositions
+
+@import "./compositions/main-footer";
