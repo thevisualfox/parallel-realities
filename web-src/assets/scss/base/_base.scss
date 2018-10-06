@@ -53,8 +53,6 @@ label[for] {
 }
 
 p {
-    margin-bottom: 1.5rem !important;
-
     a {
         color: inherit !important;
         text-decoration: underline !important;
@@ -71,6 +69,10 @@ p {
     &:empty {
         display: none;
     }
+
+    &:last-child {
+        margin: 0;
+    }
 }
 
 table {
@@ -81,4 +83,8 @@ table {
 h1, h2, h3, h4, h5, h5, h6 {
     text-transform: uppercase;
     letter-spacing: 8px;
+}
+
+img {
+    max-width: 100%;
 }

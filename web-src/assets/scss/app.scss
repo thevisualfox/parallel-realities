@@ -7,18 +7,9 @@
 @import "functions";
 @import "node_modules/bootstrap/scss/functions";
 
-// Mixins
-
-@import "mixins/breakpoints";
-
 // Variables
 
 @import "variables";
-
-// base
-
-@import 'base/base';
-@import 'base/text';
 
 // Vendor
 
@@ -55,15 +46,30 @@
 @import "node_modules/bootstrap/scss/print";
 @import "node_modules/object-fit-images/preprocessors/mixin.scss";
 
+// base
+
+@import 'base/base';
+@import 'base/text';
+
 // Elements
 
 @import "./elements/icons/icons";
+@import "./elements/media/media";
 
 // Components
 
 @import "./components/hero/hero";
 @import "./components/panes/pane";
+@import "./components/grids/grid";
 
 // Compositions
 
 @import "./compositions/main-footer";
+
+// Utilities
+
+@import "./utilities/image-zoom";
+
+// Vendor
+
+@import "./vendor/fancybox";

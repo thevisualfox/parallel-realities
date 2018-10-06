@@ -38,7 +38,14 @@ var webpackConfig = {
                 ]
             }
         ]
-    }
+    },
+    plugins: [
+        new webpack2.ProvidePlugin({
+            $: "jquery",
+            jQuery: "jquery",
+            "window.jQuery": "jquery"
+        })
+    ]
 };
 
 // PostCSS configuration

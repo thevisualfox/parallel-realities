@@ -2,7 +2,10 @@
 {% set entry = craft.entries.section('homepage').one() %}
 
 {% block main %}
+
     {% include '_components/hero.twig' %}
+
+    {% include '_components/highlights' %}
 
     {% for block in entry.textBlock.all() %}
         {% include '_components/text.twig' %}

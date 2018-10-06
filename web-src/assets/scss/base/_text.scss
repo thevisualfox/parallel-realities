@@ -2,6 +2,18 @@
     font-weight: $font-weight-normal;
 }
 
+.text-small {
+    font-size: pxToRem(15);
+}
+
 .text-smaller {
     font-size: pxToRem(13);
+}
+
+.text-light {
+    opacity: 0.75;
+}
+
+.text-spaced {
+    letter-spacing: 1.2px;
 }
