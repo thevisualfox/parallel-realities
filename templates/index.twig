@@ -5,10 +5,12 @@
 
     {% include '_components/hero.twig' %}
 
-    {% include '_components/highlights' %}
+    {% include '_components/highlights/highlights_overview.twig' %}
 
     {% for block in entry.textBlock.all() %}
         {% include '_components/text.twig' %}
     {% endfor %}
+
+    {% include '_components/showcase/showcase_overview.twig' %}
 
 {% endblock %}

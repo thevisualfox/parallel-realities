@@ -1,13 +1,12 @@
 {% set video = entry.video %}
 {% set image  = entry.image.one() %}
+{% set imageTransform = { width: 800, height: 600, mode: 'crop' } %}
 
-<div class="col-12 col-lg-5">
+<div class="col-12 col-md-6">
     <figure class="media media--overlay position-relative image-zoom">
         {% if image %}
             <a href="{{ video ? video : image.getUrl() }}" title="{{ entry.title }}" data-fancybox="default">
-                {% set image = entry.image.one() %}
                 {% if image %}
-                    {% set imageTransform = { width: 800, height: 600, mode: 'crop' } %}
                     <img src="{{ image.getUrl(imageTransform) }}" alt="{{ image.title }}">
                 {% endif %}
                 <figcaption class="d-flex flex-column media__absolute">
