@@ -1,8 +1,8 @@
 <section id="highlights" class="pane">
     <div class="container">
-        <h4 class="text-center mb-5">Showcase</h4>
-        <div class="row row--equalized gutters-4 justify-content-center">
-            {% for entry in craft.entries.section('work').orderBy('postDate').all() %}
+        <h2 class="text-center mb-5">Showcase</h2>
+        <div class="row row--equalized gutters-4">
+            {% for entry in craft.entries.section('showcase').orderBy('postDate').all() %}
                 {% include '_components/showcase/showcase_preview.twig' %}
             {% endfor %}
         </div>

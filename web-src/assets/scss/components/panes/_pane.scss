@@ -17,6 +17,10 @@
     }
 }
 
+.pane--full {
+    padding:0 !important;
+}
+
 // Pane colors
 
 @each $name, $color in $theme-colors {

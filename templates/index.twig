@@ -7,9 +7,7 @@
 
     {% include '_components/highlights/highlights_overview.twig' %}
 
-    {% for block in entry.textBlock.all() %}
-        {% include '_components/text.twig' %}
-    {% endfor %}
+    {% include '_components/text.twig' %}
 
     {% include '_components/showcase/showcase_overview.twig' %}
 

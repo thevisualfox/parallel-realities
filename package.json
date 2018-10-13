@@ -21,8 +21,8 @@
     "jquery": "^3.3.1",
     "object-fit-images": "^3.2.3",
     "object-merge": "^2.5.1",
-    "svg4everybody": "^2.1.9",
-    "popper.js": "^1.12.9"
+    "popper.js": "^1.12.9",
+    "svg4everybody": "^2.1.9"
   },
   "devDependencies": {
     "autoprefixer": "^8.0.0",

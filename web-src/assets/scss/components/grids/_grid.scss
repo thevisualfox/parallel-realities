@@ -12,7 +12,7 @@
 
                     > .col,
                     > [class*="col-"] {
-                        padding-top: $grid-gutter-width;
+                        padding-top: $grid-gutter-width / 1.5;
                     }
                 }
 
@@ -26,7 +26,7 @@
 
                         > .col,
                         > [class*="col-"] {
-                            padding-top: $length;
+                            padding-top: $grid-gutter-width / 1.5;
                             padding-right: ($length / 2);
                             padding-left: ($length / 2);
                         }

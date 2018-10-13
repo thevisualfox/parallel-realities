@@ -2,6 +2,10 @@
     font-weight: $font-weight-normal;
 }
 
+.text-larger {
+    font-size: pxToRem(40)
+}
+
 .text-small {
     font-size: pxToRem(15);
 }
