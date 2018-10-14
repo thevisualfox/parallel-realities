@@ -1,0 +1,30 @@
+{% set video = entry.video %}
+{% set image  = entry.image.one() %}
+{% set imageTransform = { width: 800, height: 600, mode: 'crop' } %}
+
+<div class="col-12 col-md-6">
+    <figure class="media media--overlay position-relative image-zoom">
+        {% if image %}
+            <a href="{{ video ? video : image.getUrl() }}" title="{{ entry.title }}" data-fancybox="default">
+                {% if image %}
+                    <img src="{{ image.getUrl(imageTransform) }}" alt="{{ image.title }}">
+                {% endif %}
+                <figcaption class="d-flex flex-column media__absolute">
+                    <p class="text-small text-regular text-spaced mb-0">{{ entry.title }}</p>
+                    <p class="text-smaller text-light">{{ entry.subtitle }}</p>
+                </figcaption>
+                <div class="media__icon">
+                    {% if video %}
+                        <svg class="icon icon--36 text-white">
+                            <use xlink:href="{{ siteUrl }}app/assets/img/symbols.svg#play"></use>
+                        </svg>
+                    {% elseif image %}
+                        <svg class="icon icon--36 text-white">
+                            <use xlink:href="{{ siteUrl }}app/assets/img/symbols.svg#expand"></use>
+                        </svg>
+                    {% endif %}
+                </div>
+            </a>
+        {% endif %}
+    </figure>
+</div>

@@ -1,0 +1,10 @@
+<section id="highlights" class="pane">
+    <div class="container">
+        <h2 class="text-center mb-5">Highlights</h2>
+        <div class="row row--equalized gutters-4 justify-content-center">
+            {% for entry in craft.entries.section('highlights').limit(4).orderBy('postDate').all() %}
+                {% include '_components/highlights/highlight_preview.twig' %}
+            {% endfor %}
+        </div>
+    </div>
+</section>

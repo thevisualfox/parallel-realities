@@ -1,38 +1,11 @@
 <section class="pane">
     <div class="container">
-
-        {% switch block.alignment %}
-
-        {% case 'left' %}
-            <div class="row justify-content-start">
-                <div class="col-lg-8">
-                    <article class="text-left">
-                        <h1>{{ block.heading }}</h1>
-                        {{ block.textBlock }}
-                    </article>
-                </div>
+        <div class="row justify-content-center">
+            <div class="col-12 text-center">
+                <article class="text-center">
+                    {{ entry.textBlock|raw }}
+                </article>
             </div>
-        {% case 'center' %}
-            <div class="row justify-content-center">
-                <div class="col-lg-8 text-center">
-                    <article class="text-center">
-                        <h1>{{ block.heading }}</h1>
-                        {{ block.textBlock }}
-                    </article>
-                </div>
-            </div>
-
-        {% case 'right' %}
-            <div class="row justify-content-end">
-                <div class="col-lg-8">
-                    <article class="text-right">
-                        <h1>{{ block.heading }}</h1>
-                        {{ block.textBlock }}
-                    </article>
-                </div>
-            </div>
-
-        {% endswitch %}
-
+        </div>
     </div>
 </section>

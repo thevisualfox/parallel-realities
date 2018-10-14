@@ -1,0 +1,23 @@
+{% set image  = entry.image.one() %}
+{% set imageTransform = { width: 800, height: 600, mode: 'crop' } %}
+
+<div class="col-12 col-md-6 col-lg-4">
+    <figure class="media media--overlay position-relative image-zoom">
+        {% if image %}
+            <a href="{{ entry.url }}" title="{{ entry.title }}">
+                {% if image %}
+                    <img src="{{ image.getUrl(imageTransform) }}" alt="{{ image.title }}">
+                {% endif %}
+                <figcaption class="d-flex flex-column media__absolute">
+                    <p class="text-small text-regular text-spaced mb-0">{{ entry.title }}</p>
+                    <p class="text-smaller text-light">{{ entry.subtitle }}</p>
+                </figcaption>
+                <div class="media__icon">
+                    <svg class="icon icon--36 text-white">
+                        <use xlink:href="{{ siteUrl }}app/assets/img/symbols.svg#search"></use>
+                    </svg>
+                </div>
+            </a>
+        {% endif %}
+    </figure>
+</div>

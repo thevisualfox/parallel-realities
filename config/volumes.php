@@ -15,24 +15,25 @@
  */
 
 /**
- * Database Configuration
+ * Asset Volume Configuration
  *
- * All of your system's database configuration settings go in here.
- * You can see a list of the default settings in src/config/DbConfig.php
+ * All of your system's volume configuration settings go in here.
+ * Put the Asset Volume handle in `ASSET_HANDLE` key, and put the path
+ * to the asset directory in `ASSET_PATH`. Create an array for each Asset
+ * Volume your website uses.
+ *
+ * You must create each Asset Volume in the AdminCP first, and then override
+ * the settings here.
  */
 
 return [
 
     // All environments
     '*' => [
-        'database' => getenv('CRAFTENV_DB_DATABASE'),
-        'driver' => getenv('CRAFTENV_DB_DRIVER'),
-        'server' => getenv('CRAFTENV_DB_SERVER'),
-        'user' => getenv('CRAFTENV_DB_USER'),
-        'password' => getenv('CRAFTENV_DB_PASSWORD'),
-        'schema' => getenv('CRAFTENV_DB_SCHEMA'),
-        'tablePrefix' => getenv('CRAFTENV_DB_TABLE_PREFIX'),
-        'port' => getenv('CRAFTENV_DB_PORT'),
+        'ASSET_HANDLE' => [
+            'path' => '@basePath/ASSET_PATH',
+            'url' => '@baseUrl/ASSET_PATH',
+        ],
     ],
 
     // Live (production) environment
