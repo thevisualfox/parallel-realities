@@ -1,0 +1,4 @@
+RewriteEngine On
+
+RewriteCond %{REQUEST_URI} !^/web/ [NC]
+RewriteRule .* web/$0 [L]
