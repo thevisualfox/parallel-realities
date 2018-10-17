@@ -1,16 +1,4 @@
 /.env
 /.env.php
 /.idea
-/vendor
 .DS_Store
-
-#node files
-/node_modules/*
-
-# web
-/web/app/*
-/web/uploads/*
-
-# composer
-/composer.phar
-/vendor
