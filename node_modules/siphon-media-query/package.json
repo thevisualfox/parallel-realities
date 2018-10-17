@@ -1,0 +1,31 @@
+{
+  "name": "siphon-media-query",
+  "version": "1.0.0",
+  "description": "Extract media query-specific rules from CSS",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zurb/siphon-media-query.git"
+  },
+  "keywords": [
+    "css",
+    "media",
+    "query"
+  ],
+  "author": "ZURB <foundation@zurb.com> (http://foundation.zurb.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zurb/siphon-media-query/issues"
+  },
+  "homepage": "https://github.com/zurb/siphon-media-query#readme",
+  "devDependencies": {
+    "mocha": "^2.4.5"
+  },
+  "dependencies": {
+    "css-parse": "^2.0.0",
+    "css-stringify": "^2.0.0"
+  }
+}
