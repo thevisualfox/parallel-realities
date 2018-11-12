@@ -4,7 +4,7 @@
 <div class="col-12 col-md-6 col-lg-4">
     <figure class="media media--overlay position-relative image-zoom">
         {% if image %}
-            <a href="{{ entry.url }}" title="{{ entry.title }}">
+            <a class="text-white" href="{{ entry.url }}" title="{{ entry.title }}">
                 {% if image %}
                     <img src="{{ image.getUrl(imageTransform) }}" alt="{{ image.title }}">
                 {% endif %}
@@ -14,7 +14,7 @@
                 </figcaption>
                 <div class="media__icon">
                     <svg class="icon icon--36 text-white">
-                        <use xlink:href="{{ siteUrl }}app/assets/img/symbols.svg#search"></use>
+                        <use xlink:href="{{ alias('@web/app/assets/img/symbols.svg#search') }}"></use>
                     </svg>
                 </div>
             </a>
