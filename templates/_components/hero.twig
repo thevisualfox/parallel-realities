@@ -1,8 +1,9 @@
 <section class="hero">
     <div class="hero__video-wrapper">
-        {% set video = entry.videoUrl.one() %}
-        {% if video %}
-            <video class="hero__video" src="{{video.getUrl()}}" autoplay="autoplay" loop="loop" muted="muted"></video>
+        {% if entry.video_id %}
+            {#<video class="hero__video" src="{{video.getUrl()}}" autoplay="autoplay" loop="loop" muted="muted"></video>#}
+            <iframe class="hero__video" src="https://player.vimeo.com/video/{{ entry.video_id }}?background=1" frameborder="0" webkitallowfullscreen
+                    mozallowfullscreen allowfullscreen></iframe>
         {% endif %}
     </div>
 </section>

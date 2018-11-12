@@ -13,7 +13,7 @@
         <div class="col-12 mb-2">
             <a class="text-regular" href="tel:{{ footer.companyPhone }}" title="{{ footer.companyName }} | Phone Number">
                 <svg class="icon icon--20 mr-1">
-                    <use xlink:href="{{ siteUrl }}app/assets/img/symbols.svg#phone"></use>
+                    <use xlink:href="{{ alias('web/app/assets/img/symbols.svg#phone') }}"></use>
                 </svg>
                 {{ footer.companyPhone }}
             </a>
@@ -21,7 +21,7 @@
         <div class="col-12">
             <a class="text-regular" href="mailto:{{ footer.companyEmail }}" title="{{ footer.companyName }} | Email">
                 <svg class="icon icon--20 mr-1">
-                    <use xlink:href="{{ siteUrl }}app/assets/img/symbols.svg#mail"></use>
+                    <use xlink:href="{{ alias('web/app/assets/img/symbols.svg#mail') }}"></use>
                 </svg>{{ footer.companyEmail }}
             </a>
         </div>
@@ -41,9 +41,12 @@
     <div class="row justify-content-center text-center">
         <div class="col">
             <p class="text-smaller text-muted">
-                <a href="{{ footer.termsConditions }}" target="_blank"
-                   title="{{ footer.companyName }} | Terms and Conditions">Download
-                </a>
+                {% set termsConditions = footer.termsConditions.one() %}
+                {% if termsConditions %}
+                    <a href="{{ termsConditions.getUrl() }}" target="_blank"
+                       title="{{ footer.companyName }} | Terms and Conditions">Download
+                    </a>
+                {% endif %}
                 our general terms and conditions (Dutch, 2018)
             </p>
         </div>

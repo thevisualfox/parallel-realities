@@ -25,7 +25,7 @@ textarea {
 
 a {
     text-decoration: none !important;
-    color: $white !important;
+    color: $base !important;
     transition: $transition-base;
 
     .icon {
@@ -83,6 +83,7 @@ table {
 h1, h2, h3, h4, h5, h5, h6 {
     text-transform: uppercase;
     letter-spacing: 8px;
+    line-height: 1.5;
 }
 
 img {

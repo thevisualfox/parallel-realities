@@ -4,6 +4,12 @@
         {% block head %}
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <meta charset="utf-8">
+            <meta name="description" content="Parallel is a studio for 3D animations and Virtual Realities in all appearances of the unbuilt. Our aim is to create thriving experiences which are both effective and persuasive but above all unforgettable.">
+            <meta name="keywords" content="Virtual Reality, Animation, 3D, Immersive, Render, Architecture, Civil, Engineering, 360, Visualisations, Rendering">
+            <meta name="language" content="EN">
+            <meta name="author" content="Parallel Realities">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <link rel="icon" href="{{ alias('@web/favicon.ico?v=1') }}" type="image/x-icon" />
             {% if title is defined %}
                 <title>
                     {{ title }} | {{ siteName }}
@@ -14,7 +20,7 @@
                 </title>
             {% endif %}
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <link rel="stylesheet" type="text/css" href="{{ siteUrl }}app/assets/css/app.css">
+            <link rel="stylesheet" type="text/css" href="{{ alias('@web/app/assets/css/app.css') }}">
         {% endblock %}
     </head>
     <body {% if bodyClass is defined %} class="{{ bodyClass }}" {% endif %}>
@@ -22,7 +28,8 @@
         {% endblock %}
 
         {% block foot %}
-            <script src="{{ siteUrl }}app/assets/js/app.js"></script>
+            <script src="{{ alias('@web/app/assets/js/app.js') }}"></script>
+            <script src="https://player.vimeo.com/api/player.js"></script>
         {% endblock %}
     </body>
 </html>

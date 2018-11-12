@@ -1,6 +1,10 @@
 .hero {
     max-height: 100vh;
     overflow: hidden;
+
+    @include media-breakpoint-down(md) {
+        margin-bottom: 2rem;
+    }
 }
 
 .hero__video-wrapper {

@@ -136,8 +136,8 @@ $sizes: (
 
 // Body
 
-$body-color: $white;
-$body-bg: $black;
+$body-color: $base;
+$body-bg: $white;
 
 // Links
 
@@ -170,7 +170,7 @@ $container-max-widths: (
     sm: 580px,
     md: 720px,
     lg: 960px,
-    xl: 1000px
+    xl: 1280px
 );
 
 @include _assert-ascending($container-max-widths, "$container-max-widths");
