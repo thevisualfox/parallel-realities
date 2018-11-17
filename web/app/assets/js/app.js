@@ -10452,6 +10452,10 @@ __webpack_require__(3);
 
 __webpack_require__(6);
 
+__webpack_require__(8);
+
+__webpack_require__(9);
+
 /***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -22633,6 +22637,54 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 })(document, jQuery);
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+(0, _jquery2.default)('[data-smooth-scroll]').click(function () {
+    (0, _jquery2.default)('html, body').animate({
+        scrollTop: (0, _jquery2.default)(_jquery2.default.attr(this, 'href')).offset().top - 100
+    }, 400);
+
+    return false;
+});
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var stickyElement = document.querySelector(".main-header");
+
+(0, _jquery2.default)(window).scroll(function () {
+    addStickyClass();
+});
+
+function addStickyClass() {
+    if (window.pageYOffset >= 750) {
+        (0, _jquery2.default)(stickyElement).addClass("is-sticky");
+    } else {
+        (0, _jquery2.default)(stickyElement).removeClass("is-sticky");
+    }
+}
 
 /***/ })
 /******/ ]);

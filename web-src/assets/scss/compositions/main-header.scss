@@ -1,0 +1,23 @@
+.main-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9;
+
+    @include media-breakpoint-up(lg) {
+        position: fixed;
+    }
+
+    .logo__image {
+        height: 60px;
+        width: 280px;
+        color: $white;
+        transition: $transition-base;
+    }
+    
+    &.is-sticky .nav-text,
+    &.is-sticky .logo__image {
+        color: $base;
+    }
+}
