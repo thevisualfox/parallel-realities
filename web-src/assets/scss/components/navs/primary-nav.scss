@@ -1,0 +1,19 @@
+.nav--primary {
+    .nav-text {
+        font-size: pxToRem(16);
+        font-weight: 400;
+        line-height: 1;
+        text-transform: uppercase;
+        color: $white;
+        transition: $transition-base;
+    }
+
+    .nav-link:hover .nav-text,
+    .nav-link.active .nav-text {
+        color: $primary;
+    }
+
+    .nav-link {
+        padding: 0 1.5rem;
+    }
+}

@@ -1,9 +1,16 @@
-<section class="hero">
-    <div class="hero__video-wrapper">
+{% set image  = entry.backgroundImage.one() %}
+{% set imageTransform = { width: 720, height: 1280, mode: 'crop' } %}
+
+<section id="hero" class="hero" {% if image %}style="background: url({{ image.getUrl(imageTransform) }}) no-repeat 50% 50% / cover"{% endif %}>
+    <div class="hero__video-wrapper d-none d-lg-flex">
         {% if entry.video_id %}
-            {#<video class="hero__video" src="{{video.getUrl()}}" autoplay="autoplay" loop="loop" muted="muted"></video>#}
             <iframe class="hero__video" src="https://player.vimeo.com/video/{{ entry.video_id }}?background=1" frameborder="0" webkitallowfullscreen
                     mozallowfullscreen allowfullscreen></iframe>
         {% endif %}
     </div>
+        <a class="hero__anchor" href="#highlights" title="Scoll Down" data-smooth-scroll>
+            <svg class="icon icon--24">
+                <use xlink:href="{{ alias('@web/app/assets/img/symbols.svg#anchor') }}"></use>
+            </svg>
+        </a>
 </section>

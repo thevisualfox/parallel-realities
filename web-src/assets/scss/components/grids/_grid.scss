@@ -51,4 +51,11 @@
             }
         }
     }
+
+    .container {
+        @include media-breakpoint-up(md) {
+            padding-left: 40px;
+            padding-right: 40px;
+        }
+    }
 }

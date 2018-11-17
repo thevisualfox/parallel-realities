@@ -47,7 +47,7 @@ return [
             'craftEnv' => CRAFT_ENVIRONMENT,
             'staticAssetsVersion' => 1,
         ],
-        'defaultImageQuality' => 90,
+        'defaultImageQuality' => 80,
         'maxUploadFileSize' => 33554432
     ],
 
