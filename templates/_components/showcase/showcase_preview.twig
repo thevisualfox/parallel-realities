@@ -1,10 +1,12 @@
 {% set image  = entry.image.one() %}
-{% set imageTransform = { width: 800, height: 600, mode: 'crop' } %}
+{% set imageTransform = { width: 1280, height: 720, mode: 'crop' } %}
 
 <div class="col-12 col-md-6 col-lg-4">
     <figure class="media media--overlay position-relative image-zoom">
         {% if image %}
-            <a class="text-white" href="{{ entry.url }}" title="{{ entry.title }}">
+            <a class="text-white"
+               href="{{ entry.separatePage ? entry.url : image.getUrl() }}"
+               title="{{ entry.title }}" {% if entry.separatePage == 0 %} data-fancybox="default" {% endif %}>
                 {% if image %}
                     <img src="{{ image.getUrl(imageTransform) }}" alt="{{ image.title }}">
                 {% endif %}

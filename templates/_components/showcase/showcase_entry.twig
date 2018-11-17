@@ -70,7 +70,7 @@
         <div class="container">
             <div class="row row--equalized gutters-4 justify-content-center">
                 {% set images = entry.gallery.all() %}
-                {% set imageTransform = { width: 800, height: 600, mode: 'crop' } %}
+                {% set imageTransform = { width: 1280, height: 720, mode: 'crop' } %}
 
                 {% if images %}
                     {% for image in images %}

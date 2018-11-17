@@ -1,26 +1,28 @@
-<a href="{{ block.channelAddress }}" title="{{ footer.companyName }} | {{ block.channel }}"
-   target="_blank">
-    {% switch block.channel %}
+<li class="list__item">
+    <a href="{{ block.channelAddress }}" title="{{ footer.companyName }} | {{ block.channel }}"
+       target="_blank">
+        {% switch block.channel %}
 
         {% case 'facebook' %}
-        <svg class="icon icon--20">
-            <use xlink:href="{{ alias('@web/app/assets/img/symbols.svg#facebook') }}"></use>
-        </svg>
+            <svg class="icon icon--20">
+                <use xlink:href="{{ alias('@web/app/assets/img/symbols.svg#facebook') }}"></use>
+            </svg>
 
         {% case 'instagram' %}
-        <svg class="icon icon--20">
-            <use xlink:href="{{ alias('@web/app/assets/img/symbols.svg#instagram') }}"></use>
-        </svg>
+            <svg class="icon icon--20">
+                <use xlink:href="{{ alias('@web/app/assets/img/symbols.svg#instagram') }}"></use>
+            </svg>
 
         {% case 'linkedin' %}
-        <svg class="icon icon--20">
-            <use xlink:href="{{ alias('@web/app/assets/img/symbols.svg#linkedin') }}"></use>
-        </svg>
+            <svg class="icon icon--20">
+                <use xlink:href="{{ alias('@web/app/assets/img/symbols.svg#linkedin') }}"></use>
+            </svg>
 
         {% case 'youtube' %}
-        <svg class="icon icon--20">
-            <use xlink:href="{{ alias('@web/app/assets/img/symbols.svg#youtube') }}"></use>
-        </svg>
+            <svg class="icon icon--20">
+                <use xlink:href="{{ alias('@web/app/assets/img/symbols.svg#youtube') }}"></use>
+            </svg>
 
-    {% endswitch %}
-</a>
+        {% endswitch %}
+    </a>
+</li>
