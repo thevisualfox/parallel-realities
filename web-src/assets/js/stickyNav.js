@@ -1,10 +1,18 @@
 import $ from 'jquery'
 
 const stickyElement = document.querySelector(".main-header");
+let didScroll;
 
 $(window).scroll(function () {
-    addStickyClass();
+    didScroll = true;
 });
+
+setInterval(function () {
+    if (didScroll) {
+        addStickyClass();
+        didScroll = false;
+    }
+}, 250);
 
 function addStickyClass() {
     if (window.pageYOffset >= 750) {

@@ -12,8 +12,15 @@
         {% endif %}{{ nav[bodyClass].title }}{% endset %}
 {% endif %}
 
+
+{# Caching for 30 days #}
+{% set expiry = now|date_modify('+30 days') %}
+{% header "Cache-Control: max-age=" ~ (expiry.timestamp - now.timestamp) %}
+{% header "Pragma: cache" %}
+{% header "Expires: " ~ expiry|date('D, d M Y H:i:s', 'GMT') ~ " GMT" %}
+
 {% block body %}
-    <header id="main-header" class="main-header" role="header">
+    <header id="main-header" class="main-header py-3" role="banner">
         {% include '_compositions/main-header.twig' %}
     </header>
 
@@ -21,7 +28,7 @@
         {% block main %}{% endblock %}
     </main>
 
-    <footer id="contact" class="main-footer" role="footer">
+    <footer id="contact" class="main-footer" role="contentinfo">
         {% include '_compositions/main-footer.twig' %}
     </footer>
 

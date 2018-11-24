@@ -15,9 +15,25 @@
         color: $white;
         transition: $transition-base;
     }
-    
+
+    &.is-sticky .nav-link:after {
+        background: $base;
+    }
+
     &.is-sticky .nav-text,
     &.is-sticky .logo__image {
         color: $base;
+    }
+}
+
+.main-header {
+    .showcase & {
+        .nav-text, .logo__image {
+            color: $base;
+        }
+
+        .nav-link:after {
+            background-color: $base;
+        }
     }
 }

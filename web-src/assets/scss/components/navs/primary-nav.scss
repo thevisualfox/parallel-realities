@@ -8,12 +8,28 @@
         transition: $transition-base;
     }
 
-    .nav-link:hover .nav-text,
-    .nav-link.active .nav-text {
-        color: $primary;
+    .nav-link:hover:after,
+    .nav-link.active:after {
+        opacity: 1;
+        transform: translateY(0);
     }
 
     .nav-link {
-        padding: 0 1.5rem;
+        position: relative;
+        margin: 0 1.5rem;
+        padding: 0;
+    }
+
+    .nav-link:after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background-color: #fff;
+        opacity: 0;
+        transform: translateY(15px);
+        transition: $transition-base;
     }
 }
