@@ -3,7 +3,7 @@ import $ from 'jquery'
 const stickyElement = document.querySelector(".main-header");
 let didScroll;
 
-$(window).scroll(function () {
+$(window).on('scroll', {passive: true}, function () {
     didScroll = true;
 });
 
