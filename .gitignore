@@ -1,4 +1,5 @@
 /.env
 /.env.php
 /.idea
+/web/uploads/*
 .DS_Store

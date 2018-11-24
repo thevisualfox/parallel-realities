@@ -17,6 +17,18 @@ html {
 body, html {
     margin: 0;
     padding: 0;
+    animation: smoothFadeIn 0.3s ease-in forwards;
+    will-change: opacity;
+}
+
+@keyframes smoothFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 body,
@@ -39,7 +51,7 @@ a {
 
     &:hover {
         .icon {
-            color: $primary
+            transform: translateY(-5px);
         }
     }
 }
@@ -63,7 +75,7 @@ p {
         text-decoration: underline !important;
 
         &:hover {
-            color: $primary !important;
+            text-decoration: none !important;
         }
     }
 
