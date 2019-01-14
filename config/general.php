@@ -48,7 +48,8 @@ return [
             'staticAssetsVersion' => 1,
         ],
         'defaultImageQuality' => 80,
-        'maxUploadFileSize' => 33554432
+        'maxUploadFileSize' => 33554432,
+        'cpTrigger' => 'parallel'
     ],
 
     // Live (production) environment
