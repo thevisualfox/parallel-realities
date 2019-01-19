@@ -15,7 +15,7 @@ When choosing a module ID, try to avoid names that will conflict with Craft’s 
 
 ## Set up the basic file structure
 
-To create a module, create a new directory for it somewhere within your Craft project, such as `modules/<ModuleID>/`. For example, if your module ID is `foo`, you might set it up like this:   
+To create a module, create a new directory for it somewhere within your Craft project, such as `modules/<ModuleID>/`. For example, if your module ID is `foo`, you might set it up like this:
 
 ```
 my-project.test/
@@ -32,14 +32,14 @@ Use [pluginfactory.io](https://pluginfactory.io/) to create your module’s scaf
 
 ## Set up class autoloading
 
-Next up, you need to tell Composer how to find your module’s classes by setting the [`autoload`](https://getcomposer.org/doc/04-schema.md#autoload) field in your project’s `composer.json` file. For example, if your module’s namespace is `foo`, and it’s located at `modules/foo/`, this is what you should add:
+Next up, you need to tell Composer how to find your module’s classes by setting the [`autoload`](https://getcomposer.org/doc/04-schema.md#autoload) field in your project’s `composer.json` file. For example, if your module’s namespace is `bar`, and it’s located at `modules/foo/`, this is what you should add:
 
 ```json
 {
   // ...
   "autoload": {
     "psr-4": {
-      "foo\\": "modules/foo/"
+      "bar\\": "modules/foo/"
     }
   }
 }
@@ -55,7 +55,7 @@ That will tell Composer to update its class autoloader script based on your new 
 
 ## Update the application config
 
-You can add your module to your project’s [application configuration](../config/README.md#application-config) by listing it in the [modules](api:yii\base\Module::modules) and [bootstrap](api:yii\base\Application::bootstrap) arrays. For example, if your module ID is `foo` and its Module class name is `foo\Module`, this is what you should add to `config/app.php`:
+You can add your module to your project’s [application configuration](../config/app.md) by listing it in the [modules](api:yii\base\Module::modules) and [bootstrap](api:yii\base\Application::bootstrap) arrays. For example, if your module ID is `foo` and its Module class name is `foo\Module`, this is what you should add to `config/app.php`:
 
 ```php
 return [
@@ -81,7 +81,7 @@ Use this template as a starting point for your `Module.php` file:
 
 ```php
 <?php
-namespace foo;
+namespace bar;
 
 class Module extends \yii\base\Module
 {
@@ -94,7 +94,7 @@ class Module extends \yii\base\Module
 }
 ```
 
-Replace `foo` with your module’s actual namespace.
+Replace `bar` with your module’s actual namespace.
 
 ## Further Reading
 

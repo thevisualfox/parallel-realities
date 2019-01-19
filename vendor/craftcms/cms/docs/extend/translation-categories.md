@@ -14,7 +14,7 @@ use craft\i18n\PhpMessageSource;
 public function init()
 {
     parent::init();
-    
+
     Craft::$app->i18n->translations['my-category'] = [
         'class' => PhpMessageSource::class,
         'sourceLanguage' => 'en',
@@ -24,7 +24,7 @@ public function init()
 }
 ```
 
-If you have control over the [application config](../config/README.md#application-config), you could also add the translation category from there:
+If you have control over the [application config](../config/app.md), you could also add the translation category from there:
 
 ```php
 // -- config/app.php --

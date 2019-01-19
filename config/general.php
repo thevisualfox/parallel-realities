@@ -49,7 +49,8 @@ return [
         ],
         'defaultImageQuality' => 80,
         'maxUploadFileSize' => 33554432,
-        'cpTrigger' => 'parallel'
+        'cpTrigger' => 'parallel',
+        'useProjectConfigFile' => true
     ],
 
     // Live (production) environment
@@ -59,7 +60,7 @@ return [
         'backupOnUpdate' => false,
         'devMode' => false,
         'enableTemplateCaching' => true,
-        'isSystemOn' => true,
+        'isSystemLive' => true,
         // Aliases parsed in sites’ settings, volumes’ settings, and Local volumes’ settings
         'aliases' => [
         ],
@@ -75,7 +76,7 @@ return [
         'backupOnUpdate' => false,
         'devMode' => false,
         'enableTemplateCaching' => true,
-        'isSystemOn' => false,
+        'isSystemLive' => false,
         // Aliases parsed in sites’ settings, volumes’ settings, and Local volumes’ settings
         'aliases' => [
         ],
@@ -91,7 +92,7 @@ return [
         'backupOnUpdate' => true,
         'devMode' => true,
         'enableTemplateCaching' => false,
-        'isSystemOn' => true,
+        'isSystemLive' => true,
         // Aliases parsed in sites’ settings, volumes’ settings, and Local volumes’ settings
         'aliases' => [
         ],
