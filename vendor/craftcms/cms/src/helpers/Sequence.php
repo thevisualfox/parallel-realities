@@ -9,6 +9,7 @@ namespace craft\helpers;
 
 use Craft;
 use craft\db\Query;
+use craft\db\Table;
 use yii\db\Exception;
 
 /**
@@ -19,6 +20,19 @@ use yii\db\Exception;
  */
 class Sequence
 {
+    /**
+     * Returns the current value in a given sequence.
+     *
+     * @param string $name The sequence name.
+     * @param int|null $length The minimum string length that should be returned. (Numbers that are too short will be left-padded with `0`s.)
+     * @return integer|string
+     */
+    public static function current(string $name, int $length = null)
+    {
+        $next = self::_next($name);
+        return self::_format($next - 1, $length);
+    }
+
     /**
      * Returns the next number in a given sequence.
      *
@@ -38,19 +52,15 @@ class Sequence
         }
 
         try {
-            $num = (int)(new Query())
-                ->select(['next'])
-                ->from('{{%sequences}}')
-                ->where(['name' => $name])
-                ->scalar() ?: 1;
+            $num = self::_next($name);
 
             if ($num === 1) {
                 Craft::$app->getDb()->createCommand()
-                    ->insert('{{%sequences}}', ['name' => $name, 'next' => $num + 1], false)
+                    ->insert(Table::SEQUENCES, ['name' => $name, 'next' => $num + 1], false)
                     ->execute();
             } else {
                 Craft::$app->getDb()->createCommand()
-                    ->update('{{%sequences}}', ['next' => $num + 1], ['name' => $name], [], false)
+                    ->update(Table::SEQUENCES, ['next' => $num + 1], ['name' => $name], [], false)
                     ->execute();
             }
         } catch (\Throwable $e) {
@@ -59,11 +69,36 @@ class Sequence
         }
 
         $mutex->release($lockName);
+        return self::_format($num, $length);
+    }
 
+    /**
+     * Returns the next value in the given sequence, without incrementing it.
+     *
+     * @param string $name
+     * @return int
+     */
+    private static function _next(string $name): int
+    {
+        return (int)(new Query())
+            ->select(['next'])
+            ->from(Table::SEQUENCES)
+            ->where(['name' => $name])
+            ->scalar() ?: 1;
+    }
+
+    /**
+     * Possibly formats a number based on the given length.
+     *
+     * @param int $num
+     * @param int|null $length
+     * @return integer|string
+     */
+    private static function _format(int $num, int $length = null)
+    {
         if ($length !== null) {
             return str_pad($num, $length, '0', STR_PAD_LEFT);
         }
-
         return $num;
     }
 }
