@@ -2,7 +2,7 @@
 {% set imageTransform = { width: 1280, height: 720, mode: 'crop' } %}
 
 <div class="col-12 col-md-6 col-lg-4">
-    <figure class="media media--overlay position-relative image-zoom">
+    <figure class="media position-relative image-zoom">
         {% if image %}
             <a class="text-white"
                href="{{ entry.separatePage ? entry.url : image.getUrl() }}"

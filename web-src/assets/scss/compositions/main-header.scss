@@ -9,6 +9,10 @@
         position: fixed;
     }
 
+    .main-header__slogan  {
+        color: $white;
+    }
+
     .logo__image {
         height: 60px;
         width: 280px;
@@ -28,7 +32,7 @@
 
 .main-header {
     .showcase & {
-        .nav-text, .logo__image {
+        .nav-text, .logo__image, .main-header__slogan  {
             color: $base;
         }
 

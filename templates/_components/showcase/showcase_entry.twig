@@ -75,14 +75,9 @@
                 {% if images %}
                     {% for image in images %}
                         <div class="col-md-6">
-                            <figure class="media media--overlay position-relative image-zoom">
+                            <figure class="media image-zoom">
                                 <a href="{{ image.getUrl() }}" title="{{ image.title }}" data-fancybox="default">
                                     <img src="{{ image.getUrl(imageTransform) }}" alt="{{ image.title }}">
-                                    <div class="media__icon">
-                                        <svg class="icon icon--36 text-white">
-                                            <use xlink:href="{{ alias('@web/app/assets/img/symbols.svg#expand')}}"></use>
-                                        </svg>
-                                    </div>
                                 </a>
                             </figure>
                         </div>
