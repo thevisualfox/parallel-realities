@@ -10450,23 +10450,13 @@ module.exports = __webpack_require__(2);
 
 __webpack_require__(3);
 
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
 __webpack_require__(6);
 
 __webpack_require__(8);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+__webpack_require__(9);
 
-// Disable right click
-
-// Core
-
-(0, _jquery2.default)("body").on("contextmenu", "img", function (e) {
-    return false;
-});
+__webpack_require__(10);
 
 /***/ }),
 /* 3 */
@@ -22668,6 +22658,44 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
         scrollTop: (0, _jquery2.default)(_jquery2.default.attr(this, 'href')).offset().top - 100
     }, 400);
 
+    return false;
+});
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var header = document.getElementsByTagName("header")[0];
+var headerObserver = document.getElementsByClassName("main-header__observer")[0];
+headerObserver.__link = header;
+
+function onIntersection(entries) {
+    entries.forEach(function (entry) {
+        entry.target.__link.classList.toggle("is-sticky", entry.intersectionRatio === 0);
+    });
+}
+
+new IntersectionObserver(onIntersection, { threshold: 1 }).observe(headerObserver);
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// Disable right click
+
+(0, _jquery2.default)("body").on("contextmenu", "img", function (e) {
     return false;
 });
 

@@ -7,7 +7,7 @@
         </div>
         <div class="row row--equalized gutters-4 justify-content-center">
             {% cache %}
-                {% for entry in craft.entries.section('highlights').limit(4).orderBy('postDate').all() %}
+                {% for entry in craft.entries.section('highlights').limit(4).all() %}
                     {% include '_components/highlights/highlight_preview.twig' %}
                 {% endfor %}
             {% endcache %}

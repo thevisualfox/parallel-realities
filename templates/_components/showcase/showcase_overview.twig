@@ -3,7 +3,7 @@
         <h2 class="text-center mb-5">Cases</h2>
         <div class="row row--equalized gutters-4">
             {% cache %}
-                {% for entry in craft.entries.section('showcase').orderBy('dateUpdated').all() %}
+                {% for entry in craft.entries.section('showcase').all() %}
                     {% include '_components/showcase/showcase_preview.twig' %}
                 {% endfor %}
             {% endcache %}

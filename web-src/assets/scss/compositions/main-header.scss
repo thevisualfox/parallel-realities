@@ -4,40 +4,55 @@
     left: 0;
     width: 100%;
     z-index: 9;
+    transition: background-color 350ms $transition-bezier, padding 350ms $transition-bezier;
 
     @include media-breakpoint-up(lg) {
         position: fixed;
-    }
-
-    .main-header__slogan  {
-        color: $white;
     }
 
     .logo__image {
         height: 60px;
         width: 280px;
         color: $white;
-        transition: $transition-base;
+        transition: transform 400ms $transition-bezier;
     }
 
-    &.is-sticky .nav-link:after {
-        background: $base;
-    }
+    &.is-sticky, .showcase & {
+        background-color: $white;
+        padding: 0 !important;
 
-    &.is-sticky .nav-text,
-    &.is-sticky .logo__image {
-        color: $base;
-    }
-}
+        .nav-link:after {
+            background: $base;
+        }
 
-.main-header {
-    .showcase & {
-        .nav-text, .logo__image, .main-header__slogan  {
+        .nav-text,
+        .logo__image,
+        .main-header__slogan {
             color: $base;
         }
 
-        .nav-link:after {
-            background-color: $base;
+        .main-header__logo {
+            transform: scale(0.6)
+        }
+
+        .main-header__nav {
+            transform: scale(0.8) translateY(-40px);
         }
     }
+}
+
+.main-header__logo, .main-header__nav {
+    transition: transform 400ms $transition-bezier;
+}
+
+.main-header__slogan {
+    color: $white;
+}
+
+.main-header__observer {
+    height: 1px;
+    margin-top: -1px;
+    position: absolute;
+    top: 80%;
+    width: 1px;
 }

@@ -13,17 +13,6 @@
                     <p class="text-small text-regular text-spaced mb-0">{{ entry.title }}</p>
                     <p class="text-smaller text-light">{{ entry.subtitle }}</p>
                 </figcaption>
-                <div class="media__icon">
-                    {% if video %}
-                        <svg class="icon icon--36 text-white">
-                            <use xlink:href="{{ alias('@web/app/assets/img/symbols.svg#play') }}"></use>
-                        </svg>
-                    {% elseif image %}
-                        <svg class="icon icon--36 text-white">
-                            <use xlink:href="{{ alias('@web/app/assets/img/symbols.svg#expand') }}"></use>
-                        </svg>
-                    {% endif %}
-                </div>
             </a>
         {% endif %}
     </figure>
