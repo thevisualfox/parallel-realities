@@ -1,4 +1,4 @@
-dateModified: 1547895786
+dateModified: 1555145804
 email:
   fromEmail: jurjen.p.vos@gmail.com
   fromName: 'Parallel Realities'
@@ -174,6 +174,23 @@ fields:
     instructions: 'Add the vimeo video url (eg: https://vimeo.com/14592941). If no video is inserted, the image will be the main asset'
     name: Video
     searchable: '1'
+    settings:
+      charLimit: ''
+      code: ''
+      columnType: text
+      initialRows: '4'
+      multiline: ''
+      placeholder: ''
+    translationKeyFormat: null
+    translationMethod: none
+    type: craft\fields\PlainText
+  606b7e8b-a826-4489-89c7-7c85e13b6541:
+    contentColumnType: text
+    fieldGroup: 7f6ceebb-ff32-4474-a724-971cd458e4ef
+    handle: iframe
+    instructions: 'Insert an iFrame'
+    name: Iframe
+    searchable: true
     settings:
       charLimit: ''
       code: ''
@@ -404,9 +421,9 @@ matrixBlockTypes:
             fields:
               2a23baaf-73bc-4f3f-bede-2c29596b2e18:
                 required: '0'
-                sortOrder: '1'
+                sortOrder: 1
             name: Content
-            sortOrder: '1'
+            sortOrder: 1
     fields:
       2a23baaf-73bc-4f3f-bede-2c29596b2e18:
         contentColumnType: string
@@ -422,7 +439,7 @@ matrixBlockTypes:
         type: craft\fields\Url
     handle: iframeField
     name: 'iFrame Field'
-    sortOrder: '3'
+    sortOrder: 3
   850e23a7-f5fe-4e72-a951-1885b1435abd:
     field: 119135cc-b864-4f64-898a-aa56706beb24
     fieldLayouts:
@@ -432,12 +449,12 @@ matrixBlockTypes:
             fields:
               076e7038-d332-4c2e-85dc-a2f20618aceb:
                 required: '0'
-                sortOrder: '2'
+                sortOrder: 2
               b6d7c143-f797-42a8-99e2-3d3d8bbecdeb:
                 required: '0'
-                sortOrder: '1'
+                sortOrder: 1
             name: Content
-            sortOrder: '1'
+            sortOrder: 1
     fields:
       076e7038-d332-4c2e-85dc-a2f20618aceb:
         contentColumnType: string
@@ -446,6 +463,8 @@ matrixBlockTypes:
         instructions: 'Type in the social media channel you want to add. (eg: https://www.facebook.nl/company)'
         name: 'Channel address'
         searchable: '1'
+        settings:
+          placeholder: null
         translationKeyFormat: null
         translationMethod: none
         type: craft\fields\Url
@@ -479,7 +498,7 @@ matrixBlockTypes:
         type: craft\fields\Dropdown
     handle: socialMedia
     name: 'Social Media'
-    sortOrder: '1'
+    sortOrder: 1
   c2bdc0ea-7f98-49cc-a453-731f2ac710d2:
     field: b002e492-a7e2-4813-b1b1-c15e998d353c
     fieldLayouts:
@@ -489,9 +508,9 @@ matrixBlockTypes:
             fields:
               24a13c99-18b0-4b32-9dc8-eaf8f1272151:
                 required: '0'
-                sortOrder: '1'
+                sortOrder: 1
             name: Content
-            sortOrder: '1'
+            sortOrder: 1
     fields:
       24a13c99-18b0-4b32-9dc8-eaf8f1272151:
         contentColumnType: string
@@ -521,7 +540,7 @@ matrixBlockTypes:
         type: craft\fields\Assets
     handle: imageField
     name: 'Image Field'
-    sortOrder: '2'
+    sortOrder: 2
   dc9ed93d-1fb7-41c2-855a-d14d6034f06a:
     field: b002e492-a7e2-4813-b1b1-c15e998d353c
     fieldLayouts:
@@ -531,9 +550,9 @@ matrixBlockTypes:
             fields:
               63a86735-52aa-4e13-a939-06354d1c121d:
                 required: '0'
-                sortOrder: '1'
+                sortOrder: 1
             name: Content
-            sortOrder: '1'
+            sortOrder: 1
     fields:
       63a86735-52aa-4e13-a939-06354d1c121d:
         contentColumnType: text
@@ -555,7 +574,7 @@ matrixBlockTypes:
         type: craft\redactor\Field
     handle: textField
     name: 'Text Field'
-    sortOrder: '1'
+    sortOrder: 1
 plugins:
   redactor:
     enabled: '1'
@@ -564,7 +583,7 @@ plugins:
     settings: null
 sections:
   29345a87-1cb6-4823-a8d5-c1ac5c6dda4a:
-    enableVersioning: '1'
+    enableVersioning: true
     entryTypes:
       d833d7c3-3e71-4f82-b2f2-aecd74e2a367:
         fieldLayouts:
@@ -573,34 +592,40 @@ sections:
               -
                 fields:
                   00b3e9bf-8280-4397-8d41-33cc4de75003:
-                    required: '0'
-                    sortOrder: '3'
+                    required: false
+                    sortOrder: 4
                   3ecd3dc4-5028-4407-b30a-7bf60783badf:
-                    required: '0'
-                    sortOrder: '1'
+                    required: false
+                    sortOrder: 1
                   5c93d5a7-8552-4922-bcbf-4a6433846899:
-                    required: '0'
-                    sortOrder: '2'
+                    required: false
+                    sortOrder: 2
+                  606b7e8b-a826-4489-89c7-7c85e13b6541:
+                    required: false
+                    sortOrder: 3
                 name: Work
-                sortOrder: '1'
+                sortOrder: 1
         handle: highlights
-        hasTitleField: '1'
+        hasTitleField: true
         name: highlights
-        sortOrder: '1'
-        titleFormat: null
+        sortOrder: 1
+        titleFormat: ''
         titleLabel: Title
     handle: highlights
     name: Highlights
-    propagateEntries: '1'
+    propagateEntries: true
     siteSettings:
       bbf8cb32-62ed-4353-8c5a-c091131d4962:
-        enabledByDefault: '1'
-        hasUrls: '0'
+        enabledByDefault: true
+        hasUrls: false
         template: null
         uriFormat: null
-    type: channel
+    structure:
+      maxLevels: '1'
+      uid: 56eca767-f8b6-46f5-887b-172a01e6616d
+    type: structure
   4b203b52-92e5-4057-affc-294af5e9931d:
-    enableVersioning: '1'
+    enableVersioning: true
     entryTypes:
       14f553d5-22a3-44be-9fb0-351d2441a0f9:
         fieldLayouts:
@@ -609,45 +634,48 @@ sections:
               -
                 fields:
                   00b3e9bf-8280-4397-8d41-33cc4de75003:
-                    required: '0'
-                    sortOrder: '2'
+                    required: false
+                    sortOrder: 2
                   3ecd3dc4-5028-4407-b30a-7bf60783badf:
-                    required: '0'
-                    sortOrder: '1'
+                    required: false
+                    sortOrder: 1
                   8313fac4-f0e0-49b4-b4f3-d7aeafaa513f:
-                    required: '0'
-                    sortOrder: '3'
+                    required: false
+                    sortOrder: 3
                 name: 'Showcase preview'
-                sortOrder: '1'
+                sortOrder: 1
               -
                 fields:
                   87364506-c4ff-493e-a56c-f11ff937a25c:
-                    required: '0'
-                    sortOrder: '3'
+                    required: false
+                    sortOrder: 3
                   999b962f-d4b0-438a-bd6e-e853d96ef747:
-                    required: '0'
-                    sortOrder: '1'
+                    required: false
+                    sortOrder: 1
                   b002e492-a7e2-4813-b1b1-c15e998d353c:
-                    required: '0'
-                    sortOrder: '2'
+                    required: false
+                    sortOrder: 2
                 name: 'Showcase article'
-                sortOrder: '2'
+                sortOrder: 2
         handle: schowcase
-        hasTitleField: '1'
+        hasTitleField: true
         name: Showcase
-        sortOrder: '1'
-        titleFormat: null
+        sortOrder: 1
+        titleFormat: ''
         titleLabel: Title
     handle: showcase
     name: Cases
-    propagateEntries: '1'
+    propagateEntries: true
     siteSettings:
       bbf8cb32-62ed-4353-8c5a-c091131d4962:
-        enabledByDefault: '1'
-        hasUrls: '1'
+        enabledByDefault: true
+        hasUrls: true
         template: /_components/showcase/showcase_entry.twig
         uriFormat: 'cases/{slug}'
-    type: channel
+    structure:
+      maxLevels: '1'
+      uid: 99fb6993-469a-4f4d-9d43-eb454a738e58
+    type: structure
   7e37f191-8e39-43ff-b15e-650e919cad4a:
     enableVersioning: '1'
     entryTypes:

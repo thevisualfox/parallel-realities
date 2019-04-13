@@ -2,7 +2,6 @@ import "bootstrap";
 
 // Core
 
-import "./fancybox"
-import "./smoothScroll"
-import "./stickyNav"
-
+import "./fancybox";
+import "./intersectionNav";
+import "./disableImageDownload";

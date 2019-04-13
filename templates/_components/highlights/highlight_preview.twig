@@ -1,30 +1,25 @@
 {% set video = entry.video %}
 {% set image  = entry.image.one() %}
+{% set iframe = entry.iframe %}
 {% set imageTransform = { width: 1280, height: 720, mode: 'crop' } %}
 
 <div class="col-12 col-md-6">
-    <figure class="media media--overlay position-relative image-zoom">
-        {% if image %}
+    <figure class="media position-relative image-zoom">
+        {% if image and iframe is empty %}
             <a class="text-white" href="{{ video ? video : image.getUrl() }}" title="{{ entry.title }}" data-fancybox="default">
                 {% if image %}
                     <img src="{{ image.getUrl(imageTransform) }}" alt="{{ image.title }}">
                 {% endif %}
-                <figcaption class="d-flex flex-column media__absolute">
-                    <p class="text-small text-regular text-spaced mb-0">{{ entry.title }}</p>
-                    <p class="text-smaller text-light">{{ entry.subtitle }}</p>
-                </figcaption>
-                <div class="media__icon">
-                    {% if video %}
-                        <svg class="icon icon--36 text-white">
-                            <use xlink:href="{{ alias('@web/app/assets/img/symbols.svg#play') }}"></use>
-                        </svg>
-                    {% elseif image %}
-                        <svg class="icon icon--36 text-white">
-                            <use xlink:href="{{ alias('@web/app/assets/img/symbols.svg#expand') }}"></use>
-                        </svg>
-                    {% endif %}
-                </div>
             </a>
         {% endif %}
+        {% if iframe %}
+            <div class="media__container">
+                <iframe class="media__video" src="{{ iframe }}" allowfullscreen></iframe>
+            </div>
+        {% endif %}
     </figure>
+    <figcaption class="d-flex flex-column media__caption">
+        <p class="text-small text-regular text-spaced mb-0">{{ entry.title }}</p>
+        <p class="text-smaller text-light">{{ entry.subtitle }}</p>
+    </figcaption>
 </div>

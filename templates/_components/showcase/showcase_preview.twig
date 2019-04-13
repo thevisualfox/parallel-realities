@@ -2,7 +2,7 @@
 {% set imageTransform = { width: 1280, height: 720, mode: 'crop' } %}
 
 <div class="col-12 col-md-6 col-lg-4">
-    <figure class="media media--overlay position-relative image-zoom">
+    <figure class="media position-relative image-zoom">
         {% if image %}
             <a class="text-white"
                href="{{ entry.separatePage ? entry.url : image.getUrl() }}"
@@ -10,11 +10,11 @@
                 {% if image %}
                     <img src="{{ image.getUrl(imageTransform) }}" alt="{{ image.title }}">
                 {% endif %}
-                <figcaption class="d-flex flex-column media__absolute">
-                    <p class="text-small text-regular text-spaced mb-0">{{ entry.title }}</p>
-                    <p class="text-smaller text-light">{{ entry.subtitle }}</p>
-                </figcaption>
             </a>
         {% endif %}
     </figure>
+    <figcaption class="d-flex flex-column media__caption">
+        <p class="text-small text-regular text-spaced mb-0">{{ entry.title }}</p>
+        <p class="text-smaller text-light">{{ entry.subtitle }}</p>
+    </figcaption>
 </div>
