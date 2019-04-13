@@ -1,4 +1,4 @@
-dateModified: 1555010703
+dateModified: 1555145804
 email:
   fromEmail: jurjen.p.vos@gmail.com
   fromName: 'Parallel Realities'
@@ -174,6 +174,23 @@ fields:
     instructions: 'Add the vimeo video url (eg: https://vimeo.com/14592941). If no video is inserted, the image will be the main asset'
     name: Video
     searchable: '1'
+    settings:
+      charLimit: ''
+      code: ''
+      columnType: text
+      initialRows: '4'
+      multiline: ''
+      placeholder: ''
+    translationKeyFormat: null
+    translationMethod: none
+    type: craft\fields\PlainText
+  606b7e8b-a826-4489-89c7-7c85e13b6541:
+    contentColumnType: text
+    fieldGroup: 7f6ceebb-ff32-4474-a724-971cd458e4ef
+    handle: iframe
+    instructions: 'Insert an iFrame'
+    name: Iframe
+    searchable: true
     settings:
       charLimit: ''
       code: ''
@@ -576,9 +593,6 @@ sections:
                 fields:
                   00b3e9bf-8280-4397-8d41-33cc4de75003:
                     required: false
-                    sortOrder: 3
-                  05840f4e-2a0e-48ee-bb48-47e076eb87c7:
-                    required: false
                     sortOrder: 4
                   3ecd3dc4-5028-4407-b30a-7bf60783badf:
                     required: false
@@ -586,6 +600,9 @@ sections:
                   5c93d5a7-8552-4922-bcbf-4a6433846899:
                     required: false
                     sortOrder: 2
+                  606b7e8b-a826-4489-89c7-7c85e13b6541:
+                    required: false
+                    sortOrder: 3
                 name: Work
                 sortOrder: 1
         handle: highlights

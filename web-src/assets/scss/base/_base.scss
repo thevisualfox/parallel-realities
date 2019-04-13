@@ -17,8 +17,11 @@ html {
 body, html {
     margin: 0;
     padding: 0;
-    animation: smoothFadeIn 0.3s ease-in forwards;
-    will-change: opacity;
+
+    @include media-breakpoint-up(lg) {
+        animation: smoothFadeIn 0.3s ease-in forwards;
+        will-change: opacity;
+    }
 }
 
 @keyframes smoothFadeIn {

@@ -23,7 +23,7 @@
             <link rel="stylesheet" type="text/css" href="{{ alias('@web/app/assets/css/app.css') }}">
         {% endblock %}
     </head>
-    <body {% if bodyClass is defined %} class="{{ bodyClass }} position-relative" {% endif %} data-spy="scroll" data-target="#main-nav" data-offset="250">
+    <body {% if bodyClass is defined %} class="{{ bodyClass }}" {% endif %}>
         {% block body %}
         {% endblock %}
 

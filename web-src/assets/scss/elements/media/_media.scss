@@ -1,11 +1,5 @@
 .media {
-}
-
-.media__absolute {
-    position: absolute;
-    left: 1rem;
-    bottom: 1rem;
-    z-index: 1;
+    margin-bottom: 0.5rem;
 }
 
 .media__icon {
@@ -21,6 +15,7 @@
 .media__container {
     position: relative;
     overflow: hidden;
+    width: 100%;
     padding-top: 56.25%;
 }
 
