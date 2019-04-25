@@ -11,10 +11,14 @@
     }
 
     .logo__image {
-        height: 60px;
-        width: 280px;
+        height: 72px;
+        width: 310px;
         color: $white;
         transition: transform 400ms $transition-bezier;
+
+        @include media-breakpoint-up(md) {
+            width: 390px;
+        }
     }
 
     &.is-sticky, .showcase & {
@@ -26,8 +30,7 @@
         }
 
         .nav-text,
-        .logo__image,
-        .main-header__slogan {
+        .logo__image {
             color: $base;
         }
 
@@ -36,17 +39,17 @@
         }
 
         .main-header__nav {
-            transform: scale(0.8) translateY(-40px);
+            transform: scale(0.8) translateY(-30px);
+
+            .nav-link {
+                margin: 0 0.5rem;
+            }
         }
     }
 }
 
 .main-header__logo, .main-header__nav {
     transition: transform 400ms $transition-bezier;
-}
-
-.main-header__slogan {
-    color: $white;
 }
 
 .main-header__observer {
