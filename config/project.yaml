@@ -1,4 +1,4 @@
-dateModified: 1555145804
+dateModified: 1558872033
 email:
   fromEmail: jurjen.p.vos@gmail.com
   fromName: 'Parallel Realities'
@@ -90,6 +90,32 @@ fields:
     translationKeyFormat: null
     translationMethod: none
     type: craft\redactor\Field
+  18a478f8-4b5e-4ca9-8300-70075e472304:
+    contentColumnType: string
+    fieldGroup: ef1c93cc-c3d2-4e56-aea3-e04ff1400d2a
+    handle: clients
+    instructions: 'Insert client logo''s'
+    name: Clients
+    searchable: true
+    settings:
+      allowedKinds:
+        - image
+      defaultUploadLocationSource: 'volume:081457f1-b9d3-4dc5-b850-ff375be3255d'
+      defaultUploadLocationSubpath: ''
+      limit: ''
+      localizeRelations: false
+      restrictFiles: '1'
+      selectionLabel: 'Upload media'
+      singleUploadLocationSource: 'volume:081457f1-b9d3-4dc5-b850-ff375be3255d'
+      singleUploadLocationSubpath: ''
+      source: null
+      sources: '*'
+      targetSiteId: null
+      useSingleFolder: ''
+      viewMode: large
+    translationKeyFormat: null
+    translationMethod: site
+    type: craft\fields\Assets
   24734fcf-ded7-4346-b13f-f726403e1308:
     contentColumnType: string
     fieldGroup: ef1c93cc-c3d2-4e56-aea3-e04ff1400d2a
@@ -686,22 +712,25 @@ sections:
               -
                 fields:
                   15c9f221-ff91-4fbd-9c62-4b769f6922d9:
-                    required: '0'
-                    sortOrder: '3'
+                    required: false
+                    sortOrder: 3
+                  18a478f8-4b5e-4ca9-8300-70075e472304:
+                    required: false
+                    sortOrder: 4
                   24734fcf-ded7-4346-b13f-f726403e1308:
-                    required: '0'
-                    sortOrder: '2'
+                    required: false
+                    sortOrder: 2
                   f3fcd12b-79e6-44c4-8bff-af9ad554b773:
-                    required: '0'
-                    sortOrder: '1'
+                    required: false
+                    sortOrder: 1
                 name: Homepage
-                sortOrder: '1'
+                sortOrder: 1
         handle: homepage
-        hasTitleField: '0'
+        hasTitleField: false
         name: Homepage
-        sortOrder: '1'
+        sortOrder: 1
         titleFormat: '{section.name|raw}'
-        titleLabel: null
+        titleLabel: ''
     handle: homepage
     name: Homepage
     propagateEntries: '1'
