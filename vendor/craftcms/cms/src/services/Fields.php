@@ -173,6 +173,7 @@ class Fields extends Component
 
     /**
      * @var bool Whether to ignore changes to the project config.
+     * @deprecated in 3.1.2. Use [[\craft\services\ProjectConfig::$muteEvents]] instead.
      */
     public $ignoreProjectConfigChanges = false;
 
@@ -708,7 +709,7 @@ class Fields extends Component
             'name' => $field->name,
             'handle' => $field->handle,
             'instructions' => $field->instructions,
-            'searchable' => $field->searchable,
+            'searchable' => (bool)$field->searchable,
             'translationMethod' => $field->translationMethod,
             'translationKeyFormat' => $field->translationKeyFormat,
             'type' => get_class($field),
@@ -789,7 +790,9 @@ class Fields extends Component
 
         // Make sure it's got a UUID
         if ($field->getIsNew()) {
-            $field->uid = StringHelper::UUID();
+            if (empty($field->uid)) {
+                $field->uid = StringHelper::UUID();
+            }
         } else if (!$field->uid) {
             $field->uid = Db::uidById(Table::FIELDS, $field->id);
         }
@@ -1036,6 +1039,21 @@ class Fields extends Component
     }
 
     /**
+     * Returns the field IDs for a given layout ID.
+     *
+     * @param int $layoutId The field layout ID
+     * @return int[]
+     */
+    public function getFieldIdsByLayoutId(int $layoutId): array
+    {
+        return (new Query())
+            ->select(['fieldId'])
+            ->from([Table::FIELDLAYOUTFIELDS])
+            ->where(['layoutId' => $layoutId])
+            ->column();
+    }
+
+    /**
      * Returns the field IDs grouped by layout IDs, for a given set of layout IDs.
      *
      * @param int[] $layoutIds The field layout IDs
@@ -1044,15 +1062,14 @@ class Fields extends Component
     public function getFieldIdsByLayoutIds(array $layoutIds): array
     {
         $results = (new Query())
-            ->select(['flf.layoutId', 'fields.id'])
-            ->from(['{{%fields}} fields'])
-            ->innerJoin('{{%fieldlayoutfields}} flf', '[[flf.fieldId]] = [[fields.id]]')
-            ->where(['flf.layoutId' => $layoutIds])
+            ->select(['layoutId', 'fieldId'])
+            ->from([Table::FIELDLAYOUTFIELDS])
+            ->where(['layoutId' => $layoutIds])
             ->all();
 
         $fieldIdsByLayoutId = [];
         foreach ($results as $result) {
-            $fieldIdsByLayoutId[$result['layoutId']][] = $result['id'];
+            $fieldIdsByLayoutId[$result['layoutId']][] = $result['fieldId'];
         }
 
         return $fieldIdsByLayoutId;
@@ -1409,7 +1426,8 @@ class Fields extends Component
             Craft::$app->getProjectConfig()->processConfigChanges(self::CONFIG_FIELDGROUP_KEY . '.' . $groupUid);
         }
 
-        $transaction = Craft::$app->getDb()->beginTransaction();
+        $db = Craft::$app->getDb();
+        $transaction = $db->beginTransaction();
 
         try {
             $fieldRecord = $this->_getFieldRecord($fieldUid);
@@ -1428,24 +1446,42 @@ class Fields extends Component
             if ($class::hasContentColumn()) {
                 $columnType = $data['contentColumnType'];
 
-                // Make sure we're working with the latest data in the case of a renamed field.
-                Craft::$app->getDb()->schema->refresh();
+                // Clear the schema cache
+                $db->getSchema()->refresh();
 
-                if (Craft::$app->getDb()->columnExists($contentTable, $oldColumnName)) {
-                    Craft::$app->getDb()->createCommand()
-                        ->alterColumn($contentTable, $oldColumnName, $columnType)
-                        ->execute();
+                // Are we dealing with an existing column?
+                if ($db->columnExists($contentTable, $oldColumnName)) {
+                    // Name change?
                     if ($oldColumnName !== $newColumnName) {
-                        Craft::$app->getDb()->createCommand()
+                        // Does the new column already exist?
+                        if ($db->columnExists($contentTable, $newColumnName)) {
+                            // Rename it so we don't lose any data
+                            $db->createCommand()
+                                ->renameColumn($contentTable, $newColumnName, $newColumnName . '_' . StringHelper::randomString(10))
+                                ->execute();
+                        }
+
+                        // Rename the old column
+                        $db->createCommand()
                             ->renameColumn($contentTable, $oldColumnName, $newColumnName)
                             ->execute();
                     }
-                } else if (Craft::$app->getDb()->columnExists($contentTable, $newColumnName)) {
-                    Craft::$app->getDb()->createCommand()
+
+                    // Alter it
+                    $db->createCommand()
                         ->alterColumn($contentTable, $newColumnName, $columnType)
                         ->execute();
                 } else {
-                    Craft::$app->getDb()->createCommand()
+                    // Does the new column already exist?
+                    if ($db->columnExists($contentTable, $newColumnName)) {
+                        // Rename it so we don't lose any data
+                        $db->createCommand()
+                            ->renameColumn($contentTable, $newColumnName, $newColumnName . '_' . StringHelper::randomString(10))
+                            ->execute();
+                    }
+
+                    // Add the new column
+                    $db->createCommand()
                         ->addColumn($contentTable, $newColumnName, $columnType)
                         ->execute();
                 }
@@ -1454,9 +1490,9 @@ class Fields extends Component
                 if (
                     !$isNewField &&
                     $fieldRecord->getOldHandle() &&
-                    Craft::$app->getDb()->columnExists($contentTable, $oldColumnName)
+                    $db->columnExists($contentTable, $oldColumnName)
                 ) {
-                    Craft::$app->getDb()->createCommand()
+                    $db->createCommand()
                         ->dropColumn($contentTable, $oldColumnName)
                         ->execute();
                 }

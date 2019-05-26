@@ -56,6 +56,22 @@ Clones a given object.
 {% set articles = clone(query).type('articles') %}
 ```
 
+## `create( type )`
+
+Creates a new object instance based on a given class name or object configuration. See <api:Yii::createObject()> for a full explanation of supported arguments.
+
+```twig
+{# Pass in a class name #}
+{% set cookie = create('yii\\web\\Cookie') %}
+
+{# Or a full object configuration array #}
+{% set cookie = create({
+    class: 'yii\\web\\cookie',
+    name: 'foo',
+    value: 'bar'
+}) %}
+```
+
 ## `csrfInput()`
 
 Returns a hidden CSRF Token input. All sites that have CSRF Protection enabled must include this in each form that submits via POST.
@@ -127,15 +143,6 @@ Returns a plugin instance by its handle, or `null` if no plugin is installed and
 
 Shortcut for typing `<input type="hidden" name="redirect" value="{{ url|hash }}">`.
 
-## `round( num )`
-
-Rounds off a number to the closest integer.
-
-```twig
-{{ round(42.1) }} → 42
-{{ round(42.9) }} → 43
-```
-
 ## `seq( name, length, next )`
 
 Outputs the next or current number in a sequence, defined by `name`:
@@ -178,7 +185,7 @@ Randomizes the order of the elements within an array.
 
 ## `siteUrl( path, params, scheme, siteId )`
 
-Similar to [url()](#url-path-params-protocol-mustshowscriptname), except _only_ for creating URLs to pages on your site.
+Similar to [url()](#url-path-params-scheme-mustshowscriptname), except _only_ for creating URLs to pages on your site.
 
 ```twig
 <a href="{{ siteUrl('company/contact') }}">Contact Us</a>

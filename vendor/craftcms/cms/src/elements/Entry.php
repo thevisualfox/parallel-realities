@@ -357,7 +357,7 @@ class Entry extends Element
                 }
 
                 // Duplicate
-                if ($userSession->checkPermission('publishEntries:' . $section->id)) {
+                if ($userSession->checkPermission('publishEntries:' . $section->uid)) {
                     $actions[] = Duplicate::class;
 
                     if ($section->type === Section::TYPE_STRUCTURE && $section->maxLevels != 1) {
@@ -505,47 +505,90 @@ class Entry extends Element
 
     /**
      * @var int|null Section ID
+     * ---
+     * ```php
+     * echo $entry->sectionId;
+     * ```
+     * ```twig
+     * {{ entry.sectionId }}
+     * ```
      */
     public $sectionId;
 
     /**
      * @var int|null Type ID
+     * ---
+     * ```php
+     * echo $entry->typeId;
+     * ```
+     * ```twig
+     * {{ entry.typeId }}
+     * ```
      */
     public $typeId;
 
     /**
      * @var int|null Author ID
+     * ---
+     * ```php
+     * echo $entry->authorId;
+     * ```
+     * ```twig
+     * {{ entry.authorId }}
+     * ```
      */
     public $authorId;
 
     /**
      * @var \DateTime|null Post date
+     * ---
+     * ```php
+     * echo Craft::$app->formatter->asDate($entry->postDate, 'short');
+     * ```
+     * ```twig
+     * {{ entry.postDate|date('short') }}
+     * ```
      */
     public $postDate;
 
     /**
      * @var \DateTime|null Expiry date
+     * ---
+     * ```php
+     * if ($entry->expiryDate) {
+     *     echo Craft::$app->formatter->asDate($entry->expiryDate, 'short');
+     * }
+     * ```
+     * ```twig
+     * {% if entry.expiryDate %}
+     *     {{ entry.expiryDate|date('short') }}
+     * {% endif %}
+     * ```
      */
     public $expiryDate;
 
     /**
      * @var int|null New parent ID
+     * @internal
      */
     public $newParentId;
 
     /**
      * @var int|null Revision creator ID
+     * @internal
      */
     public $revisionCreatorId;
 
     /**
      * @var string|null Revision notes
+     * @internal
      */
     public $revisionNotes;
 
     /**
      * @var bool Whether the entry was deleted along with its entry type
      * @see beforeDelete()
+     * @internal
      */
     public $deletedWithEntryType = false;
 
@@ -902,14 +945,17 @@ class Entry extends Element
         switch ($attribute) {
             case 'author':
                 $author = $this->getAuthor();
-
                 return $author ? Craft::$app->getView()->renderTemplate('_elements/element', ['element' => $author]) : '';
 
             case 'section':
                 return Craft::t('site', $this->getSection()->name);
 
             case 'type':
-                return Craft::t('site', $this->getType()->name);
+                try {
+                    return Craft::t('site', $this->getType()->name);
+                } catch (InvalidConfigException $e) {
+                    return Craft::t('app', 'Unknown');
+                }
         }
 
         return parent::tableAttributeHtml($attribute);
@@ -1023,6 +1069,17 @@ EOD;
             throw new Exception("The section '{$section->name}' is not enabled for the site '{$this->siteId}'");
         }
 
+        // Make sure the entry has at least one version if the section has versioning enabled
+        if ($section->enableVersioning && $this->id && !$this->propagating && !$this->resaving) {
+            $revisionsService = Craft::$app->getEntryRevisions();
+            if (!$revisionsService->doesEntryHaveVersions($this->id, $this->siteId)) {
+                $currentEntry = Craft::$app->getEntries()->getEntryById($this->id, $this->siteId);
+                $currentEntry->revisionCreatorId = $this->authorId;
+                $currentEntry->revisionNotes = 'Revision from ' . Craft::$app->getFormatter()->asDatetime($this->dateUpdated);
+                $revisionsService->saveVersion($currentEntry);
+            }
+        }
+
         // Set the structure ID for Element::attributes() and afterSave()
         if ($section->type === Section::TYPE_STRUCTURE) {
             $this->structureId = $section->structureId;
@@ -1103,6 +1160,11 @@ EOD;
         }
 
         parent::afterSave($isNew);
+
+        // Save a new version
+        if ($section->enableVersioning && !$this->propagating && !$this->resaving) {
+            Craft::$app->getEntryRevisions()->saveVersion($this);
+        }
     }
 
     /**

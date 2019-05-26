@@ -10,7 +10,6 @@ namespace craft\controllers;
 use Craft;
 use craft\helpers\App;
 use craft\helpers\Json;
-use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use craft\web\assets\pluginstore\PluginStoreAsset;
 use craft\web\assets\pluginstoreoauth\PluginStoreOauthAsset;
@@ -158,7 +157,9 @@ class PluginStoreController extends Controller
         $redirectUrl = Craft::$app->getSession()->get('pluginStoreConnectRedirectUrl');
 
         $options = [
-            'redirectUrl' => $redirectUrl
+            'redirectUrl' => $redirectUrl,
+            'error' => Craft::$app->getRequest()->getParam('error'),
+            'message' => Craft::$app->getRequest()->getParam('message')
         ];
 
         $this->getView()->registerJs('new Craft.PluginStoreOauthCallback(' . Json::encode($options) . ');');
@@ -239,12 +240,12 @@ class PluginStoreController extends Controller
         // Craft editions
         $data['editions'] = [];
         foreach ($api->getCmsEditions() as $editionInfo) {
-            if ($editionInfo['price']) {
-                $data['editions'][$editionInfo['handle']] = [
-                    'price' => $editionInfo['price'],
-                    'renewalPrice' => $editionInfo['renewalPrice'],
-                ];
-            }
+            $data['editions'][$editionInfo['handle']] = [
+                'name' => $editionInfo['name'],
+                'handle' => $editionInfo['handle'],
+                'price' => $editionInfo['price'],
+                'renewalPrice' => $editionInfo['renewalPrice'],
+            ];
         }
 
         // Craft license/edition info
@@ -430,11 +431,6 @@ class PluginStoreController extends Controller
      */
     private function _getVueAppBaseUrl(): string
     {
-        $url = UrlHelper::url('plugin-store');
-
-        $hostInfo = Craft::$app->getRequest()->getHostInfo();
-        $hostInfo = StringHelper::ensureRight($hostInfo, '/');
-
-        return (string)substr($url, strlen($hostInfo) - 1);
+        return UrlHelper::rootRelativeUrl(UrlHelper::url('plugin-store'));
     }
 }

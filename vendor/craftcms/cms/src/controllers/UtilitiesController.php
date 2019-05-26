@@ -185,7 +185,6 @@ class UtilitiesController extends Controller
 
             $missingFolders = [];
             $skippedFiles = [];
-            $grandTotal = 0;
 
             foreach ($volumeIds as $volumeId) {
                 // Get the indexing list
@@ -207,20 +206,6 @@ class UtilitiesController extends Controller
                     'volumeId' => $volumeId,
                     'total' => $indexList['total'],
                 ];
-
-                for ($i = 0; $i < $indexList['total']; $i++) {
-                    $batch[] = [
-                        'params' => [
-                            'sessionId' => $sessionId,
-                            'volumeId' => $volumeId,
-                            'total' => $indexList['total'],
-                            'process' => 1,
-                            'cacheImages' => $params['cacheImages']
-                        ]
-                    ];
-                }
-
-                $batches[] = $batch;
             }
 
             Craft::$app->getSession()->set('assetsVolumesBeingIndexed', $volumeIds);
@@ -245,8 +230,6 @@ class UtilitiesController extends Controller
             $missingFiles = Craft::$app->getAssetIndexer()->getMissingFiles($params['sessionId']);
             $missingFolders = Craft::$app->getSession()->get('assetsMissingFolders', []);
             $skippedFiles = Craft::$app->getSession()->get('assetsSkippedFiles', []);
-
-            $responseArray = [];
 
             if (!empty($missingFiles) || !empty($missingFolders) || !empty($skippedFiles)) {
                 return $this->asJson([
@@ -494,26 +477,30 @@ class UtilitiesController extends Controller
             ->id($params['id'])
             ->anyStatus();
 
+        $searchService = Craft::$app->getSearch();
+
         foreach ($siteIds as $siteId) {
             $query->siteId($siteId);
             $element = $query->one();
 
             if ($element) {
                 /** @var Element $element */
-                Craft::$app->getSearch()->indexElementAttributes($element);
+                $searchService->indexElementAttributes($element);
 
                 if ($class::hasContent() && ($fieldLayout = $element->getFieldLayout()) !== null) {
                     $keywords = [];
 
                     foreach ($fieldLayout->getFields() as $field) {
                         /** @var Field $field */
-                        // Set the keywords for the content's site
-                        $fieldValue = $element->getFieldValue($field->handle);
-                        $fieldSearchKeywords = $field->getSearchKeywords($fieldValue, $element);
-                        $keywords[$field->id] = $fieldSearchKeywords;
+                        if ($field->searchable) {
+                            // Set the keywords for the content's site
+                            $fieldValue = $element->getFieldValue($field->handle);
+                            $fieldSearchKeywords = $field->getSearchKeywords($fieldValue, $element);
+                            $keywords[$field->id] = $fieldSearchKeywords;
+                        }
                     }
 
-                    Craft::$app->getSearch()->indexElementFields($element->id, $siteId, $keywords);
+                    $searchService->indexElementFields($element->id, $siteId, $keywords);
                 }
             }
         }

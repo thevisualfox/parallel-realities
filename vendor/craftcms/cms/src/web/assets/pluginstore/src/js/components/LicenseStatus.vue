@@ -1,5 +1,7 @@
 <template>
-    <div :class="'license-status ' + status" data-icon="check">{{ description }}</div>
+    <btn icon="check" :disabled="true" :class="'license-status ' + status" block large outline>
+        {{ description }}
+    </btn>
 </template>
 
 <script>
@@ -13,28 +15,19 @@
 <style lang="scss" scoped>
     @import "../../../../../../../lib/craftcms-sass/mixins";
 
-    .license-status {
-        &:before {
-            border: 1px solid;
-            border-radius: 9px;
-            width: 17px;
-            height: 17px;
-            line-height: 17px;
-            margin-right: 5px;
-        }
+    .c-btn {
+        &.license-status {
+            &:hover {
+                cursor: default;
+            }
 
-        &.installed {
-            color: $successColor;
-
-            &:before {
+            &.installed {
+                color: $successColor;
                 border-color: $successColor;
             }
-        }
 
-        &.licensed {
-            color: $noticeColor;
-
-            &:before {
+            &.licensed {
+                color: $noticeColor;
                 border-color: $noticeColor;
             }
         }

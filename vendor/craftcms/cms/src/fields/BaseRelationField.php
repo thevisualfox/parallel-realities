@@ -130,7 +130,7 @@ abstract class BaseRelationField extends Field implements PreviewableFieldInterf
     protected $allowLargeThumbsView = false;
 
     /**
-     * @var string Temlpate to use for settings rendering
+     * @var string Template to use for settings rendering
      */
     protected $settingsTemplate = '_components/fieldtypes/elementfieldsettings';
 
@@ -543,6 +543,11 @@ JS;
 
             /** @var int|int[]|false|null $targetIds */
             Craft::$app->getRelations()->saveRelations($this, $element, $targetIds);
+
+            // Reset the field value if this is a new element
+            if ($isNew) {
+                $element->setFieldValue($this->handle, null);
+            }
         }
 
         parent::afterElementSave($element, $isNew);

@@ -61,15 +61,18 @@ class Craft extends Yii
      * Checks if a string references an environment variable (`$VARIABLE_NAME`)
      * and/or an alias (`@aliasName`), and returns the referenced value.
      *
+     * If the string references an environment variable with a value of `true`
+     * or `false`, a boolean value will be returned.
+     *
      * ---
      *
      * ```php
-     * $value1 = Craft::parseEnv('$SMPT_PASSWORD');
+     * $value1 = Craft::parseEnv('$SMTP_PASSWORD');
      * $value2 = Craft::parseEnv('@webroot');
      * ```
      *
      * @param string|null $str
-     * @return string|null The parsed value, or the original value if it didn’t
+     * @return string|bool|null The parsed value, or the original value if it didn’t
      * reference an environment variable and/or alias.
      */
     public static function parseEnv(string $str = null)
@@ -79,10 +82,19 @@ class Craft extends Yii
         }
 
         if (preg_match('/^\$(\w+)$/', $str, $matches)) {
-            $str = getenv($matches[1]) ?: $str;
+            $value = getenv($matches[1]);
+            if ($value !== false) {
+                switch (strtolower($value)) {
+                    case 'true':
+                        return true;
+                    case 'false':
+                        return false;
+                }
+                $str = $value;
+            }
         }
 
-        return static::getAlias($str);
+        return static::getAlias($str, false) ?: $str;
     }
 
     /**
@@ -151,12 +163,6 @@ class Craft extends Yii
      */
     public static function autoload($className)
     {
-        // FileCookieJar is not supported
-        if ($className === 'GuzzleHttp\Cookie\FileCookieJar') {
-            require dirname(__DIR__) . '/lib/guzzle/FileCookieJar.php';
-            return;
-        }
-
         if ($className !== ContentBehavior::class && $className !== ElementQueryBehavior::class) {
             return;
         }
@@ -300,12 +306,6 @@ EOD;
         $fileContents = file_get_contents($templatePath);
         $fileContents = str_replace($search, $replace, $fileContents);
         FileHelper::writeToFile($destinationPath, $fileContents);
-
-        // Invalidate opcache
-        if (function_exists('opcache_invalidate')) {
-            @opcache_invalidate($destinationPath, true);
-        }
-
         include $destinationPath;
     }
 }

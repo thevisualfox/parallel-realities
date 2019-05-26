@@ -60,6 +60,11 @@ class Request extends \yii\web\Request
     ];
 
     /**
+     * @param int The highest page number that Craft should accept.
+     */
+    public $maxPageNum = 100000;
+
+    /**
      * @var
      */
     private $_fullPath;
@@ -153,9 +158,11 @@ class Request extends \yii\web\Request
         // in case a site's base URL requires @web, and so we can include the host info in @web
         if (Craft::getRootAlias('@webroot') === false) {
             Craft::setAlias('@webroot', dirname($this->getScriptFile()));
+            $this->isWebrootAliasSetDynamically = true;
         }
         if (Craft::getRootAlias('@web') === false) {
             Craft::setAlias('@web', $this->getHostInfo() . $this->getBaseUrl());
+            $this->isWebAliasSetDynamically = true;
         }
 
         $generalConfig = Craft::$app->getConfig()->getGeneral();
@@ -237,6 +244,8 @@ class Request extends \yii\web\Request
                 $this->_segments = $this->_segments($newPath);
             }
         }
+
+        $this->_pageNum = min($this->_pageNum, $this->maxPageNum);
 
         // Now that we've chopped off the admin/page segments, set the path
         $this->_path = implode('/', $this->_segments);

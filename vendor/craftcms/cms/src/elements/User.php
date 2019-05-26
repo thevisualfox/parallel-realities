@@ -35,9 +35,9 @@ use craft\validators\UserPasswordValidator;
 use yii\base\ErrorHandler;
 use yii\base\Exception;
 use yii\base\InvalidArgumentException;
-use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 use yii\validators\InlineValidator;
+use yii\validators\Validator;
 use yii\web\IdentityInterface;
 
 /**
@@ -141,8 +141,8 @@ class User extends Element implements IdentityInterface
         return [
             self::STATUS_ACTIVE => Craft::t('app', 'Active'),
             self::STATUS_PENDING => Craft::t('app', 'Pending'),
-            self::STATUS_LOCKED => Craft::t('app', 'Locked'),
             self::STATUS_SUSPENDED => Craft::t('app', 'Suspended'),
+            self::STATUS_LOCKED => Craft::t('app', 'Locked'),
         ];
     }
 
@@ -527,7 +527,7 @@ class User extends Element implements IdentityInterface
     public $inheritorOnDelete;
 
     /**
-     * @var Asset|null user photo
+     * @var Asset|false|null user photo
      */
     private $_photo;
 
@@ -676,6 +676,14 @@ class User extends Element implements IdentityInterface
             'currentPassword' => $currentPassword,
         ];
 
+        $rules[] = [
+            ['firstName', 'lastName'], function($attribute, $params, Validator $validator) {
+                if (strpos($this->$attribute, '://') !== false) {
+                    $validator->addError($this, $attribute, Craft::t('app', 'Invalid value “{value}”.'));
+                }
+            }
+        ];
+
         return $rules;
     }
 
@@ -728,7 +736,7 @@ class User extends Element implements IdentityInterface
      */
     public function getFieldLayout()
     {
-        return Craft::$app->getFields()->getLayoutByType(static::class);
+        return Craft::$app->getFields()->getLayoutByType(self::class);
     }
 
     /**
@@ -781,7 +789,7 @@ class User extends Element implements IdentityInterface
     /**
      * Determines whether the user is allowed to be logged in with a given password.
      *
-     * @param string $password The user's plain text passwerd.
+     * @param string $password The user's plain text password.
      * @return bool
      */
     public function authenticate(string $password): bool
@@ -938,10 +946,6 @@ class User extends Element implements IdentityInterface
      */
     public function getStatus()
     {
-        if ($this->locked) {
-            return self::STATUS_LOCKED;
-        }
-
         if ($this->suspended) {
             return self::STATUS_SUSPENDED;
         }
@@ -1189,23 +1193,18 @@ class User extends Element implements IdentityInterface
      * Returns the user's photo.
      *
      * @return Asset|null
-     * @throws InvalidConfigException if [[photoId]] is set but invalid
      */
     public function getPhoto()
     {
-        if ($this->_photo !== null) {
-            return $this->_photo;
+        if ($this->_photo === null) {
+            if (!$this->photoId) {
+                return null;
+            }
+
+            $this->_photo = Craft::$app->getAssets()->getAssetById($this->photoId) ?? false;
         }
 
-        if (!$this->photoId) {
-            return null;
-        }
-
-        if (($this->_photo = Craft::$app->getAssets()->getAssetById($this->photoId)) === null) {
-            throw new InvalidConfigException('Invalid photo ID: ' . $this->photoId);
-        }
-
-        return $this->_photo;
+        return $this->_photo ?: null;
     }
 
     /**
@@ -1216,6 +1215,7 @@ class User extends Element implements IdentityInterface
     public function setPhoto(Asset $photo = null)
     {
         $this->_photo = $photo;
+        $this->photoId = $photo->id ?? null;
     }
 
     // Indexes, etc.
@@ -1413,22 +1413,6 @@ class User extends Element implements IdentityInterface
     // =========================================================================
 
     /**
-     * Saves a new session record for the user.
-     *
-     * @param string $sessionToken
-     * @return string The new session row's UID.
-     */
-    private function _storeSessionToken(string $sessionToken): string
-    {
-        $sessionRecord = new SessionRecord();
-        $sessionRecord->userId = $this->id;
-        $sessionRecord->token = $sessionToken;
-        $sessionRecord->save();
-
-        return $sessionRecord->uid;
-    }
-
-    /**
      * Validates a cookie's stored user agent against the current request's user agent string,
      * if the 'requireMatchingUserAgentForSession' config setting is enabled.
      *
@@ -1465,13 +1449,14 @@ class User extends Element implements IdentityInterface
                 return self::AUTH_PENDING_VERIFICATION;
             case self::STATUS_SUSPENDED:
                 return self::AUTH_ACCOUNT_SUSPENDED;
-            case self::STATUS_LOCKED:
-                // Let them know how much time they have to wait (if any) before their account is unlocked.
-                if (Craft::$app->getConfig()->getGeneral()->cooldownDuration) {
-                    return self::AUTH_ACCOUNT_COOLDOWN;
-                }
-                return self::AUTH_ACCOUNT_LOCKED;
             case self::STATUS_ACTIVE:
+                if ($this->locked) {
+                    // Let them know how much time they have to wait (if any) before their account is unlocked.
+                    if (Craft::$app->getConfig()->getGeneral()->cooldownDuration) {
+                        return self::AUTH_ACCOUNT_COOLDOWN;
+                    }
+                    return self::AUTH_ACCOUNT_LOCKED;
+                }
                 // Is a password reset required?
                 if ($this->passwordResetRequired) {
                     return self::AUTH_PASSWORD_RESET_REQUIRED;

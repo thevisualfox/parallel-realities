@@ -27,3 +27,17 @@
     height: 100%;
     border: 0;
 }
+
+.media--clients {
+    justify-content: center;
+
+    img {
+        width: 100%;
+        max-width: 100px;
+        opacity: 0.5;
+
+        @include media-breakpoint-up(md) {
+            max-width: 150px;
+        }
+    }
+}

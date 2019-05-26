@@ -14,12 +14,14 @@ use craft\elements\Entry;
 use craft\elements\User;
 use craft\errors\InvalidElementException;
 use craft\events\ElementEvent;
+use craft\helpers\ArrayHelper;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\models\EntryDraft;
 use craft\models\EntryVersion;
 use craft\models\Section;
+use craft\models\Section_SiteSettings;
 use craft\models\Site;
 use craft\web\assets\editentry\EditEntryAsset;
 use DateTime;
@@ -151,7 +153,20 @@ class EntriesController extends BaseEntriesController
             ];
 
             if ($section->maxLevels) {
-                $variables['parentOptionCriteria']['level'] = '< ' . $section->maxLevels;
+                if ($entry->id) {
+                    // Figure out how deep the ancestors go
+                    $maxDepth = Entry::find()
+                        ->select('level')
+                        ->descendantOf($entry)
+                        ->anyStatus()
+                        ->leaves()
+                        ->scalar();
+                    $depth = 1 + ($maxDepth ?: $entry->level) - $entry->level;
+                } else {
+                    $depth = 1;
+                }
+
+                $variables['parentOptionCriteria']['level'] = '<= ' . ($section->maxLevels - $depth);
             }
 
             if ($entry->id !== null) {
@@ -217,10 +232,6 @@ class EntriesController extends BaseEntriesController
         $variables['bodyClass'] = 'edit-entry site--' . $site->handle;
 
         // Page title w/ revision label
-        $variables['showSiteLabel'] = (
-            Craft::$app->getIsMultiSite() &&
-            count($section->getSiteSettings()) > 1
-        );
         $variables['showSites'] = (
             $variables['showSiteLabel'] &&
             ($section->propagateEntries || $entry->id === null)
@@ -534,15 +545,6 @@ class EntriesController extends BaseEntriesController
             }
         }
 
-        // Make sure the entry has at least one version if the section has versioning enabled
-        $revisionsService = Craft::$app->getEntryRevisions();
-        if ($entry->getSection()->enableVersioning && $entry->id && !$revisionsService->doesEntryHaveVersions($entry->id, $entry->siteId)) {
-            $currentEntry = Craft::$app->getEntries()->getEntryById($entry->id, $entry->siteId);
-            $currentEntry->revisionCreatorId = $entry->authorId;
-            $currentEntry->revisionNotes = 'Revision from ' . Craft::$app->getFormatter()->asDatetime($entry->dateUpdated);
-            $revisionsService->saveVersion($currentEntry);
-        }
-
         // Save the entry (finally!)
         if ($entry->enabled && $entry->enabledForSite) {
             $entry->setScenario(Element::SCENARIO_LIVE);
@@ -563,11 +565,6 @@ class EntriesController extends BaseEntriesController
             ]);
 
             return null;
-        }
-
-        // Should we save a new version?
-        if ($entry->getSection()->enableVersioning) {
-            $revisionsService->saveVersion($entry);
         }
 
         if ($request->getAcceptsJson()) {
@@ -722,7 +719,7 @@ class EntriesController extends BaseEntriesController
      * @param int|null $draftId
      * @param int|null $versionId
      * @return Response
-     * @throws NotFoundHttpException if the requested category cannot be found
+     * @throws NotFoundHttpException if the requested entry cannot be found
      */
     public function actionViewSharedEntry(int $entryId = null, int $siteId = null, int $draftId = null, int $versionId = null): Response
     {
@@ -769,6 +766,15 @@ class EntriesController extends BaseEntriesController
         if (empty($variables['section'])) {
             throw new NotFoundHttpException('Section not found');
         }
+
+        $variables['showSiteLabel'] = (
+            Craft::$app->getIsMultiSite() &&
+            count($variables['section']->getSiteSettings()) > 1
+        );
+        $variables['showSiteStatus'] = (
+            $variables['showSiteLabel'] &&
+            $variables['section']->propagateEntries
+        );
 
         // Get the site
         // ---------------------------------------------------------------------
@@ -825,26 +831,17 @@ class EntriesController extends BaseEntriesController
                 $variables['entry'] = new Entry();
                 $variables['entry']->sectionId = $variables['section']->id;
                 $variables['entry']->authorId = $request->getQueryParam('authorId', Craft::$app->getUser()->getId());
-                $variables['entry']->enabled = true;
                 $variables['entry']->siteId = $site->id;
 
-                if (Craft::$app->getIsMultiSite()) {
-                    // Set the default site status based on the section's settings
-                    foreach ($variables['section']->getSiteSettings() as $siteSettings) {
-                        if ($siteSettings->siteId == $variables['entry']->siteId) {
-                            $variables['entry']->enabledForSite = $siteSettings->enabledByDefault;
-                            break;
-                        }
-                    }
+                // Set the default status based on the section's settings
+                /** @var Section_SiteSettings $siteSettings */
+                $siteSettings = ArrayHelper::firstWhere($variables['section']->getSiteSettings(), 'siteId', $variables['entry']->siteId);
+                if ($variables['showSiteStatus']) {
+                    $variables['entry']->enabled = true;
+                    $variables['entry']->enabledForSite = $siteSettings->enabledByDefault;
                 } else {
-                    // Set the default entry status based on the section's settings
-                    /** @noinspection LoopWhichDoesNotLoopInspection */
-                    foreach ($variables['section']->getSiteSettings() as $siteSettings) {
-                        if (!$siteSettings->enabledByDefault) {
-                            $variables['entry']->enabled = false;
-                        }
-                        break;
-                    }
+                    $variables['entry']->enabled = $siteSettings->enabledByDefault;
+                    $variables['entry']->enabledForSite = true;
                 }
             }
         }
