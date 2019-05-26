@@ -10,10 +10,7 @@ use craft\elements\Asset;
 use craft\elements\Category;
 use craft\elements\Entry;
 use craft\elements\User;
-use craft\fields\Assets;
 use craft\helpers\Json;
-use craft\services\Fields;
-use craft\services\Matrix;
 
 /**
  * m190218_143000_element_index_settings_uid migration.
@@ -37,28 +34,28 @@ class m190218_143000_element_index_settings_uid extends Migration
     {
         $this->_elementData[Entry::class] = (new Query())
             ->select(['id', 'uid'])
-            ->from(['{{%sections}}'])
+            ->from([Table::SECTIONS])
             ->pairs();
 
         $this->_elementData[User::class] = (new Query())
             ->select(['id', 'uid'])
-            ->from(['{{%usergroups}}'])
+            ->from([Table::USERGROUPS])
             ->pairs();
 
         $this->_elementData[Category::class] = (new Query())
             ->select(['id', 'uid'])
-            ->from(['{{%categorygroups}}'])
+            ->from([Table::CATEGORYGROUPS])
             ->pairs();
 
         $this->_elementData[Asset::class] = (new Query())
-            ->select(['folders.id folderId', 'volumes.uid volumeUid'])
-            ->from(['{{%volumes}} volumes'])
-            ->innerJoin(['{{%volumefolders}} folders'], '[[volumes.id]] = [[folders.volumeId]]')
+            ->select(['id', 'uid'])
+            ->from([Table::VOLUMEFOLDERS])
+            ->where(['parentId' => null])
             ->pairs();
 
         $rows = (new Query())
             ->select('*')
-            ->from(Table::ELEMENTINDEXSETTINGS)
+            ->from([Table::ELEMENTINDEXSETTINGS])
             ->all();
 
         foreach ($rows as $row) {
@@ -113,16 +110,13 @@ class m190218_143000_element_index_settings_uid extends Migration
             return $sourceKey;
         }
 
-        $parts = explode(':', $sourceKey);
+        $parts = explode(':', $sourceKey, 2);
         $id = $parts[1];
 
-        if ($elementClass === Asset::class) {
-            $replace = 'volume';
-        } else {
-            $replace = $this->_elements[$elementClass];
+        if (!isset($this->_elementData[$elementClass][$id])) {
+            return $sourceKey;
         }
 
-
-        return array_key_exists($id, $this->_elementData[$elementClass]) ? $replace.':'.$this->_elementData[$elementClass][$id] : $sourceKey;
+        return $this->_elements[$elementClass] . ':' . $this->_elementData[$elementClass][$id];
     }
 }

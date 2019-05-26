@@ -2,9 +2,23 @@
 
 In addition to the template filters that [Twig comes with](https://twig.symfony.com/doc/filters/index.html), Craft provides a few of its own.
 
+## `ascii`
+
+Converts a string to ASCII characters.
+
+```twig
+{{ 'über'|ascii }} → uber
+```
+
+By default, the current site’s language will be used when choosing ASCII character mappings. You can override that by passing in a different locale ID.
+
+```twig
+{{ 'über'|ascii('de') }} → ueber
+```
+
 ## `atom`
 
-Outputs a date in the ISO-8601 format (which should be used for Atom feeds, among other things).
+Converts a date to an ISO-8601 timestamp (e.g. `2019-01-29T10:00:00-08:00`), which should be used for Atom feeds, among other things.
 
 ```twig
 {{ entry.postDate|atom }}
@@ -27,11 +41,11 @@ Runs an array through [ArrayHelper::getColumn()](api:yii\helpers\BaseArrayHelper
 {% set entryIds = entries|column('id') %}
 ```
 
-## `currency( currency, numberOptions, textOptions, stripZeroCents )`
+## `currency( currency, numberOptions, textOptions, stripZeros )`
 
 Formats a number with a given currency according to the user’s preferred language.
 
-If you pass `true` into the last argument, the “.00” will be stripped if there’s zero cents.
+If you pass `true` into the last argument, the fraction digits will be removed if the value to be formatted has no minor value (e.g. cents).
 
 See [here for a list](api:yii\i18n\Formatter::$numberFormatterOptions) of the possible `numberOptions`.
 
@@ -247,6 +261,14 @@ Returns an array containing only the values that are also in a passed-in array.
 
 Like Twig’s core [json_encode](https://twig.symfony.com/doc/2.x/filters/json_encode.html) filter, but if the `options` argument isn’t set, it will default to `JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT` if the response content type is either `text/html` or `application/xhtml+xml`.
 
+## `json_decode`
+
+JSON-decodes a string into an array  by passing it through <api:yii\helpers\Json::decode()>.
+
+```twig
+{% set arr = '[1, 2, 3]'|json_decode %}
+```
+
 ## `kebab`
 
 Returns a string formatted in “kebab-case”.
@@ -264,7 +286,7 @@ Lowercases the first character of a string.
 
 ## `literal`
 
-Runs a string through <api:craft\helpers\Db::escapeParam>
+Runs a string through <api:craft\helpers\Db::escapeParam()>
 
 ## `markdown` or `md`
 
@@ -353,7 +375,16 @@ Or you can replace one thing at a time:
 You can also use a regular expression to search for matches by starting and ending the replacement string’s value with forward slashes:
 
 ```twig
-{{ tag.name|lower|replace('/[^\\w]+/', '-') }}
+{{ tag.title|lower|replace('/[^\\w]+/', '-') }}
+```
+
+## `round`
+
+Rounds off a number to the closest integer.
+
+```twig
+{{ 42.1|round }} → 42
+{{ 42.9|round }} → 43
 ```
 
 ## `rss`

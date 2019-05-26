@@ -13,6 +13,7 @@ use craft\base\ElementInterface;
 use craft\base\Volume;
 use craft\elements\Category;
 use craft\elements\Entry;
+use craft\helpers\ArrayHelper;
 use craft\helpers\Db;
 use craft\helpers\FileHelper;
 use craft\helpers\Html;
@@ -62,6 +63,113 @@ class Field extends \craft\base\Field
      * @var array|null List of the paths that may contain Redactor plugins
      */
     private static $_pluginPaths;
+
+    // Properties
+    // =========================================================================
+
+    /**
+     * @var string|null The Redactor config file to use
+     */
+    public $redactorConfig;
+
+    /**
+     * @var string|null The HTML Purifier config file to use
+     */
+    public $purifierConfig;
+
+    /**
+     * @var bool Whether the HTML should be cleaned up on save
+     * @deprecated in 2.4
+     */
+    public $cleanupHtml = true;
+
+    /**
+     * @var bool Whether disallowed inline styles should be removed on save
+     */
+    public $removeInlineStyles = true;
+
+    /**
+     * @var bool Whether empty tags should be removed on save
+     */
+    public $removeEmptyTags = true;
+
+    /**
+     * @var bool Whether non-breaking spaces should be replaced by regular spaces on save
+     */
+    public $removeNbsp = true;
+
+    /**
+     * @var bool Whether the HTML should be purified on save
+     */
+    public $purifyHtml = true;
+
+    /**
+     * @var string The type of database column the field should have in the content table
+     */
+    public $columnType = Schema::TYPE_TEXT;
+
+    /**
+     * @var string|array|null The volumes that should be available for Image selection.
+     */
+    public $availableVolumes = '*';
+
+    /**
+     * @var string|array|null The transforms available when selecting an image
+     */
+    public $availableTransforms = '*';
+
+    /**
+     * @inheritdoc
+     */
+    public function __construct(array $config = [])
+    {
+        // normalize a mix/match of ids and uids to a list of uids.
+        if (isset($config['availableVolumes']) && is_array($config['availableVolumes'])) {
+            $ids = [];
+            $uids = [];
+
+            foreach ($config['availableVolumes'] as $availableVolume) {
+                if (is_int($availableVolume)) {
+                    $ids[] = $availableVolume;
+                } else {
+                    $uids[] = $availableVolume;
+                }
+            }
+
+            if (!empty($ids)) {
+                $uids = array_merge($uids, Db::uidsByIds('{{%volumes}}', $ids));
+            }
+
+            $config['availableVolumes'] = $uids;
+        }
+
+        // normalize a mix/match of ids and uids to a list of uids.
+        if (isset($config['availableTransforms']) && is_array($config['availableTransforms'])) {
+            $ids = [];
+            $uids = [];
+
+            foreach ($config['availableTransforms'] as $availableTransform) {
+                if (is_int($availableTransform)) {
+                    $ids[] = $availableTransform;
+                } else {
+                    $uids[] = $availableTransform;
+                }
+            }
+
+            if (!empty($ids)) {
+                $uids = array_merge($uids, Db::uidsByIds('{{%assettransforms}}', $ids));
+            }
+
+            $config['availableTransforms'] = $uids;
+        }
+
+        // configFile => redactorConfig
+        if (isset($config['configFile'])) {
+            $config['redactorConfig'] = ArrayHelper::remove($config, 'configFile');
+        }
+
+        parent::__construct($config);
+    }
 
     /**
      * @inheritdoc
@@ -129,44 +237,6 @@ class Field extends \craft\base\Field
 
         return self::$_pluginPaths = $event->paths;
     }
-
-    // Properties
-    // =========================================================================
-
-    /**
-     * @var string|null The Redactor config file to use
-     */
-    public $redactorConfig;
-
-    /**
-     * @var string|null The HTML Purifier config file to use
-     */
-    public $purifierConfig;
-
-    /**
-     * @var bool Whether the HTML should be cleaned up on save
-     */
-    public $cleanupHtml = true;
-
-    /**
-     * @var bool Whether the HTML should be purified on save
-     */
-    public $purifyHtml = true;
-
-    /**
-     * @var string The type of database column the field should have in the content table
-     */
-    public $columnType = Schema::TYPE_TEXT;
-
-    /**
-     * @var string|array|null The volumes that should be available for Image selection.
-     */
-    public $availableVolumes = '*';
-
-    /**
-     * @var string|array|null The transforms available when selecting an image
-     */
-    public $availableTransforms = '*';
 
     // Public Methods
     // =========================================================================
@@ -357,11 +427,7 @@ class Field extends \craft\base\Field
                 $value = HtmlPurifier::process($value, $this->_getPurifierConfig());
             }
 
-            if ($this->cleanupHtml) {
-                // Swap no-break whitespaces for regular space
-                $value = preg_replace('/(&nbsp;|&#160;|\x{00A0})/u', ' ', $value);
-                $value = preg_replace('/  +/', ' ', $value);
-
+            if ($this->removeInlineStyles) {
                 // Remove <font> tags
                 $value = preg_replace('/<(?:\/)?font\b[^>]*>/', '', $value);
 
@@ -383,9 +449,17 @@ class Field extends \craft\base\Field
                     },
                     $value
                 );
+            }
 
+            if ($this->removeEmptyTags) {
                 // Remove empty tags
                 $value = preg_replace('/<(h1|h2|h3|h4|h5|h6|p|div|blockquote|pre|strong|em|a|b|i|u|span)\s*><\/\1>/', '', $value);
+            }
+
+            if ($this->removeNbsp) {
+                // Replace non-breaking spaces with regular spaces
+                $value = preg_replace('/(&nbsp;|&#160;|\x{00A0})/u', ' ', $value);
+                $value = preg_replace('/  +/', ' ', $value);
             }
         }
 

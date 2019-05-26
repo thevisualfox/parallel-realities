@@ -32,9 +32,9 @@ class LivePreviewController extends Controller
      */
     public function beforeAction($action)
     {
-        // Don't enable CSRF validation for live-preview/preview requests
+        // Mark this as a Live Preview request
         if ($action->id === 'preview') {
-            $this->enableCsrfValidation = false;
+            Craft::$app->getRequest()->setIsLivePreview(true);
         }
 
         return parent::beforeAction($action);
@@ -90,18 +90,28 @@ class LivePreviewController extends Controller
         $this->requireToken();
 
         // Switch the identity for this one request
-        $user = User::findOne($userId);
+        $user = User::find()
+            ->id($userId)
+            ->status([User::STATUS_ACTIVE, User::STATUS_PENDING])
+            ->one();
+
         if (!$user) {
             throw new ServerErrorHttpException('No user exists with an ID of ' . $userId);
         }
+
         Craft::$app->getUser()->setIdentity($user);
 
         // Add CORS headers
         Craft::$app->getResponse()->getHeaders()
             ->add('Access-Control-Allow-Origin', Craft::$app->getRequest()->getOrigin())
-            ->add('Access-Control-Allow-Credentials', 'true');
+            ->add('Access-Control-Allow-Credentials', 'true')
+            ->add('Access-Control-Allow-Headers', 'X-Craft-Token');
 
-        Craft::$app->getRequest()->setIsLivePreview(true);
+        if (Craft::$app->getRequest()->getIsOptions()) {
+            // This is just a preflight request, no need to route to the real controller action yet.
+            return '1';
+        }
+
         return Craft::$app->runAction($previewAction);
     }
 }

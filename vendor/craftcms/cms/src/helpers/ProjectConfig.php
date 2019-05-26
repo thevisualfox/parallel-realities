@@ -11,6 +11,7 @@ use Craft;
 use craft\services\Fields;
 use craft\services\Sites;
 use craft\services\UserGroups;
+use yii\base\InvalidConfigException;
 
 
 /**
@@ -109,5 +110,47 @@ class ProjectConfig
                 $projectConfig->processConfigChanges($path . $groupUid);
             }
         }
+    }
+
+    /**
+     * Traverse and clean a config array, removing empty values and sorting keys.
+     *
+     * @param array $config Config array to clean
+     *
+     * @return array
+     * @throws InvalidConfigException if config contains unexpected data.
+     */
+    public static function cleanupConfig(array $config): array
+    {
+        $remove = [];
+
+        foreach ($config as $key => &$value) {
+            // Only scalars, arrays and simple objects allowed.
+            if ($value instanceof \StdClass) {
+                $value = (array)$value;
+            }
+
+            if (!empty($value) && !is_scalar($value) && !is_array($value)) {
+                Craft::info('Unexpected data encountered in config data - ' . print_r($value, true));
+
+                throw new InvalidConfigException('Unexpected data encountered in config data');
+            }
+
+            if (is_array($value)) {
+                $value = static::cleanupConfig($value);
+
+                if (empty($value)) {
+                    $remove[] = $key;
+                }
+            }
+        }
+        unset($value);
+
+        // Remove empty stuff
+        foreach ($remove as $removeKey) {
+            unset($config[$removeKey]);
+        }
+
+        return $config;
     }
 }

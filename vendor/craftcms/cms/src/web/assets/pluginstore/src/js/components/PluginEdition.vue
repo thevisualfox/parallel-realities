@@ -1,16 +1,22 @@
 <template>
     <div class="plugin-editions-edition">
         <div class="description">
-            <h4 v-if="plugin.editions.length > 1" class="edition-name">{{edition.name}}</h4>
+            <edition-badge v-if="plugin.editions.length > 1" :name="edition.name" block big></edition-badge>
             <div class="price">
                 <template v-if="!isPluginEditionFree(edition)">
-                    {{edition.price|currency}}
+
+                    <template v-if="licensedEdition && licensedEdition.handle !== edition.handle && licensedEdition.price > 0">
+                        <del>{{edition.price|currency}}</del>
+                        {{(edition.price - licensedEdition.price)|currency}}
+                    </template>
+                    <template v-else>
+                        {{edition.price|currency}}
+                    </template>
                 </template>
                 <template v-else>
                     {{ "Free"|t('app') }}
                 </template>
             </div>
-
             <p v-if="!isPluginEditionFree(edition)" class="-mt-8 py-6 text-grey-dark">
                 {{ "Price includes 1 year of updates."|t('app') }}<br />
                 {{ "{renewalPrice}/year per site for updates after that."|t('app', {renewalPrice: $options.filters.currency(edition.renewalPrice)}) }}
@@ -18,10 +24,10 @@
 
             <ul v-if="plugin.editions.length > 1 && edition.features && edition.features.length > 0">
                 <li v-for="(feature, key) in edition.features" :key="key">
-                    <font-awesome-icon icon="check"></font-awesome-icon>
+                    <icon icon="check" />
                     {{feature.name}}
 
-                    <info-hud>
+                    <info-hud v-if="feature.description">
                         {{feature.description}}
                     </info-hud>
                 </li>
@@ -36,6 +42,7 @@
     import {mapState, mapGetters} from 'vuex'
     import PluginActions from './PluginActions'
     import InfoHud from './InfoHud'
+    import EditionBadge from './EditionBadge'
 
     export default {
 
@@ -44,6 +51,7 @@
         components: {
             PluginActions,
             InfoHud,
+            EditionBadge,
         },
 
         computed: {
@@ -54,7 +62,26 @@
 
             ...mapGetters({
                 isPluginEditionFree: 'pluginStore/isPluginEditionFree',
+                getPluginEdition: 'pluginStore/getPluginEdition',
+                getPluginLicenseInfo: 'craft/getPluginLicenseInfo',
             }),
+
+
+            pluginLicenseInfo() {
+                if (!this.plugin) {
+                    return null
+                }
+
+                return this.getPluginLicenseInfo(this.plugin.handle)
+            },
+
+            licensedEdition() {
+                if (!this.pluginLicenseInfo) {
+                    return null
+                }
+                
+                return this.getPluginEdition(this.plugin.handle, this.pluginLicenseInfo.licensedEdition)
+            }
 
         },
 
@@ -84,12 +111,6 @@
 
                     &:first-child {
                         @apply .border-t;
-                    }
-
-                    svg[data-icon="info-circle"] {
-                        path {
-                            fill: #ccc;
-                        }
                     }
                 }
             }

@@ -1,4 +1,4 @@
-dateModified: 1558872033
+dateModified: 1558875279
 email:
   fromEmail: jurjen.p.vos@gmail.com
   fromName: 'Parallel Realities'
@@ -64,11 +64,13 @@ fields:
     settings:
       availableTransforms: '*'
       availableVolumes: '*'
-      cleanupHtml: '1'
       columnType: text
       purifierConfig: ''
       purifyHtml: '1'
       redactorConfig: ''
+      removeInlineStyles: '1'
+      removeEmptyTags: '1'
+      removeNbsp: '1'
     translationKeyFormat: null
     translationMethod: none
     type: craft\redactor\Field
@@ -82,11 +84,13 @@ fields:
     settings:
       availableTransforms: '*'
       availableVolumes: '*'
-      cleanupHtml: '1'
       columnType: text
       purifierConfig: ''
       purifyHtml: '1'
       redactorConfig: Standard.json
+      removeInlineStyles: '1'
+      removeEmptyTags: '1'
+      removeNbsp: '1'
     translationKeyFormat: null
     translationMethod: none
     type: craft\redactor\Field
@@ -325,11 +329,13 @@ fields:
     settings:
       availableTransforms: '*'
       availableVolumes: '*'
-      cleanupHtml: '1'
       columnType: text
       purifierConfig: ''
       purifyHtml: '1'
       redactorConfig: ''
+      removeInlineStyles: '1'
+      removeEmptyTags: '1'
+      removeNbsp: '1'
     translationKeyFormat: null
     translationMethod: none
     type: craft\redactor\Field
@@ -590,11 +596,13 @@ matrixBlockTypes:
         settings:
           availableTransforms: '*'
           availableVolumes: '*'
-          cleanupHtml: '1'
           columnType: text
           purifierConfig: ''
           purifyHtml: '1'
           redactorConfig: Standard.json
+          removeInlineStyles: '1'
+          removeEmptyTags: '1'
+          removeNbsp: '1'
         translationKeyFormat: null
         translationMethod: none
         type: craft\redactor\Field
@@ -605,7 +613,7 @@ plugins:
   redactor:
     enabled: '1'
     licenseKey: null
-    schemaVersion: 2.2.1
+    schemaVersion: 2.3.0
     settings: null
 sections:
   29345a87-1cb6-4823-a8d5-c1ac5c6dda4a:
@@ -758,7 +766,7 @@ system:
   edition: solo
   live: true
   name: 'Parallel Realities'
-  schemaVersion: 3.1.21
+  schemaVersion: 3.1.28
   timeZone: America/Los_Angeles
 users:
   allowPublicRegistration: false

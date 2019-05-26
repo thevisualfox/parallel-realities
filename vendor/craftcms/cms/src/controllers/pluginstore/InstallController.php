@@ -9,6 +9,7 @@ namespace craft\controllers\pluginstore;
 
 use Craft;
 use craft\controllers\BaseUpdaterController;
+use craft\web\Response;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response as YiiResponse;
 
@@ -67,12 +68,12 @@ class InstallController extends BaseUpdaterController
      */
     public function actionCraftInstall(): YiiResponse
     {
-        list($success, $tempResponse, $errorDetails) = $this->installPlugin($this->data['handle']);
+        /** @var Response $tempResponse */
+        list($success, $tempResponse, $errorDetails) = $this->installPlugin($this->data['handle'], $this->data['edition']);
 
         if (!$success) {
             $info = Craft::$app->getPlugins()->getComposerPluginInfo($this->data['handle']);
             $pluginName = $info['name'] ?? $this->data['packageName'];
-            $email = $info['developerEmail'] ?? 'support@craftcms.com';
 
             return $this->send([
                 'error' => Craft::t('app', '{name} has been added, but an error occurred when installing it.', ['name' => $pluginName]),
@@ -83,10 +84,8 @@ class InstallController extends BaseUpdaterController
                     ]),
                     $this->actionOption(Craft::t('app', 'Remove it'), self::ACTION_COMPOSER_REMOVE),
                     [
-                        'label' => Craft::t('app', 'Send for help'),
-                        'submit' => true,
-                        'email' => $email,
-                        'subject' => $pluginName . ' update failure',
+                        'label' => Craft::t('app', 'Troubleshoot'),
+                        'url' => 'https://craftcms.com/guides/failed-updates',
                     ],
                 ],
             ]);
@@ -146,6 +145,7 @@ class InstallController extends BaseUpdaterController
         $request = Craft::$app->getRequest();
         $packageName = strip_tags($request->getRequiredBodyParam('packageName'));
         $handle = strip_tags($request->getRequiredBodyParam('handle'));
+        $edition = strip_tags($request->getRequiredBodyParam('edition'));
         $version = strip_tags($request->getRequiredBodyParam('version'));
         $licenseKey = $request->getBodyParam('licenseKey');
 
@@ -159,6 +159,7 @@ class InstallController extends BaseUpdaterController
         return [
             'packageName' => $packageName,
             'handle' => $handle,
+            'edition' => $edition,
             'version' => $version,
             'requirements' => [$packageName => $version],
             'removed' => false,

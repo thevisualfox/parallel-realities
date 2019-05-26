@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="cms-edition-status-badge">
         <template v-if="CraftEdition == edition">
             <template v-if="licensedEdition >= edition">
                 <license-status status="installed" :description="'Installed'|t('app')"></license-status>
@@ -20,7 +20,6 @@
     import LicenseStatus from '../LicenseStatus'
 
     export default {
-
         props: ['edition'],
 
         components: {
@@ -28,14 +27,10 @@
         },
 
         computed: {
-
             ...mapState({
-                cart: state => state.cart.cart,
                 licensedEdition: state => state.craft.licensedEdition,
                 CraftEdition: state => state.craft.CraftEdition,
             }),
-
         }
-
     }
 </script>

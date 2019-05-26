@@ -19,7 +19,6 @@ const state = {
  * Getters
  */
 const getters = {
-
     isInCart(state) {
         return (plugin, edition) => {
             if (!state.cart) {
@@ -42,6 +41,10 @@ const getters = {
 
     isCmsEditionInCart(state) {
         return cmsEdition => {
+            if (!state.cart) {
+                return false
+            }
+
             return state.cart.lineItems.find(lineItem => lineItem.purchasable.type === 'cms-edition' && lineItem.purchasable.handle === cmsEdition)
         }
     },
@@ -125,14 +128,12 @@ const getters = {
     cartItemsData(state) {
         return utils.getCartItemsData(state.cart)
     }
-
 }
 
 /**
  * Actions
  */
 const actions = {
-
     updateItem({commit, state}, {itemKey, item}) {
         return new Promise((resolve, reject) => {
             const cart = state.cart
@@ -145,12 +146,14 @@ const actions = {
                 items,
             }
 
-            api.updateCart(cart.number, data, response => {
-                commit('updateCart', {response})
-                resolve(response)
-            }, response => {
-                reject(response)
-            })
+            api.updateCart(cart.number, data)
+                .then(response => {
+                    commit('updateCart', {response})
+                    resolve(response)
+                })
+                .catch(error => {
+                    reject(error.response)
+                })
         })
     },
 
@@ -168,7 +171,6 @@ const actions = {
 
                     // Set default values
                     item.autoRenew = false
-                    item.cmsLicenseKey = window.cmsLicenseKey
 
                     switch(item.type) {
                         case 'plugin-edition': {
@@ -178,7 +180,16 @@ const actions = {
                             if (pluginLicenseInfo && pluginLicenseInfo.licenseKeyStatus === 'valid' && pluginLicenseInfo.licenseIssues.length === 0 && pluginLicenseInfo.licenseKey) {
                                 item.licenseKey = pluginLicenseInfo.licenseKey
                             }
-                            break;
+
+                            item.cmsLicenseKey = window.cmsLicenseKey
+
+                            break
+                        }
+
+                        case 'cms-edition': {
+                            item.licenseKey = window.cmsLicenseKey
+
+                            break
                         }
                     }
 
@@ -190,16 +201,18 @@ const actions = {
                 items,
             }
 
-            api.updateCart(cart.number, data, response => {
-                if (typeof response.errors !== 'undefined') {
-                    return reject(response)
-                }
+            api.updateCart(cart.number, data)
+                .then(response => {
+                    if (typeof response.data.errors !== 'undefined') {
+                        return reject(response)
+                    }
 
-                commit('updateCart', {response})
-                return resolve(response)
-            }, response => {
-                return reject(response)
-            })
+                    commit('updateCart', {response})
+                    return resolve(response)
+                })
+                .catch(error => {
+                    return reject(error.response)
+                })
         })
     },
 
@@ -214,13 +227,14 @@ const actions = {
                 items,
             }
 
-            api.updateCart(cart.number, data, response => {
-                commit('updateCart', {response})
-
-                resolve(response)
-            }, response => {
-                reject(response)
-            })
+            api.updateCart(cart.number, data)
+                .then(response => {
+                    commit('updateCart', {response})
+                    resolve(response)
+                })
+                .catch(error => {
+                    reject(error.response)
+                })
         })
     },
 
@@ -231,8 +245,8 @@ const actions = {
                 .then(response => {
                     resolve(response)
                 })
-                .catch(response => {
-                    reject(response)
+                .catch(error => {
+                    reject(error.response)
                 })
         })
     },
@@ -242,29 +256,33 @@ const actions = {
             dispatch('getOrderNumber')
                 .then(orderNumber => {
                     if (orderNumber) {
-                        api.getCart(orderNumber, response => {
-                            if (!response.error) {
-                                commit('updateCart', {response})
-                                resolve(response)
-                            } else {
-                                // Couldn’t get cart for this order number? Try to create a new one.
-                                const data = {}
-
-                                if (!rootState.craft.craftId) {
-                                    data.email = rootState.craft.currentUser.email
-                                }
-
-                                api.createCart(data, response2 => {
-                                    commit('updateCart', {response: response2})
-                                    dispatch('saveOrderNumber', {orderNumber: response2.cart.number})
+                        api.getCart(orderNumber)
+                            .then(response => {
+                                if (!response.data.error) {
+                                    commit('updateCart', {response})
                                     resolve(response)
-                                }, response => {
-                                    reject(response)
-                                })
-                            }
-                        }, response => {
-                            reject(response)
-                        })
+                                } else {
+                                    // Couldn’t get cart for this order number? Try to create a new one.
+                                    const data = {}
+
+                                    if (!rootState.craft.craftId) {
+                                        data.email = rootState.craft.currentUser.email
+                                    }
+
+                                    api.createCart(data)
+                                        .then(createCartResponse => {
+                                            commit('updateCart', {response: createCartResponse})
+                                            dispatch('saveOrderNumber', {orderNumber: createCartResponse.data.cart.number})
+                                            resolve(response)
+                                        })
+                                        .catch(createCartError => {
+                                            reject(createCartError.response)
+                                        })
+                                }
+                            })
+                            .catch(error => {
+                                reject(error.response)
+                            })
                     } else {
                         // No order number yet? Create a new cart.
                         const data = {}
@@ -273,13 +291,15 @@ const actions = {
                             data.email = rootState.craft.currentUser.email
                         }
 
-                        api.createCart(data, response => {
-                            commit('updateCart', {response})
-                            dispatch('saveOrderNumber', {orderNumber: response.cart.number})
-                            resolve(response)
-                        }, response => {
-                            reject(response)
-                        })
+                        api.createCart(data)
+                            .then(createCartResponse => {
+                                commit('updateCart', {response: createCartResponse})
+                                dispatch('saveOrderNumber', {orderNumber: createCartResponse.data.cart.number})
+                                resolve(createCartResponse)
+                            })
+                            .catch(createCartError => {
+                                reject(createCartError.response)
+                            })
                     }
                 })
         })
@@ -289,16 +309,18 @@ const actions = {
         return new Promise((resolve, reject) => {
             const cart = state.cart
 
-            api.updateCart(cart.number, data, response => {
-                if (!response.errors) {
-                    commit('updateCart', {response})
-                    resolve(response)
-                } else {
-                    reject(response)
-                }
-            }, response => {
-                reject(response)
-            })
+            api.updateCart(cart.number, data)
+                .then(response => {
+                    if (!response.data.errors) {
+                        commit('updateCart', {response})
+                        resolve(response)
+                    } else {
+                        reject(response)
+                    }
+                })
+                .catch(error => {
+                    reject(error.response)
+                })
         })
     },
 
@@ -310,8 +332,8 @@ const actions = {
                 .then(response => {
                     resolve(response)
                 })
-                .catch(response => {
-                    reject(response)
+                .catch(error => {
+                    reject(error.response)
                 })
         })
     },
@@ -363,25 +385,22 @@ const actions = {
                 .then(response => {
                     resolve(response)
                 })
-                .catch(response => {
-                    reject(response)
+                .catch(error => {
+                    reject(error.response)
                 })
         })
     }
-
 }
 
 /**
  * Mutations
  */
 const mutations = {
-
     updateCart(state, {response}) {
-        state.cart = response.cart
-        state.stripePublicKey = response.stripePublicKey
+        state.cart = response.data.cart
+        state.stripePublicKey = response.data.stripePublicKey
 
         const selectedExpiryDates = {}
-
         state.cart.lineItems.forEach((lineItem, key) => {
             selectedExpiryDates[key] = lineItem.options.expiryDate
         })
@@ -400,14 +419,12 @@ const mutations = {
     updateSelectedExpiryDates(state, selectedExpiryDates) {
         state.selectedExpiryDates = selectedExpiryDates
     }
-
 }
 
 /**
  * Utils
  */
 const utils = {
-
     getCartData(cart) {
         let data = {
             email: cart.email,
@@ -455,13 +472,21 @@ const utils = {
                 }
 
                 case 'cms-edition': {
-                    lineItems.push({
+                    const item = {
                         type: lineItem.purchasable.type,
                         edition: lineItem.purchasable.handle,
-                        licenseKey: lineItem.options.licenseKey,
                         expiryDate: lineItem.options.expiryDate,
                         autoRenew: lineItem.options.autoRenew,
-                    })
+                    }
+
+                    let licenseKey = lineItem.options.licenseKey
+
+                    if (licenseKey && licenseKey.substr(0, 3) !== 'new') {
+                        item.licenseKey = licenseKey
+                    }
+
+                    lineItems.push(item)
+
                     break
                 }
             }
