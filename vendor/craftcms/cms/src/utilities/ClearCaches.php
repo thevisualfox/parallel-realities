@@ -12,7 +12,6 @@ use craft\base\Utility;
 use craft\db\Table;
 use craft\events\RegisterCacheOptionsEvent;
 use craft\helpers\ArrayHelper;
-use craft\helpers\Console;
 use craft\helpers\FileHelper;
 use craft\web\assets\clearcaches\ClearCachesAsset;
 use yii\base\Event;
@@ -129,7 +128,12 @@ class ClearCaches extends Utility
                 'label' => Craft::t('app', 'Control Panel resources'),
                 'action' => function() {
                     $basePath = Craft::$app->getConfig()->getGeneral()->resourceBasePath;
-                    if (Craft::$app->getRequest()->getIsConsoleRequest() && strpos($basePath, '@webroot') === 0) {
+                    $request = Craft::$app->getRequest();
+                    if (
+                        $request->getIsConsoleRequest() &&
+                        $request->isWebrootAliasSetDynamically &&
+                        strpos($basePath, '@webroot') === 0
+                    ) {
                         throw new \Exception('Unable to clear Control Panel resources because the location isn\'t known for console commands.');
                     }
 

@@ -12,6 +12,7 @@ use craft\base\Volume;
 use craft\db\Query;
 use craft\db\Table;
 use craft\elements\Asset;
+use craft\helpers\Assets;
 use craft\helpers\Db;
 use craft\helpers\StringHelper;
 use yii\db\Connection;
@@ -384,7 +385,7 @@ class AssetQuery extends ElementQuery
      * | `'*.jpg'` | with a filename that ends with `.jpg`.
      * | `'*foo*'` | with a filename that contains `foo`.
      * | `'not *foo*'` | with a filename that doesn’t contain `foo`.
-     * | `['*foo*', '*bar*'` | with a filename that contains `foo` or `bar`.
+     * | `['*foo*', '*bar*']` | with a filename that contains `foo` or `bar`.
      * | `['not', '*foo*', '*bar*']` | with a filename that doesn’t contain `foo` or `bar`.
      *
      * ---
@@ -611,7 +612,7 @@ class AssetQuery extends ElementQuery
      *
      * ```php
      * // Fetch {elements} modified in the last month
-     * $start = new \DateTime('30 days ago')->format(\DateTime::ATOM);
+     * $start = (new \DateTime('30 days ago'))->format(\DateTime::ATOM);
      *
      * ${elements-var} = {php-method}
      *     ->dateModified(">= {$start}")
@@ -768,7 +769,16 @@ class AssetQuery extends ElementQuery
         }
 
         if ($this->kind) {
-            $this->subQuery->andWhere(Db::parseParam('assets.kind', $this->kind));
+            $kindCondition = ['or', Db::parseParam('assets.kind', $this->kind)];
+            $kinds = Assets::getFileKinds();
+            foreach ((array)$this->kind as $kind) {
+                if (isset($kinds[$kind])) {
+                    foreach ($kinds[$kind]['extensions'] as $extension) {
+                        $kindCondition[] = ['like', 'assets.filename', "%.{$extension}", false];
+                    }
+                }
+            }
+            $this->subQuery->andWhere($kindCondition);
         }
 
         if ($this->width) {

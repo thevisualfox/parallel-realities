@@ -303,10 +303,10 @@ class Volumes extends Component
             'name' => $volume->name,
             'handle' => $volume->handle,
             'type' => \get_class($volume),
-            'hasUrls' => $volume->hasUrls,
+            'hasUrls' => (bool)$volume->hasUrls,
             'url' => $volume->url,
             'settings' => $volume->getSettings(),
-            'sortOrder' => $volume->sortOrder,
+            'sortOrder' => (int)$volume->sortOrder,
         ];
 
         $fieldLayout = $volume->getFieldLayout();
@@ -358,6 +358,7 @@ class Volumes extends Component
             $volumeRecord->handle = $data['handle'];
             $volumeRecord->type = $data['type'];
             $volumeRecord->hasUrls = $data['hasUrls'];
+            $volumeRecord->sortOrder = $data['sortOrder'];
             $volumeRecord->url = !empty($data['url']) ? $data['url'] : null;
             $volumeRecord->settings = $data['settings'];
             $volumeRecord->uid = $volumeUid;
@@ -668,6 +669,9 @@ class Volumes extends Component
         $projectConfig = Craft::$app->getProjectConfig();
         $volumes = $projectConfig->get(self::CONFIG_VOLUME_KEY);
 
+        // Engage stealth mode
+        $projectConfig->muteEvents = true;
+
         // Loop through the volumes and prune the UID from field layouts.
         if (is_array($volumes)) {
             foreach ($volumes as $volumeUid => $volume) {
@@ -682,6 +686,12 @@ class Volumes extends Component
                 }
             }
         }
+
+        // Nuke all the layout fields from the DB
+        Craft::$app->getDb()->createCommand()->delete('{{%fieldlayoutfields}}', ['fieldId' => $field->id])->execute();
+
+        // Allow events again
+        $projectConfig->muteEvents = false;
     }
 
     // Private Methods

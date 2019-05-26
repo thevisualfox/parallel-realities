@@ -1,0 +1,24 @@
+{% set images = entry.clients.all() %}
+{% set imageTransform = { height: 200, mode: 'crop' } %}
+
+{% if images is defined and images is not empty %}
+    <section id="brands" class="pane">
+        <div class="container container--narrow">
+            <div class="row justify-content-center">
+                <div class="col-md-7">
+                    <h2 class="text-center mb-5">Clients</h2>
+                </div>
+            </div>
+            <div class="row row--equalized gutters-4 justify-content-center">
+            {% for image in images %}
+                    <div class="col-4 col-md-3">
+                        <figure class="media media--clients">
+                            <img src="{{ image.getUrl(imageTransform) }}" alt="{{ image.title }}"/>
+                        </figure>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endif %}
+

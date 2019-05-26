@@ -101,6 +101,12 @@ class EntryRevisions extends Component
         $draft = new EntryDraft($result);
 
         $entry = Craft::$app->getEntries()->getEntryById($draft->id, $draft->siteId);
+
+        if (!$entry) {
+            // The entry was probably soft-deleted
+            return null;
+        }
+
         $this->_configureRevisionWithEntryProperties($draft, $entry);
 
         return $draft;
@@ -272,11 +278,6 @@ class EntryRevisions extends Component
         // Delete the draft
         $this->deleteDraft($draft);
 
-        // Should we save a new version?
-        if ($draft->getSection()->enableVersioning) {
-            $this->saveVersion($draft);
-        }
-
         // Fire an 'afterPublishDraft' event
         if ($this->hasEventHandlers(self::EVENT_AFTER_PUBLISH_DRAFT)) {
             $this->trigger(self::EVENT_AFTER_PUBLISH_DRAFT, new DraftEvent([
@@ -335,6 +336,12 @@ class EntryRevisions extends Component
         $version = new EntryVersion($result);
 
         $entry = Craft::$app->getEntries()->getEntryById($version->id, $version->siteId);
+
+        if (!$entry) {
+            // The entry was probably soft-deleted
+            return null;
+        }
+
         $this->_configureRevisionWithEntryProperties($version, $entry);
 
         return $version;
@@ -556,7 +563,7 @@ class EntryRevisions extends Component
 
         foreach (Craft::$app->getFields()->getAllFields() as $field) {
             /** @var Field $field */
-            if (isset($content[$field->handle]) && $content[$field->handle] !== null) {
+            if (array_key_exists($field->handle, $content)) {
                 $revisionData['fields'][$field->id] = $content[$field->handle];
             }
         }

@@ -1,7 +1,7 @@
 <template>
     <div class="info-hud">
         <v-popover placement="right">
-            <font-awesome-icon icon="info-circle" />
+            <icon icon="info-circle" />
 
             <template slot="popover">
                 <slot></slot>
@@ -27,23 +27,12 @@
         @apply .inline-block;
 
         .v-popover {
+            @apply .text-grey;
             display: inline-block;
             line-height: 0;
 
-            svg[data-icon="info-circle"] {
-                path {
-                    fill: $lightTextColor;
-                }
-            }
-
             &:hover, &.open {
-                @apply .cursor-pointer;
-
-                svg[data-icon="info-circle"] {
-                    path {
-                        fill: $linkColor;
-                    }
-                }
+                @apply .cursor-pointer .text-blue;
             }
 
             & > span {

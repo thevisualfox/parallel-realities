@@ -135,6 +135,11 @@ class Plugins extends Component
     private $_disabledPluginInfo;
 
     /**
+     * @var array Any plugin handles that must be disabled per the `disablePlugins` config setting
+     */
+    private $_forceDisabledPlugins;
+
+    /**
      * @var string[] Cache for [[getPluginHandleByClass()]]
      */
     private $_classPluginHandles = [];
@@ -147,6 +152,8 @@ class Plugins extends Component
      */
     public function init()
     {
+        $this->_forceDisabledPlugins = array_flip(Craft::$app->getConfig()->getGeneral()->disabledPlugins);
+
         $this->_composerPluginInfo = [];
 
         $path = Craft::$app->getVendorPath() . DIRECTORY_SEPARATOR . 'craftcms' . DIRECTORY_SEPARATOR . 'plugins.php';
@@ -978,7 +985,13 @@ class Plugins extends Component
         // An upgrade is available if the plugin is in trial or licensed to less than the best edition
         $info['upgradeAvailable'] = (
             $info['isTrial'] ||
-            ($info['hasMultipleEditions'] && !empty($pluginInfo['licensedEdition']) && $pluginInfo['licensedEdition'] !== end($editions))
+            (
+                $info['hasMultipleEditions'] &&
+                (
+                    (!empty($pluginInfo['licensedEdition']) && $pluginInfo['licensedEdition'] !== end($editions)) ||
+                    $pluginInfo['edition'] !== end($editions)
+                )
+            )
         );
 
         return $info;
@@ -1169,7 +1182,9 @@ class Plugins extends Component
      */
     public function setPluginLicenseKeyStatus(string $handle, string $licenseKeyStatus = null, string $licensedEdition = null)
     {
-        if (($plugin = $this->getPlugin($handle)) === null) {
+        $pluginInfo = $this->getPluginInfo($handle);
+
+        if (!$pluginInfo['isInstalled']) {
             throw new InvalidPluginException($handle);
         }
 
@@ -1292,7 +1307,11 @@ class Plugins extends Component
             $this->_disabledPluginInfo = [];
 
             foreach ($pluginInfo as $handle => &$row) {
-                $configData = $this->_getPluginConfigData($handle);
+                try {
+                    $configData = $this->_getPluginConfigData($handle);
+                } catch (InvalidPluginException $e) {
+                    continue;
+                }
 
                 // Skip enabled plugins
                 if (!empty($configData['enabled'])) {
@@ -1310,7 +1329,7 @@ class Plugins extends Component
     }
 
     /**
-     * Load config data for plugin by it's handle.
+     * Load config data for plugin by its handle.
      *
      * @param string $handle
      * @return array
@@ -1335,6 +1354,11 @@ class Plugins extends Component
 
         if (!$data) {
             throw new InvalidPluginException($handle);
+        }
+
+        // Force disable it?
+        if (isset($this->_forceDisabledPlugins[$handle])) {
+            $data['enabled'] = false;
         }
 
         return $data;

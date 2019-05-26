@@ -489,7 +489,7 @@ class UserQuery extends ElementQuery
      *
      * ```php
      * // Fetch {elements} that logged in recently
-     * $aWeekAgo = new \DateTime('7 days ago')->format(\DateTime::ATOM);
+     * $aWeekAgo = (new \DateTime('7 days ago'))->format(\DateTime::ATOM);
      *
      * ${elements-var} = {php-method}
      *     ->lastLoginDate(">= {$aWeekAgo}")
@@ -514,10 +514,10 @@ class UserQuery extends ElementQuery
      * | Value | Fetches {elements}…
      * | - | -
      * | `'active'` _(default)_ | with active accounts.
-     * | `'locked'` | with locked accounts.
      * | `'suspended'` | with suspended accounts.
      * | `'pending'` | with accounts that are still pending activation.
-     * | `['active', 'locked']` | with active or locked accounts.
+     * | `'locked'` | with locked accounts (regardless of whether they’re active or suspended).
+     * | `['active', 'suspended']` | with active or suspended accounts.
      *
      * ---
      *
@@ -635,7 +635,6 @@ class UserQuery extends ElementQuery
             case User::STATUS_ACTIVE:
                 return [
                     'users.suspended' => false,
-                    'users.locked' => false,
                     'users.pending' => false,
                 ];
             case User::STATUS_PENDING:

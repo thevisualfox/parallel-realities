@@ -10,6 +10,7 @@ namespace craft\helpers;
 use Craft;
 use craft\db\Connection;
 use craft\db\Migration;
+use craft\db\TableSchema;
 
 /**
  * Migration utility methods.
@@ -334,12 +335,7 @@ class MigrationHelper
 
         // Restore FKs linking to the column.
         foreach ($allOtherTableFks as $sourceTableName => $fkInfo) {
-
-            $columns = [];
-            $refColumns = [];
             $refTableName = '';
-            $onUpdate = '';
-            $onDelete = '';
 
             // Figure out the reference columns.
             foreach ($fkInfo as $num => $fk) {
@@ -446,6 +442,7 @@ class MigrationHelper
         $fks = [];
 
         foreach ($allTables as $otherTable) {
+            /** @var TableSchema $otherTable */
             $counter = 0;
 
             foreach ($otherTable->foreignKeys as $fkName => $fk) {
@@ -576,7 +573,7 @@ class MigrationHelper
      * @param string $tableName
      * @param Migration|null $migration
      * @return array An array of the indexes that were just dropped.
-     * @deprecated in 3.1.
+     * @todo drop the awkward return value in Craft 4
      */
     public static function dropAllIndexesOnTable(string $tableName, Migration $migration = null): array
     {

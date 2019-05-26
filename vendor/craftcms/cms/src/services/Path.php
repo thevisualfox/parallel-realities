@@ -81,22 +81,46 @@ class Path extends Component
     /**
      * Returns the path to the `storage/` directory.
      *
+     * @param bool $create Whether the directory should be created if it doesn't exist
      * @return string
      * @throws Exception
      */
-    public function getStoragePath(): string
+    public function getStoragePath(bool $create = true): string
     {
-        if ($this->_storagePath !== null) {
-            return $this->_storagePath;
+        if ($this->_storagePath === null) {
+            $path = Craft::getAlias('@storage');
+
+            if ($path === false) {
+                throw new Exception('There was a problem getting the storage path.');
+            }
+
+            $this->_storagePath = FileHelper::normalizePath($path);
         }
 
-        $storagePath = Craft::getAlias('@storage');
-
-        if ($storagePath === false) {
-            throw new Exception('There was a problem getting the storage path.');
+        if ($create) {
+            FileHelper::createDirectory($this->_storagePath);
         }
 
-        return $this->_storagePath = FileHelper::normalizePath($storagePath);
+        return $this->_storagePath;
+    }
+
+    /**
+     * Returns the path to the `storage/composer-backups/` directory.
+     *
+     * @param bool $create Whether the directory should be created if it doesn't exist
+     * @return string
+     * @throws Exception
+     */
+    public function getComposerBackupsPath(bool $create = true): string
+    {
+        $path = $this->getStoragePath($create) . DIRECTORY_SEPARATOR . 'composer-backups';
+
+        if ($create) {
+            FileHelper::createDirectory($path);
+            $this->_createGitignore($path);
+        }
+
+        return $path;
     }
 
     /**
@@ -104,6 +128,7 @@ class Path extends Component
      *
      * @param bool $create Whether the directory should be created if it doesn't exist
      * @return string
+     * @throws Exception
      */
     public function getConfigBackupPath(bool $create = true): string
     {
@@ -122,6 +147,7 @@ class Path extends Component
      *
      * @param bool $create Whether the directory should be created if it doesn't exist
      * @return string
+     * @throws Exception
      */
     public function getRebrandPath(bool $create = true): string
     {
@@ -160,6 +186,7 @@ class Path extends Component
      *
      * @param bool $create Whether the directory should be created if it doesn't exist
      * @return string
+     * @throws Exception
      */
     public function getRuntimePath(bool $create = true): string
     {
@@ -178,6 +205,7 @@ class Path extends Component
      *
      * @param bool $create Whether the directory should be created if it doesn't exist
      * @return string
+     * @throws Exception
      */
     public function getDbBackupPath(bool $create = true): string
     {
@@ -331,6 +359,7 @@ class Path extends Component
      *
      * @param bool $create Whether the directory should be created if it doesn't exist
      * @return string
+     * @throws Exception
      */
     public function getLogPath(bool $create = true): string
     {

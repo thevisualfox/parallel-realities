@@ -63,6 +63,10 @@ class GeneralConfig extends BaseObject
      *
      * Therefore you should only disable this in production environments when [[useProjectConfigFile]] is enabled,
      * and you have a deployment workflow that runs `composer install` automatically on deploy.
+     *
+     * ::: warning
+     * Don’t disable this setting until **all** environments have been updated to Craft 3.1.0 or later.
+     * :::
      */
     public $allowAdminChanges = true;
     /**
@@ -85,7 +89,8 @@ class GeneralConfig extends BaseObject
      */
     public $allowUppercaseInSlug = false;
     /**
-     * @var bool Whether users should automatically be logged in after activating their account.
+     * @var bool Whether users should automatically be logged in after activating their account or resetting
+     * their password.
      */
     public $autoLoginAfterAccountActivation = false;
     /**
@@ -260,6 +265,16 @@ class GeneralConfig extends BaseObject
      */
     public $devMode = false;
     /**
+     * @var string[] Array of plugin handles that should be disabled, regardless of what the project config says.
+     * ---
+     * ```php
+     * 'dev' => [
+     *     'disabledPlugins' => ['webhooks'],
+     * ],
+     * ```
+     */
+    public $disabledPlugins = [];
+    /**
      * @var bool Whether to use a cookie to persist the CSRF token if [[enableCsrfProtection]] is enabled. If false, the CSRF token
      * will be stored in session under the 'csrfTokenName' config setting name. Note that while storing CSRF tokens in
      * session increases security, it requires starting a session for every page that a CSRF token is need, which may
@@ -322,6 +337,11 @@ class GeneralConfig extends BaseObject
      *     ],
      * ],
      * ```
+     *
+     * ::: tip
+     * File extensions listed here won’t immediately be allowed to be uploaded. You will also need to list them with
+     * the [[$extraAllowedFileExtensions]] config setting.
+     * :::
      */
     public $extraFileKinds = [];
     /**
@@ -434,19 +454,37 @@ class GeneralConfig extends BaseObject
     /**
      * @var string The string preceding a number which Craft will look for when determining if the current request is for a
      * particular page in a paginated list of pages.
+     *
+     * Example Value | Example URI
+     * ------------- | -----------
+     * `p` | `/news/p5`
+     * `page` | `/news/page5`
+     * `page/` | `/news/page/5`
+     * `?page` | `/news?page=5`
+     *
+     * ::: tip
+     * If you want to set this to `?p` (e.g. `/news?p=5`), you will need to change your [[$pathParam]] setting as well,
+     * which is set to `p` by default, and if your server is running Apache, you will need to update the redirect code
+     * in your `.htaccess` file to match your new `pathParam` value.
+     * :::
      */
     public $pageTrigger = 'p';
     /**
      * @var string The query string param that Craft will check when determining the request's path.
+     *
+     * ::: tip
+     * If you change this and your server is running Apache, don’t forget to update the redirect code in your
+     * `.htaccess` file to match the new value.
+     * :::
      */
     public $pathParam = 'p';
     /**
-     * @var string The maximum amount of memory Craft will try to reserve during memory intensive operations such as zipping,
+     * @var string|null The maximum amount of memory Craft will try to reserve during memory intensive operations such as zipping,
      * unzipping and updating. Defaults to an empty string, which means it will use as much memory as it possibly can.
      *
      * See <http://php.net/manual/en/faq.using.php#faq.using.shorthandbytes> for a list of acceptable values.
      */
-    public $phpMaxMemoryLimit = '';
+    public $phpMaxMemoryLimit;
     /**
      * @var string The name of the PHP session cookie.
      * @see https://php.net/manual/en/function.session-name.php
@@ -688,7 +726,7 @@ class GeneralConfig extends BaseObject
      */
     public $suppressTemplateErrors = false;
     /**
-     * @var string|array|null Configures Craft to send all system emails to a single email address, or an array of email addresses for testing
+     * @var string|array|false|null Configures Craft to send all system emails to a single email address, or an array of email addresses for testing
      * purposes.
      *
      * By default the recipient name(s) will be “Test Recipient”, but you can customize that by setting the value with the format `['email@address.com' => 'Name']`.
@@ -776,6 +814,11 @@ class GeneralConfig extends BaseObject
      * If set to `true`, a hard copy of your system’s project config will be saved in `config/project.yaml`,
      * and any changes to `config/project.yaml` will be applied back to the system, making it possible for
      * multiple environments to share the same project config despite having separate databases.
+     *
+     * ::: warning
+     * Make sure you’ve read the entire [Project Config](https://docs.craftcms.com/v3/project-config.html)
+     * documentation, and carefully follow the “Enabling the Project Config File” steps when enabling this setting.
+     * :::
      */
     public $useProjectConfigFile = false;
     /**
@@ -784,6 +827,13 @@ class GeneralConfig extends BaseObject
      * See [[ConfigHelper::durationInSeconds()]] for a list of supported value types.
      */
     public $verificationCodeDuration = 86400;
+    /**
+     * @var mixed The URI that users without access to the Control Panel should be redirected to after verifying a new email address.
+     *
+     * See [[ConfigHelper::localizedValue()]] for a list of supported value types.
+     * @see getVerifyEmailSuccessPath()
+     */
+    public $verifyEmailSuccessPath = '';
 
     /**
      * @var array Stores any custom config settings
@@ -930,6 +980,18 @@ class GeneralConfig extends BaseObject
     public function getActivateAccountSuccessPath(string $siteHandle = null): string
     {
         return ConfigHelper::localizedValue($this->activateAccountSuccessPath, $siteHandle);
+    }
+
+    /**
+     * Returns the localized Verify Email Success Path value.
+     *
+     * @param string|null $siteHandle The site handle the value should be defined for. Defaults to the current site.
+     * @return string
+     * @see verifyEmailSuccessPath
+     */
+    public function getVerifyEmailSuccessPath(string $siteHandle = null): string
+    {
+        return ConfigHelper::localizedValue($this->verifyEmailSuccessPath, $siteHandle);
     }
 
     /**
