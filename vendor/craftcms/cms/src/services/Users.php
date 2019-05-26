@@ -8,6 +8,7 @@
 namespace craft\services;
 
 use Craft;
+use craft\base\Field;
 use craft\base\Volume;
 use craft\db\Query;
 use craft\db\Table;
@@ -361,7 +362,7 @@ class Users extends Component
     /**
      * Sends a password reset email to a user.
      *
-     * A new verification code will generated for the user overwriting any existing one.
+     * A new verification code be will generated for the user, overwriting any existing one.
      *
      * @param User $user The user to send the forgot password email to.
      * @return bool Whether the email was sent successfully.
@@ -437,7 +438,7 @@ class Users extends Component
         $assetsService = Craft::$app->getAssets();
 
         // If the photo exists, just replace the file.
-        if ($user->photoId) {
+        if ($user->photoId && $user->getPhoto() !== null) {
             // No longer a new file.
             $assetsService->replaceAssetFile($assetsService->getAssetById($user->photoId), $fileLocation, $filenameToUse);
         } else {
@@ -455,7 +456,7 @@ class Users extends Component
             $elementsService = Craft::$app->getElements();
             $elementsService->saveElement($photo);
 
-            $user->photoId = $photo->id;
+            $user->setPhoto($photo);
             $elementsService->saveElement($user, false);
         }
     }
@@ -485,8 +486,6 @@ class Users extends Component
         $userRecord->lastLoginDate = $now;
         $userRecord->invalidLoginWindowStart = null;
         $userRecord->invalidLoginCount = null;
-        $userRecord->verificationCode = null;
-        $userRecord->verificationCodeIssuedDate = null;
 
         if (Craft::$app->getConfig()->getGeneral()->storeUserIps) {
             $userRecord->lastLoginAttemptIp = Craft::$app->getRequest()->getUserIP();
@@ -982,9 +981,15 @@ class Users extends Component
     public function assignUserToDefaultGroup(User $user): bool
     {
         // Make sure there's a default group
-        $defaultGroupId = Craft::$app->getProjectConfig()->get('users.defaultGroup');
+        $uid = Craft::$app->getProjectConfig()->get('users.defaultGroup');
 
-        if (!$defaultGroupId) {
+        if (!$uid) {
+            return false;
+        }
+
+        $group = Craft::$app->getUserGroups()->getGroupByUid($uid);
+
+        if (!$group) {
             return false;
         }
 
@@ -998,7 +1003,7 @@ class Users extends Component
             return false;
         }
 
-        if (!$this->assignUserToGroups($user->id, [$defaultGroupId])) {
+        if (!$this->assignUserToGroups($user->id, [$group->id])) {
             return false;
         }
 
@@ -1077,7 +1082,10 @@ class Users extends Component
         $projectConfig = Craft::$app->getProjectConfig();
         $fieldLayouts = $projectConfig->get(self::CONFIG_USERLAYOUT_KEY);
 
-        // Loop through the volumes and prune the UID from field layouts.
+        // Engage stealth mode
+        $projectConfig->muteEvents = true;
+
+        // Prune the user field layout.
         if (is_array($fieldLayouts)) {
             foreach ($fieldLayouts as $layoutUid => $layout) {
                 if (!empty($layout['tabs'])) {
@@ -1087,6 +1095,12 @@ class Users extends Component
                 }
             }
         }
+
+        // Nuke all the layout fields from the DB
+        Craft::$app->getDb()->createCommand()->delete('{{%fieldlayoutfields}}', ['fieldId' => $field->id])->execute();
+
+        // Allow events again
+        $projectConfig->muteEvents = false;
     }
 
     // Private Methods

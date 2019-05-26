@@ -27,8 +27,6 @@ class ClearCachesController extends Controller
     // Properties
     // =========================================================================
 
-    public $allowAnonymous = [];
-
     /**
      * @var array
      */

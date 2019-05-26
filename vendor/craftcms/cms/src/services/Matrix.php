@@ -23,7 +23,6 @@ use craft\helpers\Db;
 use craft\helpers\ElementHelper;
 use craft\helpers\Html;
 use craft\helpers\MigrationHelper;
-use craft\helpers\ProjectConfig as ProjectConfigHelper;
 use craft\helpers\StringHelper;
 use craft\migrations\CreateMatrixContentTable;
 use craft\models\FieldLayout;
@@ -49,6 +48,7 @@ class Matrix extends Component
 
     /**
      * @var bool Whether to ignore changes to the project config.
+     * @deprecated in 3.1.2. Use [[\craft\services\ProjectConfig::$muteEvents]] instead.
      */
     public $ignoreProjectConfigChanges = false;
 
@@ -239,7 +239,7 @@ class Matrix extends Component
             'field' => $parentField->uid,
             'name' => $blockType->name,
             'handle' => $blockType->handle,
-            'sortOrder' => $blockType->sortOrder,
+            'sortOrder' => (int)$blockType->sortOrder,
         ];
 
         // Now, take care of the field layout for this block type
@@ -301,11 +301,16 @@ class Matrix extends Component
             return;
         }
 
-        ProjectConfigHelper::ensureAllFieldsProcessed();
-
         $blockTypeUid = $event->tokenMatches[0];
         $data = $event->newValue;
         $previousData = $event->oldValue;
+
+        // Make sure the field has been synced
+        $fieldId = Db::idByUid(Table::FIELDS, $data['field']);
+        if ($fieldId === null) {
+            Craft::$app->getProjectConfig()->defer($event, [$this, __FUNCTION__]);
+            return;
+        }
 
         $fieldsService = Craft::$app->getFields();
         $contentService = Craft::$app->getContent();
@@ -323,7 +328,7 @@ class Matrix extends Component
             $blockTypeRecord = $this->_getBlockTypeRecord($blockTypeUid);
 
             // Set the basic info on the new block type record
-            $blockTypeRecord->fieldId = Db::idByUid(Table::FIELDS, $data['field']);
+            $blockTypeRecord->fieldId = $fieldId;
             $blockTypeRecord->name = $data['name'];
             $blockTypeRecord->handle = $data['handle'];
             $blockTypeRecord->sortOrder = $data['sortOrder'];
@@ -335,7 +340,7 @@ class Matrix extends Component
             /** @var MatrixField $matrixField */
             $matrixField = $fieldsService->getFieldById($blockTypeRecord->fieldId);
             $contentService->contentTable = $matrixField->contentTable;
-            $fieldsService->oldFieldColumnPrefix = 'field_' . $blockTypeRecord->handle . '_';
+            $fieldsService->oldFieldColumnPrefix = 'field_' . ($blockTypeRecord->getOldAttribute('handle') ?? $data['handle']) . '_';
 
             $oldFields = $previousData['fields'] ?? [];
             $newFields = $data['fields'] ?? [];
@@ -555,20 +560,24 @@ class Matrix extends Component
             throw new Exception('Unable to save a Matrix field’s settings without knowing its content table.');
         }
 
-        if (!$validate || $this->validateFieldSettings($matrixField)) {
-            $db = Craft::$app->getDb();
-            $transaction = $db->beginTransaction();
-            try {
-                // Do we need to create/rename the content table?
-                if (!$db->tableExists($matrixField->contentTable)) {
-                    $oldContentTable = $matrixField->oldSettings['contentTable'] ?? null;
-                    if ($oldContentTable && $db->tableExists($oldContentTable)) {
-                        MigrationHelper::renameTable($oldContentTable, $matrixField->contentTable);
-                    } else {
-                        $this->_createContentTable($matrixField->contentTable);
-                    }
-                }
+        if ($validate && !$this->validateFieldSettings($matrixField)) {
+            return false;
+        }
 
+        $db = Craft::$app->getDb();
+        $transaction = $db->beginTransaction();
+        try {
+            // Do we need to create/rename the content table?
+            if (!$db->tableExists($matrixField->contentTable)) {
+                $oldContentTable = $matrixField->oldSettings['contentTable'] ?? null;
+                if ($oldContentTable && $db->tableExists($oldContentTable)) {
+                    MigrationHelper::renameTable($oldContentTable, $matrixField->contentTable);
+                } else {
+                    $this->_createContentTable($matrixField->contentTable);
+                }
+            }
+
+            if (!Craft::$app->getProjectConfig()->areChangesPending(self::CONFIG_BLOCKTYPE_KEY)) {
                 // Delete the old block types first, in case there's a handle conflict with one of the new ones
                 $oldBlockTypes = $this->getBlockTypesByFieldId($matrixField->id);
                 $oldBlockTypesById = [];
@@ -601,21 +610,21 @@ class Matrix extends Component
                 }
 
                 Craft::$app->getContent()->contentTable = $originalContentTable;
-
-                $transaction->commit();
-
-                // Update our cache of this field's block types
-                $this->_blockTypesByFieldId[$matrixField->id] = $matrixField->getBlockTypes();
-
-                return true;
-            } catch (\Throwable $e) {
-                $transaction->rollBack();
-
-                throw $e;
             }
-        } else {
-            return false;
+
+            $transaction->commit();
+        } catch (\Throwable $e) {
+            $transaction->rollBack();
+            throw $e;
         }
+
+        // Clear caches
+        unset(
+            $this->_blockTypesByFieldId[$matrixField->id],
+            $this->_fetchedAllBlockTypesForFieldId[$matrixField->id]
+        );
+
+        return true;
     }
 
     /**
@@ -627,7 +636,11 @@ class Matrix extends Component
      */
     public function deleteMatrixField(MatrixField $matrixField): bool
     {
-        $transaction = Craft::$app->getDb()->beginTransaction();
+        // Clear the schema cache
+        $db = Craft::$app->getDb();
+        $db->getSchema()->refresh();
+
+        $transaction = $db->beginTransaction();
         try {
             $originalContentTable = Craft::$app->getContent()->contentTable;
             Craft::$app->getContent()->contentTable = $matrixField->contentTable;
@@ -640,7 +653,7 @@ class Matrix extends Component
             }
 
             // Drop the content table
-            Craft::$app->getDb()->createCommand()
+            $db->createCommand()
                 ->dropTable($matrixField->contentTable)
                 ->execute();
 
@@ -799,6 +812,11 @@ class Matrix extends Component
             $transaction->rollBack();
 
             throw $e;
+        }
+
+        // Reset the field value if this is a new element
+        if ($owner->duplicateOf || !$query->ownerId) {
+            $owner->setFieldValue($field->handle, null);
         }
 
         // Tell the browser to collapse any new block IDs

@@ -4,11 +4,7 @@ namespace craft\migrations;
 
 use Craft;
 use craft\db\Migration;
-use craft\db\Query;
-use craft\fields\Assets;
 use craft\services\Categories;
-use craft\services\Fields;
-use craft\services\Matrix;
 use craft\services\Sections;
 use craft\services\Sites;
 
@@ -18,16 +14,12 @@ use craft\services\Sites;
 class m190110_150000_prune_nonexisting_sites extends Migration
 {
     /**
-     * @var array List of volume UIDs keyed by folder UIds.
-     */
-    private $_volumesByFolderUids = [];
-
-    /**
      * @inheritdoc
      */
     public function safeUp()
     {
         $projectConfig = Craft::$app->getProjectConfig();
+        $projectConfig->muteEvents = true;
 
         // Get the site data from the project config
         $sites = $projectConfig->get(Sites::CONFIG_SITES_KEY) ?? [];
@@ -56,6 +48,8 @@ class m190110_150000_prune_nonexisting_sites extends Migration
                 }
             }
         }
+
+        $projectConfig->muteEvents = false;
     }
 
     /**

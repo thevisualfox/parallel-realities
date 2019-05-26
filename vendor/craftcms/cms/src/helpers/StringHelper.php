@@ -891,11 +891,12 @@ class StringHelper extends \yii\helpers\StringHelper
      * counterparts, and the rest are removed.
      *
      * @param string $str The string to convert.
+     * @param string|null $language The language to pull ASCII character mappings for.
      * @return string The string that contains only ASCII characters.
      */
-    public static function toAscii(string $str): string
+    public static function toAscii(string $str, string $language = null): string
     {
-        return (string)BaseStringy::create($str)->toAscii(Craft::$app->language);
+        return (string)BaseStringy::create($str)->toAscii($language ?? Craft::$app->language);
     }
 
     /**
@@ -1009,24 +1010,49 @@ class StringHelper extends \yii\helpers\StringHelper
      */
     public static function encodeMb4(string $string): string
     {
-        // Does this string have any 4+ byte Unicode chars?
-        if (static::containsMb4($string)) {
-            $string = preg_replace_callback('/./u', function(array $match) {
-                if (strlen($match[0]) >= 4) {
-                    // (Logic pulled from WP's wp_encode_emoji() function)
-                    // UTF-32's hex encoding is the same as HTML's hex encoding.
-                    // So, by converting from UTF-8 to UTF-32, we magically
-                    // get the correct hex encoding.
-                    $unpacked = unpack('H*', mb_convert_encoding($match[0], 'UTF-32', 'UTF-8'));
+        // (Logic pulled from WP's wp_encode_emoji() function)
+        // UTF-32's hex encoding is the same as HTML's hex encoding.
+        // So, by converting from UTF-8 to UTF-32, we magically
+        // get the correct hex encoding.
+        return static::replaceMb4($string, function($char) {
+            $unpacked = unpack('H*', mb_convert_encoding($char, 'UTF-32', 'UTF-8'));
+            return isset($unpacked[1]) ? '&#x' . ltrim($unpacked[1], '0') . ';' : '';
+        });
+    }
 
-                    return isset($unpacked[1]) ? '&#x' . ltrim($unpacked[1], '0') . ';' : '';
-                }
-
-                return $match[0];
-            }, $string);
+    /**
+     * Replaces 4-byte UTF-8 characters in a string.
+     * ---
+     * ```php
+     * // Convert emojis to smilies
+     * $string = StringHelper::replaceMb4($string, function($char) {
+     *     switch ($char) {
+     *         case '😀':
+     *             return ':)';
+     *         case '☹️':
+     *             return ':(';
+     *         default:
+     *             return '¯\_(ツ)_/¯';
+     *     }
+     * });
+     * ```
+     *
+     * @param string $string The string
+     * @param string|callable $replace The replacement string, or callback function.
+     * @return string The string with converted 4-byte UTF-8 characters
+     */
+    public static function replaceMb4(string $string, $replace): string
+    {
+        if (!static::containsMb4($string)) {
+            return $string;
         }
 
-        return $string;
+        return preg_replace_callback('/./u', function(array $match) use ($replace): string {
+            if (strlen($match[0]) >= 4) {
+                return is_callable($replace) ? $replace($match[0]) : $replace;
+            }
+            return $match[0];
+        }, $string);
     }
 
     /**
@@ -1044,7 +1070,8 @@ class StringHelper extends \yii\helpers\StringHelper
     public static function toWords(string $string, bool $lower = false, bool $removePunctuation = false): array
     {
         // Convert CamelCase to multiple words
-        $string = preg_replace('/(?<=[a-z])[A-Z]/u', ' \0', $string);
+        // Regex copied from Inflector::camel2words(), but without dropping punctuation
+        $string = preg_replace('/(?<!\p{Lu})(\p{Lu})|(\p{Lu})(?=\p{Ll})/u', ' \0', $string);
 
         if ($lower) {
             // Make it lowercase

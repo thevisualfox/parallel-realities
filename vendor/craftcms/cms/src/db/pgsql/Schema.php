@@ -9,7 +9,6 @@ namespace craft\db\pgsql;
 
 use Composer\Util\Platform;
 use Craft;
-use craft\db\Table;
 use craft\db\TableSchema;
 use yii\db\Exception;
 
@@ -120,20 +119,9 @@ class Schema extends \yii\db\pgsql\Schema
      */
     public function getDefaultBackupCommand()
     {
-        $defaultTableIgnoreList = [
-            Table::ASSETINDEXDATA,
-            Table::ASSETTRANSFORMINDEX,
-            '{{%cache}}',
-            Table::SESSIONS,
-            Table::TEMPLATECACHES,
-            '{{%templatecachecriteria}}',
-            Table::TEMPLATECACHEELEMENTS,
-        ];
-
-        $dbSchema = Craft::$app->getDb()->getSchema();
-
-        foreach ($defaultTableIgnoreList as $key => $ignoreTable) {
-            $defaultTableIgnoreList[$key] = " --exclude-table-data '{schema}." . $dbSchema->getRawTableName($ignoreTable) . "'";
+        $ignoredTableArgs = [];
+        foreach (Craft::$app->getDb()->getIgnoredBackupTables() as $table) {
+            $ignoredTableArgs[] = "--exclude-table-data '{schema}.{$table}'";
         }
 
         return $this->_pgpasswordCommand() .
@@ -149,7 +137,7 @@ class Schema extends \yii\db\pgsql\Schema
             ' --no-acl' .
             ' --file="{file}"' .
             ' --schema={schema}' .
-            implode('', $defaultTableIgnoreList);
+            ' ' . implode(' ', $ignoredTableArgs);
     }
 
     /**

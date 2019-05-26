@@ -9,15 +9,18 @@ namespace craft\base;
 
 use Craft;
 use craft\console\Application as ConsoleApplication;
+use craft\console\Request as ConsoleRequest;
 use craft\db\Connection;
 use craft\db\MigrationManager;
 use craft\db\Query;
 use craft\db\Table;
 use craft\errors\DbConnectException;
+use craft\errors\SiteNotFoundException;
 use craft\errors\WrongEditionException;
 use craft\events\EditionChangeEvent;
 use craft\helpers\App;
 use craft\helpers\Db;
+use craft\helpers\StringHelper;
 use craft\i18n\Formatter;
 use craft\i18n\I18N;
 use craft\i18n\Locale;
@@ -38,9 +41,11 @@ use craft\services\Users;
 use craft\services\Volumes;
 use craft\web\Application as WebApplication;
 use craft\web\AssetManager;
+use craft\web\Request as WebRequest;
 use craft\web\View;
 use yii\base\Event;
 use yii\base\InvalidConfigException;
+use yii\caching\Cache;
 use yii\mutex\Mutex;
 use yii\web\ServerErrorHttpException;
 
@@ -193,6 +198,7 @@ trait ApplicationTrait
         $this->_gettingLanguage = true;
 
         if ($useUserLanguage === null) {
+            /** @var WebRequest|ConsoleRequest $request */
             $request = $this->getRequest();
             $useUserLanguage = $request->getIsConsoleRequest() || $request->getIsCpRequest();
         }
@@ -361,7 +367,9 @@ trait ApplicationTrait
         $this->getProjectConfig()->set('system.edition', App::editionHandle($edition));
 
         // Fire an 'afterEditionChange' event
-        if (!$this->getRequest()->getIsConsoleRequest() && $this->hasEventHandlers(WebApplication::EVENT_AFTER_EDITION_CHANGE)) {
+        /** @var WebRequest|ConsoleRequest $request */
+        $request = $this->getRequest();
+        if (!$request->getIsConsoleRequest() && $this->hasEventHandlers(WebApplication::EVENT_AFTER_EDITION_CHANGE)) {
             $this->trigger(WebApplication::EVENT_AFTER_EDITION_CHANGE, new EditionChangeEvent([
                 'oldEdition' => $oldEdition,
                 'newEdition' => $edition
@@ -426,8 +434,13 @@ trait ApplicationTrait
     {
         /** @var WebApplication|ConsoleApplication $this */
         $request = $this->getRequest();
+        if ($request->getIsConsoleRequest()) {
+            return false;
+        }
 
-        return !$request->getIsConsoleRequest() && $this->getCache()->get('editionTestableDomain@' . $request->getHostName());
+        /** @var Cache $cache */
+        $cache = $this->getCache();
+        return $cache->get('editionTestableDomain@' . $request->getHostName());
     }
 
     /**
@@ -553,6 +566,10 @@ trait ApplicationTrait
         }
         unset($row['edition'], $row['name'], $row['timezone'], $row['on'], $row['siteName'], $row['siteUrl'], $row['build'], $row['releaseDate'], $row['track']);
 
+        if (Craft::$app->getDb()->getIsMysql() && isset($row['config'])) {
+            $row['config'] = StringHelper::decdec($row['config']);
+        }
+
         return $this->_info = new Info($row);
     }
 
@@ -578,6 +595,16 @@ trait ApplicationTrait
 
             if (array_key_exists('id', $attributes) && $attributes['id'] === null) {
                 unset($attributes['id']);
+            }
+
+            if (
+                isset($attributes['config']) &&
+                (
+                    !mb_check_encoding($attributes['config'], 'UTF-8') ||
+                    (Craft::$app->getDb()->getIsMysql() && StringHelper::containsMb4($attributes['config']))
+                )
+            ) {
+                $attributes['config'] = 'base64:' . base64_encode($attributes['config']);
             }
 
             if ($this->getIsInstalled()) {
@@ -614,6 +641,26 @@ trait ApplicationTrait
     }
 
     /**
+     * Returns the system name.
+     *
+     * @return string
+     */
+    public function getSystemName(): string
+    {
+        if (($name = Craft::$app->getProjectConfig()->get('system.name')) !== null) {
+            return Craft::parseEnv($name);
+        }
+
+        try {
+            $name = $this->getSites()->getPrimarySite()->name;
+        } catch (SiteNotFoundException $e) {
+            $name = null;
+        }
+
+        return $name ?: 'Craft';
+    }
+
+    /**
      * Returns the Yii framework version.
      *
      * @return string
@@ -636,8 +683,10 @@ trait ApplicationTrait
             $this->getDb()->open();
             return true;
         } catch (DbConnectException $e) {
+            Craft::error('There was a problem connecting to the database: ' . $e->getMessage(), __METHOD__);
             return false;
         } catch (InvalidConfigException $e) {
+            Craft::error('There was a problem connecting to the database: ' . $e->getMessage(), __METHOD__);
             return false;
         }
     }
@@ -1183,13 +1232,13 @@ trait ApplicationTrait
      */
     private function _postInit()
     {
+        // Register all the listeners for config items
+        $this->_registerConfigListeners();
+
         // Load the plugins
         $this->getPlugins()->loadPlugins();
 
         $this->_isInitialized = true;
-
-        // Register all the listeners for config items
-        $this->_registerConfigListeners();
 
         // Fire an 'init' event
         if ($this->hasEventHandlers(WebApplication::EVENT_INIT)) {
@@ -1394,5 +1443,6 @@ trait ApplicationTrait
             ->onAdd(Sections::CONFIG_SECTIONS_KEY . '.{uid}.' . Sections::CONFIG_ENTRYTYPES_KEY . '.{uid}', [$sectionsService, 'handleChangedEntryType'])
             ->onUpdate(Sections::CONFIG_SECTIONS_KEY . '.{uid}.' . Sections::CONFIG_ENTRYTYPES_KEY . '.{uid}', [$sectionsService, 'handleChangedEntryType'])
             ->onRemove(Sections::CONFIG_SECTIONS_KEY . '.{uid}.' . Sections::CONFIG_ENTRYTYPES_KEY . '.{uid}', [$sectionsService, 'handleDeletedEntryType']);
+        Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$sectionsService, 'pruneDeletedField']);
     }
 }

@@ -2,6 +2,19 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
     <head>
         {% block head %}
+            {% set env = craft.app.config.env %}
+
+            {% if env == "live" %}
+                <script async src="https://www.googletagmanager.com/gtag/js?id=UA-140854240-1"></script>
+                <script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){dataLayer.push(arguments);}
+                    gtag('js', new Date());
+
+                    gtag('config', 'UA-140854240-1');
+                </script>
+            {% endif %}
+
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <meta charset="utf-8">
             <meta name="description" content="Parallel is a studio for 3D animations and Virtual Realities in all appearances of the unbuilt. Our aim is to create thriving experiences which are both effective and persuasive but above all unforgettable.">
@@ -21,6 +34,20 @@
             {% endif %}
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <link rel="stylesheet" type="text/css" href="{{ alias('@web/app/assets/css/app.css') }}">
+
+            {% if env == "live" %}
+                <script>
+                    (function(h,o,t,j,a,r){
+                        h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+                        h._hjSettings={hjid:1332482,hjsv:6};
+                        a=o.getElementsByTagName('head')[0];
+                        r=o.createElement('script');r.async=1;
+                        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+                        a.appendChild(r);
+                    })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+                </script>
+            {% endif %}
+
         {% endblock %}
     </head>
     <body {% if bodyClass is defined %} class="{{ bodyClass }}" {% endif %}>

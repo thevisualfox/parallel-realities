@@ -17,13 +17,16 @@ use craft\elements\User;
 use craft\errors\InvalidPluginException;
 use craft\helpers\App;
 use craft\helpers\Json;
+use craft\helpers\ProjectConfig as ProjectConfigHelper;
 use craft\helpers\StringHelper;
 use craft\mail\transportadapters\Sendmail;
 use craft\models\Info;
+use craft\models\Section;
 use craft\models\Site;
 use craft\services\Plugins;
 use craft\services\ProjectConfig;
 use craft\web\Response;
+use yii\base\InvalidConfigException;
 
 /**
  * Installation Migration
@@ -463,7 +466,7 @@ class Install extends Migration
             'structureId' => $this->integer(),
             'name' => $this->string()->notNull(),
             'handle' => $this->string()->notNull(),
-            'type' => $this->enum('type', ['single', 'channel', 'structure'])->notNull()->defaultValue('channel'),
+            'type' => $this->enum('type', [Section::TYPE_SINGLE, Section::TYPE_CHANNEL, Section::TYPE_STRUCTURE])->notNull()->defaultValue('channel'),
             'enableVersioning' => $this->boolean()->defaultValue(false)->notNull(),
             'propagateEntries' => $this->boolean()->defaultValue(true)->notNull(),
             'dateCreated' => $this->dateTime()->notNull(),
@@ -709,7 +712,7 @@ class Install extends Migration
     {
         $this->createIndex(null, Table::ASSETINDEXDATA, ['sessionId', 'volumeId']);
         $this->createIndex(null, Table::ASSETINDEXDATA, ['volumeId'], false);
-        $this->createIndex(null, Table::ASSETS, ['filename', 'folderId'], true);
+        $this->createIndex(null, Table::ASSETS, ['filename', 'folderId'], false);
         $this->createIndex(null, Table::ASSETS, ['folderId'], false);
         $this->createIndex(null, Table::ASSETS, ['volumeId'], false);
         $this->createIndex(null, Table::ASSETTRANSFORMINDEX, ['volumeId', 'assetId', 'location'], false);
@@ -769,8 +772,8 @@ class Install extends Migration
         $this->createIndex(null, Table::FIELDS, ['handle', 'context'], true);
         $this->createIndex(null, Table::FIELDS, ['groupId'], false);
         $this->createIndex(null, Table::FIELDS, ['context'], false);
-        $this->createIndex(null, Table::GLOBALSETS, ['name'], true);
-        $this->createIndex(null, Table::GLOBALSETS, ['handle'], true);
+        $this->createIndex(null, Table::GLOBALSETS, ['name'], false);
+        $this->createIndex(null, Table::GLOBALSETS, ['handle'], false);
         $this->createIndex(null, Table::GLOBALSETS, ['fieldLayoutId'], false);
         $this->createIndex(null, Table::MATRIXBLOCKS, ['ownerId'], false);
         $this->createIndex(null, Table::MATRIXBLOCKS, ['fieldId'], false);
@@ -996,12 +999,24 @@ class Install extends Migration
         echo "done\n";
 
         $generalConfig = Craft::$app->getConfig()->getGeneral();
+        $projectConfig = Craft::$app->getProjectConfig();
         $applyExistingProjectConfig = false;
 
         if ($generalConfig->useProjectConfigFile) {
             $configFile = Craft::$app->getPath()->getProjectConfigFilePath();
             if (file_exists($configFile)) {
                 try {
+                    $expectedSchemaVersion = (string)$projectConfig->get(ProjectConfig::CONFIG_SCHEMA_VERSION_KEY, true);
+                    $craftSchemaVersion = (string)Craft::$app->schemaVersion;
+
+                    // Compare existing Craft schema version with the one that is being applied.
+                    if (!version_compare($craftSchemaVersion, $expectedSchemaVersion, '=')) {
+                        throw new InvalidConfigException("Craft is installed at the wrong schema version ({$craftSchemaVersion}, but project.yaml lists {$expectedSchemaVersion}).");
+                    }
+
+                    // Make sure at least sites are processed
+                    ProjectConfigHelper::ensureAllSitesProcessed();
+
                     $this->_installPlugins();
                     $applyExistingProjectConfig = true;
                 } catch (\Throwable $e) {
@@ -1009,10 +1024,13 @@ class Install extends Migration
                     Craft::$app->getErrorHandler()->logException($e);
 
                     // Rename project.yaml so we can create a new one
-                    $backupFile = ProjectConfig::CONFIG_FILENAME . '.' . StringHelper::randomString(10);
-                    echo "    > renaming project.yaml to {$backupFile} ... ";
-                    rename($configFile, dirname($configFile) . '/' . $backupFile);
+                    $backupFile = pathinfo(ProjectConfig::CONFIG_FILENAME, PATHINFO_FILENAME) . date('-Ymh-His') . '.yaml';
+                    echo "    > renaming project.yaml to {$backupFile} and moving to config backup folder ... ";
+                    rename($configFile, Craft::$app->getPath()->getConfigBackupPath() . '/' . $backupFile);
                     echo "done\n";
+
+                    // Forget everything we knew about the old config
+                    $projectConfig->reset();
                 }
             }
         }
@@ -1020,13 +1038,13 @@ class Install extends Migration
         if ($applyExistingProjectConfig) {
             // Save the existing system settings
             echo '    > applying existing project config ... ';
-            Craft::$app->getProjectConfig()->applyYamlChanges();
+            $projectConfig->applyYamlChanges();
             echo "done\n";
         } else {
             // Save the default system settings
             echo '    > saving default site data ... ';
             $configData = $this->_generateInitialConfig();
-            Craft::$app->getProjectConfig()->applyConfigChanges($configData);
+            $projectConfig->applyConfigChanges($configData);
             echo "done\n";
         }
 

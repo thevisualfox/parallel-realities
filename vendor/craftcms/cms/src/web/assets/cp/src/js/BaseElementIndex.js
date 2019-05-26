@@ -45,6 +45,7 @@ Craft.BaseElementIndex = Garnish.Base.extend(
         $clearSearchBtn: null,
 
         $statusMenuBtn: null,
+        $statusMenuContainer: null,
         statusMenu: null,
         status: null,
 
@@ -109,6 +110,7 @@ Craft.BaseElementIndex = Garnish.Base.extend(
             this.$toolbar = this.$container.find('.toolbar:first');
             this.$toolbarFlexContainer = this.$toolbar.children('.flex');
             this.$statusMenuBtn = this.$toolbarFlexContainer.find('.statusmenubtn:first');
+            this.$statusMenuContainer = this.$statusMenuBtn.parent();
             this.$siteMenuBtn = this.$container.find('.sitemenubtn:first');
             this.$sortMenuBtn = this.$toolbarFlexContainer.find('.sortmenubtn:first');
             this.$search = this.$toolbarFlexContainer.find('.search:first input:first');
@@ -407,12 +409,13 @@ Craft.BaseElementIndex = Garnish.Base.extend(
         },
 
         initSourceToggle: function($source) {
+            // Remove handlers for the same thing. Just in case.
+            this.deinitSourceToggle($source);
+
             var $toggle = this._getSourceToggle($source);
 
             if ($toggle.length) {
-                // Remove handlers for the same thing. Just in case.
-                this.removeListener($toggle, 'click', '_handleSourceToggleClick');
-
+                this.addListener($source, 'dblclick', '_handleSourceDblClick');
                 this.addListener($toggle, 'click', '_handleSourceToggleClick');
                 $source.data('hasNestedSources', true);
             } else {
@@ -428,8 +431,8 @@ Craft.BaseElementIndex = Garnish.Base.extend(
 
         deinitSourceToggle: function($source) {
             if ($source.data('hasNestedSources')) {
-                var $toggle = this._getSourceToggle($source);
-                this.removeListener($toggle, 'click');
+                this.removeListener($source, 'dblclick');
+                this.removeListener(this._getSourceToggle($source), 'click');
             }
 
             $source.removeData('hasNestedSources');
@@ -548,13 +551,18 @@ Craft.BaseElementIndex = Garnish.Base.extend(
          * when loading elements.
          */
         getViewParams: function() {
-            var criteria = $.extend({
-                status: this.status,
+            var criteria = {
                 siteId: this.siteId,
                 search: this.searchText,
                 limit: this.settings.batchSize,
                 trashed: this.trashed ? 1 : 0
-            }, this.settings.criteria);
+            };
+
+            if (!Garnish.hasAttr(this.$source, 'data-override-status')) {
+                criteria.status = this.status;
+            }
+
+            $.extend(criteria, this.settings.criteria);
 
             var params = {
                 context: this.settings.context,
@@ -825,6 +833,9 @@ Craft.BaseElementIndex = Garnish.Base.extend(
                 return false;
             }
 
+            // Hide action triggers if they're currently being shown
+            this.hideActionTriggers();
+
             this.$source = $source;
             this.sourceKey = $source.data('key');
             this.setInstanceState('selectedSource', this.sourceKey);
@@ -856,6 +867,17 @@ Craft.BaseElementIndex = Garnish.Base.extend(
             }
 
             this.setStoredSortOptionsForSource();
+
+            // Status menu
+            // ----------------------------------------------------------------------
+
+            if (this.$statusMenuBtn.length) {
+                if (Garnish.hasAttr(this.$source, 'data-override-status')) {
+                    this.$statusMenuContainer.addClass('hidden');
+                } else {
+                    this.$statusMenuContainer.removeClass('hidden');
+                }
+            }
 
             // View mode buttons
             // ----------------------------------------------------------------------
@@ -1368,6 +1390,11 @@ Craft.BaseElementIndex = Garnish.Base.extend(
             this.onSelectionChange();
         },
 
+        _handleSourceDblClick: function(ev) {
+            this._toggleSource($(ev.currentTarget));
+            ev.stopPropagation();
+        },
+
         _handleSourceToggleClick: function(ev) {
             this._toggleSource($(ev.currentTarget).prev('a'));
             ev.stopPropagation();
@@ -1381,14 +1408,15 @@ Craft.BaseElementIndex = Garnish.Base.extend(
             }
 
             if (this.trashed || this.searching) {
-                if (!$option.hasClass('disabled')) {
-                    $option.addClass('disabled');
+                $option.addClass('disabled');
+                if (this.getSelectedSortAttribute() === 'structure') {
                     // Temporarily set the sort to the first option
                     var $firstOption = this.$sortAttributesList.find('a:not(.disabled):first')
                     this.setSortAttribute($firstOption.data('attr'));
                     this.setSortDirection('asc');
                 }
             } else {
+                $option.removeClass('disabled');
                 this.setStoredSortOptionsForSource();
             }
         },

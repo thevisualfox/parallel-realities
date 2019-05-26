@@ -1,4 +1,4 @@
-/*!   - 2019-01-15 */
+/*!   - 2019-05-14 */
 (function($){
 
 /** global: Craft */
@@ -806,15 +806,16 @@ $.extend(Craft,
          * Converts extended ASCII characters to ASCII.
          *
          * @param {string} str
+         * @param {object|undefined} charMap
          * @return string
          */
-        asciiString: function(str) {
+        asciiString: function(str, charMap) {
             var asciiStr = '';
             var char;
 
             for (var i = 0; i < str.length; i++) {
                 char = str.charAt(i);
-                asciiStr += Craft.asciiCharMap[char] || char;
+                asciiStr += (charMap || Craft.asciiCharMap)[char] || char;
             }
 
             return asciiStr;
@@ -1733,6 +1734,7 @@ Craft.BaseElementIndex = Garnish.Base.extend(
         $clearSearchBtn: null,
 
         $statusMenuBtn: null,
+        $statusMenuContainer: null,
         statusMenu: null,
         status: null,
 
@@ -1797,6 +1799,7 @@ Craft.BaseElementIndex = Garnish.Base.extend(
             this.$toolbar = this.$container.find('.toolbar:first');
             this.$toolbarFlexContainer = this.$toolbar.children('.flex');
             this.$statusMenuBtn = this.$toolbarFlexContainer.find('.statusmenubtn:first');
+            this.$statusMenuContainer = this.$statusMenuBtn.parent();
             this.$siteMenuBtn = this.$container.find('.sitemenubtn:first');
             this.$sortMenuBtn = this.$toolbarFlexContainer.find('.sortmenubtn:first');
             this.$search = this.$toolbarFlexContainer.find('.search:first input:first');
@@ -2095,12 +2098,13 @@ Craft.BaseElementIndex = Garnish.Base.extend(
         },
 
         initSourceToggle: function($source) {
+            // Remove handlers for the same thing. Just in case.
+            this.deinitSourceToggle($source);
+
             var $toggle = this._getSourceToggle($source);
 
             if ($toggle.length) {
-                // Remove handlers for the same thing. Just in case.
-                this.removeListener($toggle, 'click', '_handleSourceToggleClick');
-
+                this.addListener($source, 'dblclick', '_handleSourceDblClick');
                 this.addListener($toggle, 'click', '_handleSourceToggleClick');
                 $source.data('hasNestedSources', true);
             } else {
@@ -2116,8 +2120,8 @@ Craft.BaseElementIndex = Garnish.Base.extend(
 
         deinitSourceToggle: function($source) {
             if ($source.data('hasNestedSources')) {
-                var $toggle = this._getSourceToggle($source);
-                this.removeListener($toggle, 'click');
+                this.removeListener($source, 'dblclick');
+                this.removeListener(this._getSourceToggle($source), 'click');
             }
 
             $source.removeData('hasNestedSources');
@@ -2236,13 +2240,18 @@ Craft.BaseElementIndex = Garnish.Base.extend(
          * when loading elements.
          */
         getViewParams: function() {
-            var criteria = $.extend({
-                status: this.status,
+            var criteria = {
                 siteId: this.siteId,
                 search: this.searchText,
                 limit: this.settings.batchSize,
                 trashed: this.trashed ? 1 : 0
-            }, this.settings.criteria);
+            };
+
+            if (!Garnish.hasAttr(this.$source, 'data-override-status')) {
+                criteria.status = this.status;
+            }
+
+            $.extend(criteria, this.settings.criteria);
 
             var params = {
                 context: this.settings.context,
@@ -2513,6 +2522,9 @@ Craft.BaseElementIndex = Garnish.Base.extend(
                 return false;
             }
 
+            // Hide action triggers if they're currently being shown
+            this.hideActionTriggers();
+
             this.$source = $source;
             this.sourceKey = $source.data('key');
             this.setInstanceState('selectedSource', this.sourceKey);
@@ -2544,6 +2556,17 @@ Craft.BaseElementIndex = Garnish.Base.extend(
             }
 
             this.setStoredSortOptionsForSource();
+
+            // Status menu
+            // ----------------------------------------------------------------------
+
+            if (this.$statusMenuBtn.length) {
+                if (Garnish.hasAttr(this.$source, 'data-override-status')) {
+                    this.$statusMenuContainer.addClass('hidden');
+                } else {
+                    this.$statusMenuContainer.removeClass('hidden');
+                }
+            }
 
             // View mode buttons
             // ----------------------------------------------------------------------
@@ -3056,6 +3079,11 @@ Craft.BaseElementIndex = Garnish.Base.extend(
             this.onSelectionChange();
         },
 
+        _handleSourceDblClick: function(ev) {
+            this._toggleSource($(ev.currentTarget));
+            ev.stopPropagation();
+        },
+
         _handleSourceToggleClick: function(ev) {
             this._toggleSource($(ev.currentTarget).prev('a'));
             ev.stopPropagation();
@@ -3069,14 +3097,15 @@ Craft.BaseElementIndex = Garnish.Base.extend(
             }
 
             if (this.trashed || this.searching) {
-                if (!$option.hasClass('disabled')) {
-                    $option.addClass('disabled');
+                $option.addClass('disabled');
+                if (this.getSelectedSortAttribute() === 'structure') {
                     // Temporarily set the sort to the first option
                     var $firstOption = this.$sortAttributesList.find('a:not(.disabled):first')
                     this.setSortAttribute($firstOption.data('attr'));
                     this.setSortDirection('asc');
                 }
             } else {
+                $option.removeClass('disabled');
                 this.setStoredSortOptionsForSource();
             }
         },
@@ -4935,7 +4964,7 @@ Craft.AssetImageEditor = Garnish.Modal.extend(
         loadEditor: function(data) {
 
             if (!data.html) {
-                alert(Craft.t('Could not load the image editor.', 'app'));
+                alert(Craft.t('app', 'Could not load the image editor.'));
             }
 
             this.$body.html(data.html);
@@ -8798,7 +8827,7 @@ Craft.AssetSelectInput = Craft.BaseElementSelectInput.extend(
          * Handle element being focused
          * @private
          */
-        _onElementFocus: function (ev) {
+        _onElementFocus: function(ev) {
             var $element = $(ev.item);
 
             if (Craft.PreviewFileModal.openInstance && $element.length) {
@@ -8926,9 +8955,13 @@ Craft.AssetSelectInput = Craft.BaseElementSelectInput.extend(
             if (data.result.error) {
                 alert(data.result.error);
             } else {
-                var elementId = data.result.assetId;
+                var parameters = {
+                    elementId: data.result.assetId,
+                    siteId: this.settings.criteria.siteId,
+                    size: this.settings.viewMode
+                };
 
-                Craft.postActionRequest('elements/get-element-html', {elementId: elementId, siteId: this.settings.criteria.siteId}, function (data) {
+                Craft.postActionRequest('elements/get-element-html', parameters, function(data) {
                     if (data.error) {
                         alert(data.error);
                     } else {
@@ -11032,7 +11065,7 @@ Craft.CP = Garnish.Base.extend(
                         this.selectTab(ev.currentTarget);
                     });
 
-                    if (href === document.location.hash) {
+                    if (encodeURIComponent(href.substr(1)) === document.location.hash.substr(1)) {
                         this.selectTab(a);
                     }
                 }
@@ -12727,13 +12760,17 @@ Craft.EditableTable = Garnish.Base.extend(
             this.settings.onDeleteRow(row.$tr);
         },
         canAddRow: function() {
+            if (this.settings.staticRows) {
+                return false;
+            }
+
             if (this.settings.maxRows) {
                 return (this.rowCount < this.settings.maxRows);
             }
 
             return true;
         },
-        addRow: function(focus) {
+        addRow: function(focus, prepend) {
             if (!this.canAddRow()) {
                 return;
             }
@@ -12741,7 +12778,12 @@ Craft.EditableTable = Garnish.Base.extend(
             var rowId = this.settings.rowIdPrefix + (this.biggestId + 1),
                 $tr = this.createRow(rowId, this.columns, this.baseName, $.extend({}, this.settings.defaultValues));
 
-            $tr.appendTo(this.$tbody);
+            if (prepend) {
+                $tr.prependTo(this.$tbody);
+            } else {
+                $tr.appendTo(this.$tbody);
+            }
+
             var row = new Craft.EditableTable.Row(this, $tr);
             this.sorter.addItems($tr);
 
@@ -12761,10 +12803,76 @@ Craft.EditableTable = Garnish.Base.extend(
 
         createRow: function(rowId, columns, baseName, values) {
             return Craft.EditableTable.createRow(rowId, columns, baseName, values);
-        }
+        },
+
+        focusOnPrevRow: function($tr, tdIndex, blurTd) {
+            var $prevTr = $tr.prev('tr');
+            var prevRow;
+
+            if ($prevTr.length) {
+                prevRow = $prevTr.data('editable-table-row');
+            } else {
+                prevRow = this.addRow(false, true);
+            }
+
+            // Focus on the same cell in the previous row
+            if (!prevRow) {
+                return;
+            }
+
+            if (!prevRow.$tds[tdIndex]) {
+                return;
+            }
+
+            if ($(prevRow.$tds[tdIndex]).hasClass('disabled')) {
+                if ($prevTr) {
+                    this.focusOnPrevRow($prevTr, tdIndex, blurTd);
+                }
+                return;
+            }
+
+            var $input = $('textarea,input.text', prevRow.$tds[tdIndex]);
+            if ($input.length) {
+                $(blurTd).trigger('blur');
+                $input.trigger('focus');
+            }
+        },
+
+        focusOnNextRow: function($tr, tdIndex, blurTd) {
+            var $nextTr = $tr.next('tr');
+            var nextRow;
+
+            if ($nextTr.length) {
+                nextRow = $nextTr.data('editable-table-row');
+            } else {
+                nextRow = this.addRow(false);
+            }
+
+            // Focus on the same cell in the next row
+            if (!nextRow) {
+                return;
+            }
+
+            if (!nextRow.$tds[tdIndex]) {
+                return;
+            }
+
+            if ($(nextRow.$tds[tdIndex]).hasClass('disabled')) {
+                if ($nextTr) {
+                    this.focusOnNextRow($nextTr, tdIndex, blurTd);
+                }
+                return;
+            }
+
+            var $input = $('textarea,input.text', nextRow.$tds[tdIndex]);
+            if ($input.length) {
+                $(blurTd).trigger('blur');
+                $input.trigger('focus');
+            }
+        },
     },
     {
-        textualColTypes: ['color', 'date', 'multiline', 'number', 'singleline', 'time'],
+        textualColTypes: ['color', 'date', 'multiline', 'number', 'singleline', 'template', 'time'],
         defaults: {
             rowIdPrefix: '',
             defaultValues: {},
@@ -12949,11 +13057,8 @@ Craft.EditableTable.Row = Garnish.Base.extend(
                     }));
 
                     this.addListener($textarea, 'keypress', {tdIndex: i, type: col.type}, 'handleKeypress');
-
-                    if (col.type === 'singleline' || col.type === 'number') {
-                        this.addListener($textarea, 'textchange', {type: col.type}, 'validateValue');
-                        $textarea.trigger('textchange');
-                    }
+                    this.addListener($textarea, 'textchange', {type: col.type}, 'validateValue');
+                    $textarea.trigger('textchange');
 
                     textareasByColId[colId] = $textarea;
                 } else if (col.type === 'checkbox' && col.radioMode) {
@@ -12981,7 +13086,9 @@ Craft.EditableTable.Row = Garnish.Base.extend(
                 col = this.table.columns[colId];
 
                 if (col.autopopulate && typeof textareasByColId[col.autopopulate] !== 'undefined' && !textareasByColId[colId].val()) {
-                    new Craft.HandleGenerator(textareasByColId[colId], textareasByColId[col.autopopulate]);
+                    new Craft.HandleGenerator(textareasByColId[colId], textareasByColId[col.autopopulate], {
+                        allowNonAlphaStart: true
+                    });
                 }
             }
 
@@ -13021,24 +13128,14 @@ Craft.EditableTable.Row = Garnish.Base.extend(
             var keyCode = ev.keyCode ? ev.keyCode : ev.charCode;
             var ctrl = Garnish.isCtrlKeyPressed(ev);
 
-            // Going to the next row?
+            // Going to the next/previous row?
             if (keyCode === Garnish.RETURN_KEY && (ev.data.type !== 'multiline' || ctrl)) {
                 ev.preventDefault();
-                var $nextTr = this.$tr.next('tr');
-                var nextRow;
-
-                if ($nextTr.length) {
-                    nextRow = $nextTr.data('editable-table-row');
+                if (ev.shiftKey) {
+                    this.table.focusOnPrevRow(this.$tr, ev.data.tdIndex, ev.currentTarget);
                 } else {
-                    nextRow = this.table.addRow(false);
+                    this.table.focusOnNextRow(this.$tr, ev.data.tdIndex, ev.currentTarget);
                 }
-
-                // Focus on the same cell in the next row
-                if (nextRow) {
-                    $(ev.currentTarget).trigger('blur');
-                    $('textarea', nextRow.$tds[ev.data.tdIndex]).trigger('focus');
-                }
-
                 return;
             }
 
@@ -13049,6 +13146,10 @@ Craft.EditableTable.Row = Garnish.Base.extend(
         },
 
         validateValue: function(ev) {
+            if (ev.data.type === 'multiline') {
+                return;
+            }
+
             var safeValue;
 
             if (ev.data.type === 'number') {
@@ -13475,7 +13576,7 @@ Craft.ElevatedSessionManager = Garnish.Base.extend(
             this.clearLoginError();
 
             var data = {
-                password: this.$passwordInput.val()
+                currentPassword: this.$passwordInput.val()
             };
 
             Craft.postActionRequest('users/start-elevated-session', data, $.proxy(function(response, textStatus) {
@@ -13487,7 +13588,7 @@ Craft.ElevatedSessionManager = Garnish.Base.extend(
                         this.callback();
                     }
                     else {
-                        this.showPasswordError(Craft.t('app', 'Incorrect password.'));
+                        this.showPasswordError(response.message || Craft.t('app', 'Incorrect password.'));
                         Garnish.shake(this.passwordModal.$container);
                         this.focusPasswordInput();
                     }
@@ -15156,8 +15257,10 @@ Craft.HandleGenerator = Craft.BaseInputGenerator.extend(
             // Convert extended ASCII characters to basic ASCII
             handle = Craft.asciiString(handle);
 
-            // Handle must start with a letter
-            handle = handle.replace(/^[^a-z]+/, '');
+            if (!this.settings.allowNonAlphaStart) {
+                // Handle must start with a letter
+                handle = handle.replace(/^[^a-z]+/, '');
+            }
 
             // Get the "words"
             var words = Craft.filterArray(handle.split(/[^a-z0-9]+/));
@@ -15890,7 +15993,7 @@ Craft.LivePreview = Garnish.Base.extend(
                 this._scrollY = $doc ? $doc.scrollTop() : 0;
 
                 $.ajax({
-                    url: this.previewUrl,
+                    url: this.previewUrl + (this.previewUrl.indexOf('?') !== -1 ? '&' : '?') + Craft.tokenParam + '=' + this.token,
                     method: 'POST',
                     data: $.extend({}, postData, this.basePostData),
                     headers: {
@@ -16883,7 +16986,7 @@ Craft.SlugGenerator = Craft.BaseInputGenerator.extend(
 
             if (Craft.limitAutoSlugsToAscii) {
                 // Convert extended ASCII characters to basic ASCII
-                sourceVal = Craft.asciiString(sourceVal);
+                sourceVal = Craft.asciiString(sourceVal, this.settings.charMap);
             }
 
             // Get the "words". Split on anything that is not alphanumeric.
@@ -18561,8 +18664,14 @@ Craft.TagSelectInput = Craft.BaseElementSelectInput.extend(
                         var $li;
 
                         for (var i = 0; i < response.tags.length; i++) {
-                            $li = $('<li/>').appendTo($ul);
-                            $('<a data-icon="tag"/>').appendTo($li).text(response.tags[i].title).data('id', response.tags[i].id);
+                            $li = $('<li/>')
+                                .appendTo($ul);
+
+                            $('<a data-icon="tag"/>')
+                                .appendTo($li)
+                                .text(response.tags[i].title)
+                                .data('id', response.tags[i].id)
+                                .addClass(response.tags[i].exclude ? 'disabled' : '');
                         }
 
                         if (!response.exactMatch) {
@@ -18570,7 +18679,7 @@ Craft.TagSelectInput = Craft.BaseElementSelectInput.extend(
                             $('<a data-icon="plus"/>').appendTo($li).text(data.search);
                         }
 
-                        $ul.find('> li:first-child > a').addClass('hover');
+                        $ul.find('a:not(.disabled):first').addClass('hover');
 
                         this.searchMenu = new Garnish.Menu($menu, {
                             attachToElement: this.$addTagInput,
@@ -18592,9 +18701,14 @@ Craft.TagSelectInput = Craft.BaseElementSelectInput.extend(
         },
 
         selectTag: function(option) {
-            var $option = $(option),
-                id = $option.data('id'),
-                title = $option.text();
+            var $option = $(option);
+
+            if ($option.hasClass('disabled')) {
+                return;
+            }
+
+            var id = $option.data('id');
+            var title = $option.text();
 
             var $element = $('<div/>', {
                 'class': 'element small removable',

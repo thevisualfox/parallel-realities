@@ -584,8 +584,8 @@ class EntryQuery extends ElementQuery
      *
      * ```php
      * // Fetch {elements} posted last month
-     * $start = new \DateTime('first day of next month')->format(\DateTime::ATOM);
-     * $end = new \DateTime('first day of this month')->format(\DateTime::ATOM);
+     * $start = (new \DateTime('first day of last month'))->format(\DateTime::ATOM);
+     * $end = (new \DateTime('first day of this month'))->format(\DateTime::ATOM);
      *
      * ${elements-var} = {php-method}
      *     ->postDate(['and', ">= {$start}", "< {$end}"])
@@ -689,6 +689,8 @@ class EntryQuery extends ElementQuery
      *
      * | Value | Fetches {elements}…
      * | - | -
+     * | `':empty:'` | that don’t have an expiry date.
+     * | `':notempty:'` | that have an expiry date.
      * | `'>= 2020-04-01'` | that will expire on or after 2020-04-01.
      * | `'< 2020-05-01'` | that will expire before 2020-05-01
      * | `['and', '>= 2020-04-04', '< 2020-05-01']` | that will expire between 2020-04-01 and 2020-05-01.
@@ -706,7 +708,7 @@ class EntryQuery extends ElementQuery
      *
      * ```php
      * // Fetch {elements} expiring this month
-     * $nextMonth = new \DateTime('first day of next month')->format(\DateTime::ATOM);
+     * $nextMonth = (new \DateTime('first day of next month'))->format(\DateTime::ATOM);
      *
      * ${elements-var} = {php-method}
      *     ->expiryDate("< {$nextMonth}")
@@ -913,8 +915,9 @@ class EntryQuery extends ElementQuery
                     ->select(['structureId'])
                     ->from([Table::SECTIONS])
                     ->where(Db::parseParam('id', $this->sectionId))
+                    ->andWhere(['type' => Section::TYPE_STRUCTURE])
                     ->scalar();
-                $this->structureId = $structureId ? (int)$structureId : false;
+                $this->structureId = (int)$structureId ?: false;
             }
 
             $this->subQuery->andWhere(Db::parseParam('entries.sectionId', $this->sectionId));

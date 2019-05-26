@@ -45,7 +45,17 @@ class Assets
     // Properties
     // =========================================================================
 
+    /**
+     * @var array Supported file kinds
+     * @see getFileKinds()
+     */
     private static $_fileKinds;
+
+    /**
+     * @var array Allowed file kinds
+     * @see getAllowedFileKinds()
+     */
+    private static $_allowedFileKinds;
 
     // Public Methods
     // =========================================================================
@@ -153,6 +163,10 @@ class Assets
             $baseName = '-';
         }
 
+        if (!$isFilename) {
+            $baseName = $baseNameSanitized;
+        }
+
         return $baseName . $extension;
     }
 
@@ -164,7 +178,7 @@ class Assets
      */
     public static function filename2Title(string $filename): string
     {
-        return StringHelper::upperCaseFirst(implode(' ', StringHelper::toWords($filename)));
+        return StringHelper::upperCaseFirst(implode(' ', StringHelper::toWords($filename, false, true)));
     }
 
     /**
@@ -276,6 +290,32 @@ class Assets
     {
         self::_buildFileKinds();
         return self::$_fileKinds;
+    }
+
+    /**
+     * Returns a list of file kinds that are allowed to be uploaded.
+     *
+     * @return array The allowed file kinds
+     */
+    public static function getAllowedFileKinds(): array
+    {
+        if (self::$_allowedFileKinds !== null) {
+            return self::$_allowedFileKinds;
+        }
+
+        self::$_allowedFileKinds = [];
+        $allowedExtensions = array_flip(Craft::$app->getConfig()->getGeneral()->allowedFileExtensions);
+
+        foreach (static::getFileKinds() as $kind => $info) {
+            foreach ($info['extensions'] as $extension) {
+                if (isset($allowedExtensions[$extension])) {
+                    self::$_allowedFileKinds[$kind] = $info;
+                    continue 2;
+                }
+            }
+        }
+
+        return self::$_allowedFileKinds;
     }
 
     /**
