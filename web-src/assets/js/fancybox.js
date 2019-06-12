@@ -10,5 +10,8 @@ $('[data-fancybox="default"]').fancybox({
     animationEffect: "zoom",
     animationDuration: 200,
     buttons: ["thumbs", "close"],
-    clickContent: false
+    clickContent: false,
+    caption : function( instance, item ) {
+		return $(this).next('figcaption').html();
+	}
 });

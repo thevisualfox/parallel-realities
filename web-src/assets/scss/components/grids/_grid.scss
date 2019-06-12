@@ -63,3 +63,17 @@
         max-width: 992px;
     }
 }
+
+.grid {
+    .grid__item {
+        width: 100%;
+
+        @include media-breakpoint-up(md) {
+            width: calc((100% / 2) - (25px / 2));
+        }
+
+        @include media-breakpoint-up(lg) {
+            width: calc((100% / 3) - (50px / 3));
+        }
+    }
+}
