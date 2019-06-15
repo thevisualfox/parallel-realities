@@ -2,7 +2,7 @@
 {% set imageTransform = { width: 1280, mode: 'crop' } %}
 
 <div class="grid__item">
-    <figure class="media media--cases image-zoom">
+    <figure class="media media--cases">
         {% if image %}
             <a class="text-white"
                href="{{ entry.separatePage ? entry.url : image.getUrl() }}"

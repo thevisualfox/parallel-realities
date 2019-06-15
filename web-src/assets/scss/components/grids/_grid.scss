@@ -16,7 +16,8 @@
                     }
                 }
 
-                @each $size, $length in $grid-gutter-widths {
+                @each $size,
+                $length in $grid-gutter-widths {
 
                     &.gutters#{$infix}-#{$size} {
                         margin-top: -$length;
@@ -65,15 +66,23 @@
 }
 
 .grid {
+    column-count: 1;
+    column-width: 100%;
+    column-gap: 1rem;
+
+    @include media-breakpoint-up(md) {
+        column-count: 2;
+        column-width: calc(100% / 2);
+    }
+
+    @include media-breakpoint-up(lg) {
+        column-count: 3;
+        column-width: calc(100% / 3);
+    }
+
     .grid__item {
+        overflow: hidden;
+        display: inline-block;
         width: 100%;
-
-        @include media-breakpoint-up(md) {
-            width: calc((100% / 2) - (25px / 2));
-        }
-
-        @include media-breakpoint-up(lg) {
-            width: calc((100% / 3) - (50px / 3));
-        }
     }
 }

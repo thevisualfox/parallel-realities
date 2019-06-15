@@ -1,7 +1,7 @@
 <section id="cases" class="pane">
     <div class="container">
         <h2 class="text-center mb-5">Cases</h2>
-        <div class="grid" data-grid>
+        <div class="grid">
             {% for entry in craft.entries.section('showcase').all() %}
                 {% include '_components/showcase/showcase_preview.twig' %}
             {% endfor %}
