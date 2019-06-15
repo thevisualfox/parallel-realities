@@ -1,4 +1,4 @@
-import Bricks from "bricks.js";
+import Bricks from "./bricksSource";
 
 const sizes = [
     { columns: 1, gutter: 10 },
