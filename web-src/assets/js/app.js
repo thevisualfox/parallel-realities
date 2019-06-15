@@ -5,5 +5,3 @@ import "bootstrap";
 import "./fancybox";
 import "./intersectionNav";
 import "./disableImageDownload";
-import "./bricks";
-import "./bricksSource";
