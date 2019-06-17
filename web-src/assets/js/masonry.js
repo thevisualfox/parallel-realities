@@ -80,4 +80,4 @@ function resizeMasonryItem(item){
   } );
 
   /* Do a resize once more when all the images finish loading */
-
+  waitForImages();
