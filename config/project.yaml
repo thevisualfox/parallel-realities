@@ -1,4 +1,4 @@
-dateModified: 1558875279
+dateModified: 1560277114
 email:
   fromEmail: jurjen.p.vos@gmail.com
   fromName: 'Parallel Realities'
@@ -232,17 +232,17 @@ fields:
     translationMethod: none
     type: craft\fields\PlainText
   8313fac4-f0e0-49b4-b4f3-d7aeafaa513f:
-    contentColumnType: boolean
-    fieldGroup: 7f6ceebb-ff32-4474-a724-971cd458e4ef
+    name: 'Separate Page'
     handle: separatePage
     instructions: 'Uncheck if you just want the image to zoom when clicked (default is separate page on click)'
-    name: 'Separate Page'
-    searchable: '1'
-    settings:
-      default: '1'
-    translationKeyFormat: null
+    searchable: true
     translationMethod: none
+    translationKeyFormat: null
     type: craft\fields\Lightswitch
+    settings:
+      default: ''
+    contentColumnType: boolean
+    fieldGroup: 7f6ceebb-ff32-4474-a724-971cd458e4ef
   87364506-c4ff-493e-a56c-f11ff937a25c:
     contentColumnType: string
     fieldGroup: dbf2593b-4a3a-4add-ae4e-83b18beeab71

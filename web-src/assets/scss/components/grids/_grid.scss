@@ -16,7 +16,8 @@
                     }
                 }
 
-                @each $size, $length in $grid-gutter-widths {
+                @each $size,
+                $length in $grid-gutter-widths {
 
                     &.gutters#{$infix}-#{$size} {
                         margin-top: -$length;
@@ -61,5 +62,24 @@
 
     .container--narrow {
         max-width: 992px;
+    }
+}
+
+.grid {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(1, 1fr);
+    grid-auto-rows: 0;
+
+    @include media-breakpoint-up(md) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include media-breakpoint-up(lg) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .grid__item {
+        overflow: hidden;
     }
 }
