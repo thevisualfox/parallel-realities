@@ -1,20 +1,20 @@
 {% set image  = entry.image.one() %}
-{% set imageTransform = { width: 1280, height: 720, mode: 'crop' } %}
+{% set imageTransform = { width: 1280, mode: 'crop' } %}
 
-<div class="col-12 col-md-6 col-lg-4">
-    <figure class="media position-relative image-zoom">
+<div class="grid__item">
+    <figure class="media media--cases image-zoom mb-0">
         {% if image %}
             <a class="text-white"
                href="{{ entry.separatePage ? entry.url : image.getUrl() }}"
                title="{{ entry.title }}" {% if entry.separatePage == 0 %} data-fancybox="default" {% endif %}>
                 {% if image %}
-                    <img src="{{ image.getUrl(imageTransform) }}" alt="{{ image.title }}">
+                    <img class="img-fluid" src="{{ image.getUrl(imageTransform) }}" alt="{{ image.title }}">
                 {% endif %}
             </a>
+            <figcaption class="d-flex flex-column media__caption">
+                <p class="text-small text-regular text-spaced mb-0 text-white">{{ entry.title }}</p>
+                <p class="text-smaller text-light text-white">{{ entry.subtitle }}</p>
+            </figcaption>
         {% endif %}
     </figure>
-    <figcaption class="d-flex flex-column media__caption">
-        <p class="text-small text-regular text-spaced mb-0">{{ entry.title }}</p>
-        <p class="text-smaller text-light">{{ entry.subtitle }}</p>
-    </figcaption>
 </div>
