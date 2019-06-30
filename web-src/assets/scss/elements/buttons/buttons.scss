@@ -1,0 +1,17 @@
+.btn{}
+
+.btn-base {
+    background-color: transparent;
+    padding: 0;
+    text-align: right;
+    color: $base;
+    border: none;
+    text-decoration: underline;
+    font-weight: 300;
+
+    &:hover {
+        background-color: transparent;
+        color: $base;
+        text-decoration: none;
+    }
+}

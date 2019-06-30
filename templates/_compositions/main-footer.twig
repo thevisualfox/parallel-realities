@@ -4,37 +4,94 @@
             <h1 class="text-larger">{{ footer.companyName }}</h1>
         </div>
     </div>
-    <div class="row justify-content-center text-center">
-        <div class="col">
-            <a href="https://goo.gl/maps/v826RK52vydbqAk16" target="_blank" rel="noopener noreferrer">
-                {{ footer.companyAddress|raw }}
-            </a>
+    <div class="row justify-content-center mt-3 mb-6">
+        <div class="col-8">
+            <div class="row gutters-3">
+                <div class="col-12 col-md-5 d-flex flex-column">
+                    <h3>Any questions?<br> Send us an Email</h3>
+                    <ul class="list list--spaced mt-auto">
+                        <li class="list__item">
+                             <a href="https://goo.gl/maps/v826RK52vydbqAk16" target="_blank" rel="noopener noreferrer">
+                                {{ footer.companyAddress|raw }}
+                            </a>
+                        </li>
+                        <li class="list__item d-flex align-items-center">
+                            <a class="text-regular" href="tel:{{ footer.companyPhone }}"
+                                title="{{ footer.companyName }} | Phone Number">
+                                <svg class="icon icon--20 mr-1">
+                                    <use xlink:href="{{ alias('@web/app/assets/img/symbols.svg#phone') }}"></use>
+                                </svg>
+                                {{ footer.companyPhone }}
+                            </a>
+                        </li>
+                        {# <li class="list__item">
+                            <a class="text-regular" href="mailto:{{ footer.companyEmail }}" title="{{ footer.companyName }} | Email">
+                                <svg class="icon icon--20 mr-1">
+                                    <use xlink:href="{{ alias('@web/app/assets/img/symbols.svg#mail') }}"></use>
+                                </svg>{{ footer.companyEmail }}
+                            </a>
+                        </li> #}
+                        <li class="list__item">
+                             <ul class="list d-flex align-items-center">
+                                {% for block in footer.socialMedia.all() %}
+                                    {% include '_elements/footer/social-media.twig' %}
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-12 col-md-7">
+                    {% macro errorList(errors) %}
+                        {% if errors %}
+                            <ul class="errors">
+                                {% for error in errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    {% endmacro %}
+
+                    {% from _self import errorList %}
+
+                    <form method="post" action="" accept-charset="UTF-8">
+                        {{ csrfInput() }}
+                        <input type="hidden" name="action" value="contact-form/send">
+                        <div class="row gutters-3">
+                            <div class="col-12 col-md-12">
+                                <label class="form-control-label" for="from-name">Name</label>
+                                <input id="from-name" type="text" name="fromName" class="form-control" value="{{message.fromName ?? '' }}" required>
+                                {{ message is defined and message ? errorList(message.getErrors('fromName')) }}
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-control-label" for="from-email">Email *</label>
+                                <input type="email" class="form-control" name="fromEmail" id="from-email" value="{{ message.fromEmail ?? '' }}" required>
+                                {{ message is defined and message ? errorList(message.getErrors('fromEmail')) }}
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-control-label" for="inputPassword4">Phone</label>
+                                <input type="tel" class="form-control" id="inputPassword4">
+                            </div>
+                            <div class="col-12 col-md-12">
+                                <label class="form-control-label" for="message">Message *</label>
+                                <textarea class="form-control" id="message" name="message" rows="2" required>
+                                    {{ message.message ?? '' }}
+                                </textarea>
+                                {{ message is defined and message ? errorList(message.getErrors('message')) }}
+                            </div>
+                            <div class="col-12 col-md-9">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="privacyConditions" required>
+                                    <label class="form-check-label" name="privacyConditions" for="privacyConditions">I agree with the privacy conditions *</label>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-3 d-flex align-items-end">
+                                <button type="submit" class="btn btn-base btn-block">Send</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="row justify-content-center text-center m-4">
-        <div class="col-12 mb-2">
-            <a class="text-regular" href="tel:{{ footer.companyPhone }}"
-               title="{{ footer.companyName }} | Phone Number">
-                <svg class="icon icon--20 mr-1">
-                    <use xlink:href="{{ alias('@web/app/assets/img/symbols.svg#phone') }}"></use>
-                </svg>
-                {{ footer.companyPhone }}
-            </a>
-        </div>
-        <div class="col-12">
-            <a class="text-regular" href="mailto:{{ footer.companyEmail }}" title="{{ footer.companyName }} | Email">
-                <svg class="icon icon--20 mr-1">
-                    <use xlink:href="{{ alias('@web/app/assets/img/symbols.svg#mail') }}"></use>
-                </svg>{{ footer.companyEmail }}
-            </a>
-        </div>
-    </div>
-    <div class="row justify-content-center text-center m-4">
-        <ul class="list d-flex align-items-center">
-            {% for block in footer.socialMedia.all() %}
-                {% include '_elements/footer/social-media.twig' %}
-            {% endfor %}
-        </ul>
     </div>
     <div class="row justify-content-center text-center m-4">
         <div class="col">
