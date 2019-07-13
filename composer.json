@@ -3,7 +3,8 @@
     "craftcms/cms": "3.1.28",
     "vlucas/phpdotenv": "^2.4.0",
     "craftcms/redactor": "2.3.3.2",
-    "craftcms/contact-form": "2.2.5"
+    "craftcms/contact-form": "2.2.5",
+    "clarknelson/craft-recaptcha-3": "^1.0"
   },
   "autoload": {
     "psr-4": {
