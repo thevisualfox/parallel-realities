@@ -1,17 +1,25 @@
-.btn{}
+.btn {}
 
 .btn-base {
     background-color: transparent;
     padding: 0;
-    text-align: right;
+    text-align: left;
     color: $base;
     border: none;
     text-decoration: underline;
     font-weight: 300;
 
-    &:hover {
-        background-color: transparent;
-        color: $base;
-        text-decoration: none;
+    @include media-breakpoint-up(md) {
+        text-align: right;
+    }
+
+    &:hover,
+    &:active,
+    &:focus {
+        background-color: transparent !important;
+        color: $base !important;
+        text-decoration: none !important;
+        box-shadow: none !important;
+        border: none !important;
     }
 }

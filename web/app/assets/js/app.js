@@ -10458,6 +10458,8 @@ __webpack_require__(9);
 
 __webpack_require__(10);
 
+__webpack_require__(13);
+
 /***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -23282,6 +23284,44 @@ return EvEmitter;
 
 }));
 
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+(0, _jquery2.default)("#contact-form").submit(function (event) {
+    event.preventDefault();
+
+    _jquery2.default.post({
+        url: "/",
+        dataType: "json",
+        data: (0, _jquery2.default)(this).serialize(),
+        success: function success(response) {
+            if (response.success) {
+                (0, _jquery2.default)("#confirmation").fadeIn();
+
+                setTimeout(function () {
+                    (0, _jquery2.default)("#confirmation").fadeOut();
+                }, 5000);
+            } else {
+                (0, _jquery2.default)("#error").fadeIn();
+
+                setTimeout(function () {
+                    (0, _jquery2.default)("#error").fadeOut();
+                }, 5000);
+            }
+        }
+    });
+});
 
 /***/ })
 /******/ ]);
