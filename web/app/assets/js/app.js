@@ -23308,6 +23308,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
         success: function success(response) {
             if (response.success) {
                 (0, _jquery2.default)("#confirmation").fadeIn();
+                (0, _jquery2.default)("#contact-form")[0].reset();
 
                 setTimeout(function () {
                     (0, _jquery2.default)("#confirmation").fadeOut();
