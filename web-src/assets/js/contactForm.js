@@ -10,6 +10,7 @@ $("#contact-form").submit(function(event) {
         success: function(response) {
             if (response.success) {
                 $("#confirmation").fadeIn();
+                $("#contact-form")[0].reset()
 
                 setTimeout(() => {
                     $("#confirmation").fadeOut();
