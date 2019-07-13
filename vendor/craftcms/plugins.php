@@ -21,4 +21,25 @@ return array (
     'developerEmail' => 'support@craftcms.com',
     'documentationUrl' => 'https://github.com/craftcms/redactor/blob/v2/README.md',
   ),
+  'craftcms/contact-form' => 
+  array (
+    'class' => 'craft\\contactform\\Plugin',
+    'basePath' => $vendorDir . '/craftcms/contact-form/src',
+    'handle' => 'contact-form',
+    'aliases' => 
+    array (
+      '@craft/contactform' => $vendorDir . '/craftcms/contact-form/src',
+    ),
+    'name' => 'Contact Form',
+    'version' => '2.2.5',
+    'description' => 'Add a simple contact form to your Craft CMS site',
+    'developer' => 'Pixel & Tonic',
+    'developerUrl' => 'https://pixelandtonic.com/',
+    'developerEmail' => 'support@craftcms.com',
+    'documentationUrl' => 'https://github.com/craftcms/contact-form/blob/v2/README.md',
+    'components' => 
+    array (
+      'mailer' => 'craft\\contactform\\Mailer',
+    ),
+  ),
 );
