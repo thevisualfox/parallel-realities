@@ -1,4 +1,4 @@
-dateModified: 1561883398
+dateModified: 1563041485
 email:
   fromEmail: jurjen.p.vos@gmail.com
   fromName: 'Parallel Realities'
@@ -620,11 +620,18 @@ plugins:
     enabled: true
     schemaVersion: 1.0.0
     settings:
-      toEmail: jurjen.p.vos@gmail.com
+      toEmail: info@pa-re.eu
       prependSender: 'On behalf of'
       prependSubject: 'New message from Parallel'
       allowAttachments: ''
       successFlashMessage: 'Your message has been sent.'
+  craft-recaptcha-3:
+    edition: standard
+    enabled: true
+    schemaVersion: 1.0.0
+    settings:
+      siteKey: 6Lf9ia0UAAAAALfz2yO4zeyVADcK-fflq4Qltej5
+      secretKey: 6Lf9ia0UAAAAAIMCUPeS95d2Ycvng_tWbuSF0Q5a
 sections:
   29345a87-1cb6-4823-a8d5-c1ac5c6dda4a:
     enableVersioning: true

@@ -57,6 +57,7 @@ class ComposerStaticInit70d92dba1629a59f323fa6ebf42cd7e9
             'craft\\contactform\\' => 18,
             'craft\\composer\\' => 15,
             'craft\\' => 6,
+            'clarknelson\\craftrecaptcha3\\' => 28,
             'cebe\\markdown\\' => 14,
         ),
         'Z' => 
@@ -222,6 +223,10 @@ class ComposerStaticInit70d92dba1629a59f323fa6ebf42cd7e9
         'craft\\' => 
         array (
             0 => __DIR__ . '/..' . '/craftcms/cms/src',
+        ),
+        'clarknelson\\craftrecaptcha3\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/clarknelson/craft-recaptcha-3/src',
         ),
         'cebe\\markdown\\' => 
         array (
@@ -1953,6 +1958,10 @@ class ComposerStaticInit70d92dba1629a59f323fa6ebf42cd7e9
         'cebe\\markdown\\tests\\MarkdownTest' => __DIR__ . '/..' . '/cebe/markdown/tests/MarkdownTest.php',
         'cebe\\markdown\\tests\\ParserTest' => __DIR__ . '/..' . '/cebe/markdown/tests/ParserTest.php',
         'cebe\\markdown\\tests\\TestParser' => __DIR__ . '/..' . '/cebe/markdown/tests/ParserTest.php',
+        'clarknelson\\craftrecaptcha3\\CraftRecaptcha3' => __DIR__ . '/..' . '/clarknelson/craft-recaptcha-3/src/CraftRecaptcha3.php',
+        'clarknelson\\craftrecaptcha3\\assetbundles\\CraftRecaptcha3\\CraftRecaptcha3Asset' => __DIR__ . '/..' . '/clarknelson/craft-recaptcha-3/src/assetbundles/craftrecaptcha3/CraftRecaptcha3Asset.php',
+        'clarknelson\\craftrecaptcha3\\controllers\\DefaultController' => __DIR__ . '/..' . '/clarknelson/craft-recaptcha-3/src/controllers/DefaultController.php',
+        'clarknelson\\craftrecaptcha3\\models\\Settings' => __DIR__ . '/..' . '/clarknelson/craft-recaptcha-3/src/models/Settings.php',
         'craft\\app\\web\\UrlRule' => __DIR__ . '/..' . '/craftcms/cms/src/app/web/UrlRule.php',
         'craft\\base\\ApplicationTrait' => __DIR__ . '/..' . '/craftcms/cms/src/base/ApplicationTrait.php',
         'craft\\base\\ClonefixTrait' => __DIR__ . '/..' . '/craftcms/cms/src/base/ClonefixTrait.php',

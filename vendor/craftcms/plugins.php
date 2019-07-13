@@ -42,4 +42,22 @@ return array (
       'mailer' => 'craft\\contactform\\Mailer',
     ),
   ),
+  'clarknelson/craft-recaptcha-3' => 
+  array (
+    'class' => 'clarknelson\\craftrecaptcha3\\CraftRecaptcha3',
+    'basePath' => $vendorDir . '/clarknelson/craft-recaptcha-3/src',
+    'handle' => 'craft-recaptcha-3',
+    'aliases' => 
+    array (
+      '@clarknelson/craftrecaptcha3' => $vendorDir . '/clarknelson/craft-recaptcha-3/src',
+    ),
+    'name' => 'Craft reCAPTCHA 3',
+    'version' => '1.0.6',
+    'description' => 'Verifies via Google the site and secret codes required to verify humanity through reCAPTCHA v3.',
+    'developer' => 'Clark Nelson',
+    'developerUrl' => 'http://clarknelson.com',
+    'changelogUrl' => 'https://raw.githubusercontent.com/clarknelson/craft-recaptcha-3/master/CHANGELOG.md',
+    'hasCpSettings' => true,
+    'hasCpSection' => false,
+  ),
 );

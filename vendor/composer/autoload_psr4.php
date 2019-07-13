@@ -30,6 +30,7 @@ return array(
     'craft\\contactform\\' => array($vendorDir . '/craftcms/contact-form/src'),
     'craft\\composer\\' => array($vendorDir . '/craftcms/plugin-installer/src'),
     'craft\\' => array($vendorDir . '/craftcms/cms/src'),
+    'clarknelson\\craftrecaptcha3\\' => array($vendorDir . '/clarknelson/craft-recaptcha-3/src'),
     'cebe\\markdown\\' => array($vendorDir . '/cebe/markdown'),
     'Zend\\Stdlib\\' => array($vendorDir . '/zendframework/zend-stdlib/src'),
     'Zend\\Feed\\' => array($vendorDir . '/zendframework/zend-feed/src'),
