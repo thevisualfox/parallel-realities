@@ -1,27 +1,30 @@
 <?php
 /**
- * Craft reCAPTCHA 3 plugin for Craft CMS 3.x
+ * Craft reCAPTCHA plugin for Craft CMS 3.x
  *
- * Verifies via Google the site and secret codes required to verify humanity through reCAPTCHA v3.
+ * Integrate Google’s reCAPTCHA into your forms.
  *
- * @link      http://clarknelson.com
- * @copyright Copyright (c) 2019 Clark Nelson
+ * @link      https://mattwest.io
+ * @copyright Copyright (c) 2018 Matt West
  */
 
-namespace clarknelson\craftrecaptcha3;
+namespace mattwest\craftrecaptcha;
 
-use clarknelson\craftrecaptcha3\models\Settings;
+use mattwest\craftrecaptcha\services\CraftRecaptchaService;
+use mattwest\craftrecaptcha\variables\CraftRecaptchaVariable;
+use mattwest\craftrecaptcha\models\Settings;
 
 use Craft;
 use craft\base\Plugin;
 use craft\services\Plugins;
 use craft\events\PluginEvent;
 use craft\web\UrlManager;
-use craft\web\View;
+use craft\web\twig\variables\CraftVariable;
 use craft\events\RegisterUrlRulesEvent;
-use craft\events\RegisterTemplateRootsEvent;
+use craft\contactform\models\Submission;
 
 use yii\base\Event;
+use yii\base\ModelEvent;
 
 /**
  * Craft plugins are very much like little applications in and of themselves. We’ve made
@@ -33,23 +36,24 @@ use yii\base\Event;
  *
  * https://craftcms.com/docs/plugins/introduction
  *
- * @author    Clark Nelson
- * @package   CraftRecaptcha3
+ * @author    Matt West
+ * @package   CraftRecaptcha
  * @since     1.0.0
  *
+ * @property  CraftRecaptchaService $craftRecaptchaService
  * @property  Settings $settings
  * @method    Settings getSettings()
  */
-class CraftRecaptcha3 extends Plugin
+class CraftRecaptcha extends Plugin
 {
     // Static Properties
     // =========================================================================
 
     /**
      * Static property that is an instance of this plugin class so that it can be accessed via
-     * CraftRecaptcha3::$plugin
+     * CraftRecaptcha::$plugin
      *
-     * @var CraftRecaptcha3
+     * @var CraftRecaptcha
      */
     public static $plugin;
 
@@ -68,7 +72,7 @@ class CraftRecaptcha3 extends Plugin
 
     /**
      * Set our $plugin static property to this class so that it can be accessed via
-     * CraftRecaptcha3::$plugin
+     * CraftRecaptcha::$plugin
      *
      * Called after the plugin class is instantiated; do any one-time initialization
      * here such as hooks and events.
@@ -82,21 +86,14 @@ class CraftRecaptcha3 extends Plugin
         parent::init();
         self::$plugin = $this;
 
-        // Register our site routes
+        // Register our variables
         Event::on(
-            UrlManager::class,
-            UrlManager::EVENT_REGISTER_SITE_URL_RULES,
-            function (RegisterUrlRulesEvent $event) {
-                $event->rules['siteActionTrigger1'] = 'craft-recaptcha-3/default';
-            }
-        );
-
-        // Register our CP routes
-        Event::on(
-            UrlManager::class,
-            UrlManager::EVENT_REGISTER_CP_URL_RULES,
-            function (RegisterUrlRulesEvent $event) {
-                $event->rules['cpActionTrigger1'] = 'craft-recaptcha-3/default/do-something';
+            CraftVariable::class,
+            CraftVariable::EVENT_INIT,
+            function (Event $event) {
+                /** @var CraftVariable $variable */
+                $variable = $event->sender;
+                $variable->set('recaptcha', CraftRecaptchaVariable::class);
             }
         );
 
@@ -111,14 +108,24 @@ class CraftRecaptcha3 extends Plugin
             }
         );
 
-        // Register template directory
-        Event::on(
-            View::class,
-            View::EVENT_REGISTER_SITE_TEMPLATE_ROOTS,
-            function (RegisterTemplateRootsEvent $event) {
-                $event->roots['_recaptcha'] = __DIR__ . '/templates';
-            }
-        );
+        // Set up contact form hook.
+        $settings = CraftRecaptcha::$plugin->getSettings();
+
+        if (class_exists(Submission::class) && $settings->validateContactForm) {
+            Event::on(Submission::class, Submission::EVENT_BEFORE_VALIDATE, function(ModelEvent $e) {
+                /** @var Submission $submission */
+                $submission = $e->sender;
+
+                $captcha = Craft::$app->getRequest()->getParam('g-recaptcha-response');
+
+                $validates = CraftRecaptcha::$plugin->craftRecaptchaService->verify($captcha);
+
+                if (!$validates) {
+                    $submission->addError('recaptcha', 'Please verify you are human.');
+                    $e->isValid = false;
+                }
+            });
+        }
 
 /**
  * Logging in Craft involves using one of the following methods:
@@ -140,7 +147,7 @@ class CraftRecaptcha3 extends Plugin
  */
         Craft::info(
             Craft::t(
-                'craft-recaptcha-3',
+                'recaptcha',
                 '{name} plugin loaded',
                 ['name' => $this->name]
             ),
@@ -170,7 +177,7 @@ class CraftRecaptcha3 extends Plugin
     protected function settingsHtml(): string
     {
         return Craft::$app->view->renderTemplate(
-            'craft-recaptcha-3/settings',
+            'recaptcha/settings',
             [
                 'settings' => $this->getSettings()
             ]

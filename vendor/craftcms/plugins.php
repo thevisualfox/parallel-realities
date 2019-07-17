@@ -42,22 +42,26 @@ return array (
       'mailer' => 'craft\\contactform\\Mailer',
     ),
   ),
-  'clarknelson/craft-recaptcha-3' => 
+  'matt-west/craft-recaptcha' => 
   array (
-    'class' => 'clarknelson\\craftrecaptcha3\\CraftRecaptcha3',
-    'basePath' => $vendorDir . '/clarknelson/craft-recaptcha-3/src',
-    'handle' => 'craft-recaptcha-3',
+    'class' => 'mattwest\\craftrecaptcha\\CraftRecaptcha',
+    'basePath' => $vendorDir . '/matt-west/craft-recaptcha/src',
+    'handle' => 'recaptcha',
     'aliases' => 
     array (
-      '@clarknelson/craftrecaptcha3' => $vendorDir . '/clarknelson/craft-recaptcha-3/src',
+      '@mattwest/craftrecaptcha' => $vendorDir . '/matt-west/craft-recaptcha/src',
     ),
-    'name' => 'Craft reCAPTCHA 3',
-    'version' => '1.0.6',
-    'description' => 'Verifies via Google the site and secret codes required to verify humanity through reCAPTCHA v3.',
-    'developer' => 'Clark Nelson',
-    'developerUrl' => 'http://clarknelson.com',
-    'changelogUrl' => 'https://raw.githubusercontent.com/clarknelson/craft-recaptcha-3/master/CHANGELOG.md',
+    'name' => 'reCAPTCHA',
+    'version' => '1.3.0',
+    'description' => 'Integrate Google’s reCAPTCHA into your forms.',
+    'developer' => 'Matt West',
+    'developerUrl' => 'https://mattwest.io',
+    'changelogUrl' => 'https://raw.githubusercontent.com/matt-west/craft-recaptcha/master/CHANGELOG.md',
     'hasCpSettings' => true,
     'hasCpSection' => false,
+    'components' => 
+    array (
+      'craftRecaptchaService' => 'mattwest\\craftrecaptcha\\services\\CraftRecaptchaService',
+    ),
   ),
 );

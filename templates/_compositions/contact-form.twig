@@ -18,6 +18,7 @@
   Something went wrong. Try again or contact us!
 </div>
 
+<h3 class="d-md-none text-center mb-4">Any questions?<br> Send us an Email</h3>
 <form id="contact-form" method="post" action="" accept-charset="UTF-8">
     {{ csrfInput() }}
     <input type="hidden" name="action" value="contact-form/send">
@@ -38,9 +39,7 @@
         </div>
         <div class="col-12 col-md-12">
             <label class="form-control-label" for="message">Message *</label>
-            <textarea class="form-control" id="message" name="message[body]" rows="2" required>
-                {{ message.message ?? '' }}
-            </textarea>
+            <textarea class="form-control" id="message" name="message[body]" rows="2" required></textarea>
             {{ message is defined and message ? errorList(message.getErrors('message')) }}
         </div>
         <div class="col-12 col-md-9">
@@ -49,9 +48,11 @@
                 <label class="form-check-label" name="privacyConditions" for="privacyConditions">I agree with the privacy conditions *</label>
             </div>
         </div>
-        {% include ['_recaptcha/frontend'] %}
-        <div class="col-12 col-md-3 d-flex align-items-end">
+        <div class="col-12 col-md-3 d-flex align-items-end order-2 order-md-1">
             <button type="submit" class="btn btn-base btn-block">Send</button>
+        </div>
+        <div class="col-12 col-md-6 order-1">
+            {{ craft.recaptcha.render() }}
         </div>
     </div>
 </form>
