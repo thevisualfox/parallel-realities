@@ -1,4 +1,4 @@
-dateModified: 1563041485
+dateModified: 1563392252
 email:
   fromEmail: jurjen.p.vos@gmail.com
   fromName: 'Parallel Realities'
@@ -625,13 +625,14 @@ plugins:
       prependSubject: 'New message from Parallel'
       allowAttachments: ''
       successFlashMessage: 'Your message has been sent.'
-  craft-recaptcha-3:
+  recaptcha:
     edition: standard
     enabled: true
     schemaVersion: 1.0.0
     settings:
-      siteKey: 6Lf9ia0UAAAAALfz2yO4zeyVADcK-fflq4Qltej5
-      secretKey: 6Lf9ia0UAAAAAIMCUPeS95d2Ycvng_tWbuSF0Q5a
+      siteKey: 6LdhMK4UAAAAAOtVBisQ70xX1I26yQ21a5RHqKAU
+      secretKey: 6LdhMK4UAAAAAOgIYTBzwBcGJja1-XOhDA4XFuoM
+      validateContactForm: '1'
 sections:
   29345a87-1cb6-4823-a8d5-c1ac5c6dda4a:
     enableVersioning: true

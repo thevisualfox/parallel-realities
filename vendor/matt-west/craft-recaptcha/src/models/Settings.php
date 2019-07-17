@@ -1,22 +1,22 @@
 <?php
 /**
- * Craft reCAPTCHA 3 plugin for Craft CMS 3.x
+ * Craft reCAPTCHA plugin for Craft CMS 3.x
  *
- * Verifies via Google the site and secret codes required to verify humanity through reCAPTCHA v3.
+ * Integrate Google’s reCAPTCHA into your forms.
  *
- * @link      http://clarknelson.com
- * @copyright Copyright (c) 2019 Clark Nelson
+ * @link      https://mattwest.io
+ * @copyright Copyright (c) 2018 Matt West
  */
 
-namespace clarknelson\craftrecaptcha3\models;
+namespace mattwest\craftrecaptcha\models;
 
-use clarknelson\craftrecaptcha3\CraftRecaptcha3;
+use mattwest\craftrecaptcha\CraftRecaptcha;
 
 use Craft;
 use craft\base\Model;
 
 /**
- * CraftRecaptcha3 Settings Model
+ * CraftRecaptcha Settings Model
  *
  * This is a model used to define the plugin's settings.
  *
@@ -25,8 +25,8 @@ use craft\base\Model;
  *
  * https://craftcms.com/docs/plugins/models
  *
- * @author    Clark Nelson
- * @package   CraftRecaptcha3
+ * @author    Matt West
+ * @package   CraftRecaptcha
  * @since     1.0.0
  */
 class Settings extends Model
@@ -35,12 +35,25 @@ class Settings extends Model
     // =========================================================================
 
     /**
-     * Some field model attribute
+     * Site key model attribute
      *
      * @var string
      */
     public $siteKey = '';
+
+    /**
+     * Secret key model attribute
+     *
+     * @var string
+     */
     public $secretKey = '';
+
+    /**
+     * Validate ContactForm submissions
+     * 
+     * @var bool
+     */
+    public $validateContactForm = true;
 
     // Public Methods
     // =========================================================================
@@ -57,6 +70,10 @@ class Settings extends Model
      */
     public function rules()
     {
-        return [ ];
+        return [
+            ['siteKey', 'string'],
+            ['secretKey', 'string'],
+            [['siteKey', 'secretKey'], 'required']
+        ];
     }
 }

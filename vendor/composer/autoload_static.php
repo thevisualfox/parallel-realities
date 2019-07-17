@@ -44,6 +44,7 @@ class ComposerStaticInit70d92dba1629a59f323fa6ebf42cd7e9
         array (
             'modules\\' => 8,
             'mikehaertl\\shellcommand\\' => 24,
+            'mattwest\\craftrecaptcha\\' => 24,
         ),
         'e' => 
         array (
@@ -57,7 +58,6 @@ class ComposerStaticInit70d92dba1629a59f323fa6ebf42cd7e9
             'craft\\contactform\\' => 18,
             'craft\\composer\\' => 15,
             'craft\\' => 6,
-            'clarknelson\\craftrecaptcha3\\' => 28,
             'cebe\\markdown\\' => 14,
         ),
         'Z' => 
@@ -196,6 +196,10 @@ class ComposerStaticInit70d92dba1629a59f323fa6ebf42cd7e9
         array (
             0 => __DIR__ . '/..' . '/mikehaertl/php-shellcommand/src',
         ),
+        'mattwest\\craftrecaptcha\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/matt-west/craft-recaptcha/src',
+        ),
         'enshrined\\svgSanitize\\' => 
         array (
             0 => __DIR__ . '/..' . '/enshrined/svg-sanitize/src',
@@ -223,10 +227,6 @@ class ComposerStaticInit70d92dba1629a59f323fa6ebf42cd7e9
         'craft\\' => 
         array (
             0 => __DIR__ . '/..' . '/craftcms/cms/src',
-        ),
-        'clarknelson\\craftrecaptcha3\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/clarknelson/craft-recaptcha-3/src',
         ),
         'cebe\\markdown\\' => 
         array (
@@ -1958,10 +1958,6 @@ class ComposerStaticInit70d92dba1629a59f323fa6ebf42cd7e9
         'cebe\\markdown\\tests\\MarkdownTest' => __DIR__ . '/..' . '/cebe/markdown/tests/MarkdownTest.php',
         'cebe\\markdown\\tests\\ParserTest' => __DIR__ . '/..' . '/cebe/markdown/tests/ParserTest.php',
         'cebe\\markdown\\tests\\TestParser' => __DIR__ . '/..' . '/cebe/markdown/tests/ParserTest.php',
-        'clarknelson\\craftrecaptcha3\\CraftRecaptcha3' => __DIR__ . '/..' . '/clarknelson/craft-recaptcha-3/src/CraftRecaptcha3.php',
-        'clarknelson\\craftrecaptcha3\\assetbundles\\CraftRecaptcha3\\CraftRecaptcha3Asset' => __DIR__ . '/..' . '/clarknelson/craft-recaptcha-3/src/assetbundles/craftrecaptcha3/CraftRecaptcha3Asset.php',
-        'clarknelson\\craftrecaptcha3\\controllers\\DefaultController' => __DIR__ . '/..' . '/clarknelson/craft-recaptcha-3/src/controllers/DefaultController.php',
-        'clarknelson\\craftrecaptcha3\\models\\Settings' => __DIR__ . '/..' . '/clarknelson/craft-recaptcha-3/src/models/Settings.php',
         'craft\\app\\web\\UrlRule' => __DIR__ . '/..' . '/craftcms/cms/src/app/web/UrlRule.php',
         'craft\\base\\ApplicationTrait' => __DIR__ . '/..' . '/craftcms/cms/src/base/ApplicationTrait.php',
         'craft\\base\\ClonefixTrait' => __DIR__ . '/..' . '/craftcms/cms/src/base/ClonefixTrait.php',
@@ -2797,6 +2793,10 @@ class ComposerStaticInit70d92dba1629a59f323fa6ebf42cd7e9
         'enshrined\\svgSanitize\\data\\AllowedTags' => __DIR__ . '/..' . '/enshrined/svg-sanitize/src/data/AllowedTags.php',
         'enshrined\\svgSanitize\\data\\AttributeInterface' => __DIR__ . '/..' . '/enshrined/svg-sanitize/src/data/AttributeInterface.php',
         'enshrined\\svgSanitize\\data\\TagInterface' => __DIR__ . '/..' . '/enshrined/svg-sanitize/src/data/TagInterface.php',
+        'mattwest\\craftrecaptcha\\CraftRecaptcha' => __DIR__ . '/..' . '/matt-west/craft-recaptcha/src/CraftRecaptcha.php',
+        'mattwest\\craftrecaptcha\\models\\Settings' => __DIR__ . '/..' . '/matt-west/craft-recaptcha/src/models/Settings.php',
+        'mattwest\\craftrecaptcha\\services\\CraftRecaptchaService' => __DIR__ . '/..' . '/matt-west/craft-recaptcha/src/services/CraftRecaptchaService.php',
+        'mattwest\\craftrecaptcha\\variables\\CraftRecaptchaVariable' => __DIR__ . '/..' . '/matt-west/craft-recaptcha/src/variables/CraftRecaptchaVariable.php',
         'mikehaertl\\shellcommand\\Command' => __DIR__ . '/..' . '/mikehaertl/php-shellcommand/src/Command.php',
         'modules\\MampHelper' => __DIR__ . '/../..' . '/modules/Mamphelper.php',
         'modules\\Module' => __DIR__ . '/../..' . '/modules/Module.php',
