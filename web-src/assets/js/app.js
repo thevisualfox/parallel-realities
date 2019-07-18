@@ -6,3 +6,4 @@ import "./fancybox";
 import "./intersectionNav";
 import "./disableImageDownload";
 import "./masonry";
+import "./contactForm";

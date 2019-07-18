@@ -1,0 +1,58 @@
+{% macro errorList(errors) %}
+    {% if errors %}
+        <ul class="errors">
+            {% for error in errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endmacro %}
+
+{% from _self import errorList %}
+
+<div id="confirmation" class="alert alert-success alert--fixed" role="alert" style="display:none">
+  Your email has been succesfully sent. We will get back to you as soon as possible!
+</div>
+
+<div id="error" class="alert alert-danger alert--fixed" role="alert" style="display:none">
+  Something went wrong. Try again or contact us!
+</div>
+
+<h3 class="d-md-none text-center my-4">Any questions?<br> Send us an Email</h3>
+<form id="contact-form" method="post" action="" accept-charset="UTF-8">
+    {{ csrfInput() }}
+    <input type="hidden" name="action" value="contact-form/send">
+    <div class="row gutters-3">
+        <div class="col-12 col-md-12">
+            <label class="form-control-label" for="from-name">Name *</label>
+            <input id="from-name" type="text" name="fromName" class="form-control" value="{{message.fromName ?? '' }}" required>
+            {{ message is defined and message ? errorList(message.getErrors('fromName')) }}
+        </div>
+        <div class="col-12 col-md-6">
+            <label class="form-control-label" for="from-email">Email *</label>
+            <input type="email" class="form-control" name="fromEmail" id="from-email" value="{{ message.fromEmail ?? '' }}" required>
+            {{ message is defined and message ? errorList(message.getErrors('fromEmail')) }}
+        </div>
+        <div class="col-12 col-md-6">
+            <label class="form-control-label" for="from-phone" value="">Phone</label>
+            <input type="tel" inputType="numeric" class="form-control" name="message[Phone]" id="from-phone">
+        </div>
+        <div class="col-12 col-md-12">
+            <label class="form-control-label" for="message">Message *</label>
+            <textarea class="form-control" id="message" name="message[body]" rows="2" required></textarea>
+            {{ message is defined and message ? errorList(message.getErrors('message')) }}
+        </div>
+        <div class="col-12 col-md-9">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="privacyConditions" required>
+                <label class="form-check-label" name="privacyConditions" for="privacyConditions">I agree with the privacy conditions *</label>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 d-flex align-items-end order-2 order-md-1">
+            <button type="submit" class="btn btn-base btn-block">Send</button>
+        </div>
+        <div class="col-12 col-md-6 order-1">
+            {{ craft.recaptcha.render() }}
+        </div>
+    </div>
+</form>
