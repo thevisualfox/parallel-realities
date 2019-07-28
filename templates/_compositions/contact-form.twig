@@ -18,13 +18,13 @@
   Something went wrong. Try again or contact us!
 </div>
 
-<h3 class="d-md-none text-center mb-4">Any questions?<br> Send us an Email</h3>
+<h3 class="d-md-none text-center my-4">Any questions?<br> Send us an Email</h3>
 <form id="contact-form" method="post" action="" accept-charset="UTF-8">
     {{ csrfInput() }}
     <input type="hidden" name="action" value="contact-form/send">
     <div class="row gutters-3">
         <div class="col-12 col-md-12">
-            <label class="form-control-label" for="from-name">Name</label>
+            <label class="form-control-label" for="from-name">Name *</label>
             <input id="from-name" type="text" name="fromName" class="form-control" value="{{message.fromName ?? '' }}" required>
             {{ message is defined and message ? errorList(message.getErrors('fromName')) }}
         </div>

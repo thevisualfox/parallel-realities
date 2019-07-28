@@ -22708,27 +22708,28 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @param item Object A brick/tile/cell inside the masonry
  */
 function resizeMasonryItem(item) {
-  /* Get the grid object, its row-gap, and the size of its implicit rows */
-  var grid = document.getElementsByClassName('grid')[0],
-      rowGap = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-row-gap')),
-      rowHeight = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-auto-rows'));
+    /* Get the grid object, its row-gap, and the size of its implicit rows */
+    var grid = document.getElementsByClassName("grid")[0],
+        rowGap = parseInt(window.getComputedStyle(grid).getPropertyValue("grid-row-gap")),
+        rowHeight = parseInt(window.getComputedStyle(grid).getPropertyValue("grid-auto-rows"));
 
-  /*
-   * Spanning for any brick = S
-   * Grid's row-gap = G
-   * Size of grid's implicitly create row-track = R
-   * Height of item content = H
-   * Net height of the item = H1 = H + G
-   * Net height of the implicit row-track = T = G + R
-   * S = H1 / T
-   */
-  var rowSpan = Math.ceil((item.querySelector('.img-fluid').getBoundingClientRect().height + rowGap) / (rowHeight + rowGap));
+    /*
+     * Spanning for any brick = S
+     * Grid's row-gap = G
+     * Size of grid's implicitly create row-track = R
+     * Height of item content = H
+     * Net height of the item = H1 = H + G
+     * Net height of the implicit row-track = T = G + R
+     * S = H1 / T
+     */
+    var bounds = item.querySelector(".img-fluid") ? item.querySelector(".img-fluid") : item.querySelector(".media__container");
+    var rowSpan = Math.ceil((bounds.getBoundingClientRect().height + rowGap) / (rowHeight + rowGap));
 
-  /* Set the spanning as calculated above (S) */
-  item.style.gridRowEnd = 'span ' + rowSpan;
+    /* Set the spanning as calculated above (S) */
+    item.style.gridRowEnd = "span " + rowSpan;
 
-  /* Make the images take all the available space in the cell/item */
-  item.querySelector('.img-fluid').style.height = rowSpan * 10 + "px";
+    /* Make the images take all the available space in the cell/item */
+    bounds.style.height = rowSpan * 10 - 10 + "px";
 }
 
 /**
@@ -22740,16 +22741,16 @@ function resizeMasonryItem(item) {
  * @uses resizeMasonryItem
  */
 function resizeAllMasonryItems() {
-  // Get all item class objects in one list
-  var allItems = document.getElementsByClassName('grid__item');
+    // Get all item class objects in one list
+    var allItems = document.getElementsByClassName("grid__item");
 
-  /*
-   * Loop through the above list and execute the spanning function to
-   * each list-item (i.e. each masonry item)
-   */
-  for (var i = 0; i > allItems.length; i++) {
-    resizeMasonryItem(allItems[i]);
-  }
+    /*
+     * Loop through the above list and execute the spanning function to
+     * each list-item (i.e. each masonry item)
+     */
+    for (var i = 0; i > allItems.length; i++) {
+        resizeMasonryItem(allItems[i]);
+    }
 }
 
 /**
@@ -22761,19 +22762,19 @@ function resizeAllMasonryItems() {
  * @uses resizeMasonryItem
  */
 function waitForImages() {
-  var allItems = document.getElementsByClassName('grid__item');
-  for (var i = 0; i < allItems.length; i++) {
-    (0, _imagesloaded2.default)(allItems[i], function (instance) {
-      var item = instance.elements[0];
-      resizeMasonryItem(item);
-    });
-  }
+    var allItems = document.getElementsByClassName("grid__item");
+    for (var i = 0; i < allItems.length; i++) {
+        (0, _imagesloaded2.default)(allItems[i], function (instance) {
+            var item = instance.elements[0];
+            resizeMasonryItem(item);
+        });
+    }
 }
 
 /* Resize all the grid items on the load and resize events */
-var masonryEvents = ['load', 'resize'];
+var masonryEvents = ["load", "resize"];
 masonryEvents.forEach(function (event) {
-  window.addEventListener(event, resizeAllMasonryItems);
+    window.addEventListener(event, resizeAllMasonryItems);
 });
 
 /* Do a resize once more when all the images finish loading */
