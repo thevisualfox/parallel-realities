@@ -72,6 +72,10 @@ Craft.BaseElementEditor = Garnish.Base.extend(
                 data.attributes = this.settings.attributes;
             }
 
+            if (this.settings.prevalidate) {
+                data.prevalidate = 1;
+            }
+
             return data;
         },
 
@@ -293,6 +297,9 @@ Craft.BaseElementEditor = Garnish.Base.extend(
             this.trigger('saveElement', {
                 response: response
             });
+
+            // There may be a new background job that needs to be run
+            Craft.cp.runQueue();
         },
 
         onCreateForm: function($form) {
@@ -308,6 +315,7 @@ Craft.BaseElementEditor = Garnish.Base.extend(
             siteId: null,
             attributes: null,
             params: null,
+            prevalidate: false,
             elementIndex: null,
 
             onShowHud: $.noop,
