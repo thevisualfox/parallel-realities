@@ -1,6 +1,22 @@
 Yii Framework 2 debug extension Change Log
 ==========================================
 
+2.1.6 July 23, 2019
+-------------------
+
+- Enh #167: Add total request processing time and peak memory consumption on index page (pistej)
+- Enh #379: Better error message when no debug data is found (Sarke)
+- Enh #380: Enhanced browser compatibility (samdark)
+- Enh #390: Use opis/closure to serialize data (Sarke)
+- Enh #392: Add `tracePathMappings` property to module (Sarke)
+
+
+2.1.5 June 04, 2019
+-------------------
+
+- Enh #391: Dispatching event when toolbar is added to DOM, and added class that allows clicks in toolbar block (rhertogh)
+
+
 2.1.4 May 14, 2019
 ------------------
 
