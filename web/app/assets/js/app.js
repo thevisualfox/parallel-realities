@@ -22726,18 +22726,27 @@ var Masonry = function () {
         this.rowHeight = parseInt(window.getComputedStyle(this.DOM.el).getPropertyValue("grid-auto-rows"));
 
         /* Wait for images to load en initialize events */
-        this.initEvents();
+        this.imagesLoaded();
     }
 
     _createClass(Masonry, [{
+        key: "imagesLoaded",
+        value: function imagesLoaded() {
+            var _this = this;
+
+            (0, _imagesloaded2.default)(this.DOM.el, function () {
+                _this.initEvents();
+            });
+        }
+    }, {
         key: "initEvents",
         value: function initEvents() {
-            var _this = this;
+            var _this2 = this;
 
             /* Resize all the grid items on the load and resize events */
             var masonryEvents = ["load", "resize"];
             masonryEvents.forEach(function (event) {
-                window.addEventListener(event, _this.resizeAllMasonryItems());
+                window.addEventListener(event, _this2.resizeAllMasonryItems());
             });
 
             /* Get video's and pauze them on load */
@@ -22773,7 +22782,7 @@ var Masonry = function () {
     }, {
         key: "resizeMasonryVideo",
         value: function resizeMasonryVideo(item) {
-            var _this2 = this;
+            var _this3 = this;
 
             /* Get the bounds of the video */
             var bounds = item.querySelector(".media__container");
@@ -22790,7 +22799,7 @@ var Masonry = function () {
                 var paddingTop = height / width * 100 + "%";
 
                 /* Calculate the rowSpan */
-                var rowSpan = Math.ceil((bounds.getBoundingClientRect().height + _this2.rowGap) / (_this2.rowHeight + _this2.rowGap));
+                var rowSpan = Math.ceil((bounds.getBoundingClientRect().height + _this3.rowGap) / (_this3.rowHeight + _this3.rowGap));
 
                 /* Set the calculated padding to the video bounds */
                 bounds.style.padding = paddingTop + " 0 0";

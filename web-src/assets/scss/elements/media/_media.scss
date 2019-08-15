@@ -10,24 +10,24 @@
         height: 100%;
         width: 100%;
 
-        &:before,
-        &:after {
-            content: "";
-            position: absolute;
-            top: 60%;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            background-image: linear-gradient(-180deg, transparent, rgba(0, 0, 0, .5));
-            z-index: 1;
-            transition: $transition-base;
-        }
+        // &:before,
+        // &:after {
+        //     content: "";
+        //     position: absolute;
+        //     top: 60%;
+        //     right: 0;
+        //     bottom: 0;
+        //     left: 0;
+        //     background-image: linear-gradient(-180deg, transparent, rgba(0, 0, 0, .5));
+        //     z-index: 1;
+        //     transition: $transition-base;
+        // }
 
-        &:after {
-            background-color: rgba(#000, 0.1);
-            background-image: none;
-            top: 0;
-        }
+        // &:after {
+        //     background-color: rgba(#000, 0.1);
+        //     background-image: none;
+        //     top: 0;
+        // }
     }
 
 
