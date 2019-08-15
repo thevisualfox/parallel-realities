@@ -16,7 +16,12 @@ class Masonry {
         this.rowHeight = parseInt(window.getComputedStyle(this.DOM.el).getPropertyValue("grid-auto-rows"));
 
         /* Wait for images to load en initialize events */
-        this.initEvents();
+        this.imagesLoaded();
+    }
+    imagesLoaded() {
+        imagesLoaded(this.DOM.el, () => {
+            this.initEvents();
+        });
     }
     initEvents() {
         /* Resize all the grid items on the load and resize events */
