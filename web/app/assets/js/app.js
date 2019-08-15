@@ -22726,7 +22726,6 @@ var Masonry = function () {
         this.rowHeight = parseInt(window.getComputedStyle(this.DOM.el).getPropertyValue("grid-auto-rows"));
 
         /* Wait for images to load en initialize events */
-        this.waitForImages();
         this.initEvents();
     }
 
@@ -22749,18 +22748,6 @@ var Masonry = function () {
 
             /* Initialize new Interestion observer */
             new IntersectionObserver(this.onIntersection, { threshold: 1 }).observe(this.casesObserver);
-        }
-    }, {
-        key: "waitForImages",
-        value: function waitForImages() {
-            var _this2 = this;
-
-            for (var index = 0; index < this.gridItems.length; index++) {
-                (0, _imagesloaded2.default)(this.gridItems[index], function (instance) {
-                    var item = instance.elements[0];
-                    _this2.resizeMasonryItem(item);
-                });
-            }
         }
     }, {
         key: "resizeAllMasonryItems",
@@ -22786,7 +22773,7 @@ var Masonry = function () {
     }, {
         key: "resizeMasonryVideo",
         value: function resizeMasonryVideo(item) {
-            var _this3 = this;
+            var _this2 = this;
 
             /* Get the bounds of the video */
             var bounds = item.querySelector(".media__container");
@@ -22803,13 +22790,13 @@ var Masonry = function () {
                 var paddingTop = height / width * 100 + "%";
 
                 /* Calculate the rowSpan */
-                var rowSpan = Math.ceil((bounds.getBoundingClientRect().height + _this3.rowGap) / (_this3.rowHeight + _this3.rowGap));
-
-                /* Set the spanning as calculated above (S) */
-                item.style.gridRowEnd = "span " + rowSpan;
+                var rowSpan = Math.ceil((bounds.getBoundingClientRect().height + _this2.rowGap) / (_this2.rowHeight + _this2.rowGap));
 
                 /* Set the calculated padding to the video bounds */
                 bounds.style.padding = paddingTop + " 0 0";
+
+                /* Set the spanning as calculated above (S) */
+                item.style.gridRowEnd = "span " + rowSpan;
 
                 /* Make the video take all the available space in the cell/item */
                 bounds.style.height = rowSpan * 10 - 10 + "px";
