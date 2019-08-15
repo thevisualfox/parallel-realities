@@ -16,7 +16,6 @@ class Masonry {
         this.rowHeight = parseInt(window.getComputedStyle(this.DOM.el).getPropertyValue("grid-auto-rows"));
 
         /* Wait for images to load en initialize events */
-        this.waitForImages();
         this.initEvents();
     }
     initEvents() {
@@ -34,14 +33,6 @@ class Masonry {
 
         /* Initialize new Interestion observer */
         new IntersectionObserver(this.onIntersection, { threshold: 1 }).observe(this.casesObserver);
-    }
-    waitForImages() {
-        for (let index = 0; index < this.gridItems.length; index++) {
-            imagesLoaded(this.gridItems[index], instance => {
-                const item = instance.elements[0];
-                this.resizeMasonryItem(item);
-            });
-        }
     }
     resizeAllMasonryItems() {
         /*
@@ -77,11 +68,11 @@ class Masonry {
                 (bounds.getBoundingClientRect().height + this.rowGap) / (this.rowHeight + this.rowGap)
             );
 
-            /* Set the spanning as calculated above (S) */
-            item.style.gridRowEnd = "span " + rowSpan;
-
             /* Set the calculated padding to the video bounds */
             bounds.style.padding = `${paddingTop} 0 0`;
+
+            /* Set the spanning as calculated above (S) */
+            item.style.gridRowEnd = "span " + rowSpan;
 
             /* Make the video take all the available space in the cell/item */
             bounds.style.height = rowSpan * 10 - 10 + "px";
