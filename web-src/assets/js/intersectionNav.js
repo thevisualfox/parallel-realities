@@ -4,7 +4,9 @@ headerObserver.__link = header;
 
 function onIntersection(entries) {
     entries.forEach(entry => {
-        entry.target.__link.classList.toggle("is-sticky", entry.intersectionRatio === 0);
+        if (entry.target.className === "main-header__observer") {
+            entry.target.__link.classList.toggle("is-sticky", entry.intersectionRatio === 0);
+        }
     });
 }
 
