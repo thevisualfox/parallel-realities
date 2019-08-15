@@ -6,11 +6,11 @@
 {% if entry.separatePage %}
     {% set href = entry.url %}
 
-    {% elseif image %}
-    {% set href = image.getUrl() %}
-
     {% elseif entry.video %}
     {% set href = 'https://vimeo.com/' ~ entry.video %}
+
+    {% elseif image %}
+    {% set href = image.getUrl() %}
 
 {% endif %}
 
