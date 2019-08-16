@@ -1,86 +1,116 @@
 import imagesLoaded from "imagesloaded";
+import Player from "@vimeo/player";
 
-/**
- * Set appropriate spanning to any masonry item
- *
- * Get different properties we already set for the masonry, calculate
- * height or spanning for any cell of the masonry grid based on its
- * content-wrapper's height, the (row) gap of the grid, and the size
- * of the implicit row tracks.
- *
- * @param item Object A brick/tile/cell inside the masonry
- */
-function resizeMasonryItem(item) {
-    /* Get the grid object, its row-gap, and the size of its implicit rows */
-    var grid = document.getElementsByClassName("grid")[0],
-        rowGap = parseInt(window.getComputedStyle(grid).getPropertyValue("grid-row-gap")),
-        rowHeight = parseInt(window.getComputedStyle(grid).getPropertyValue("grid-auto-rows"));
+class Masonry {
+    constructor(el) {
+        this.DOM = { el: el };
+        this.gridItems = this.DOM.el.getElementsByClassName("grid__item");
 
-    /*
-     * Spanning for any brick = S
-     * Grid's row-gap = G
-     * Size of grid's implicitly create row-track = R
-     * Height of item content = H
-     * Net height of the item = H1 = H + G
-     * Net height of the implicit row-track = T = G + R
-     * S = H1 / T
-     */
-    var bounds = item.querySelector(".img-fluid")
-        ? item.querySelector(".img-fluid")
-        : item.querySelector(".media__container");
-    var rowSpan = Math.ceil((bounds.getBoundingClientRect().height + rowGap) / (rowHeight + rowGap));
+        /* Get cases observer to play videos on intersection */
+        this.cases = document.getElementById("cases");
+        this.casesObserver = document.getElementsByClassName("cases-observer")[0];
+        this.casesObserver.__link = this.cases;
 
-    /* Set the spanning as calculated above (S) */
-    item.style.gridRowEnd = "span " + rowSpan;
+        /* Get the grid object, its row-gap, and the size of its implicit rows */
+        this.rowGap = parseInt(window.getComputedStyle(this.DOM.el).getPropertyValue("grid-row-gap"));
+        this.rowHeight = parseInt(window.getComputedStyle(this.DOM.el).getPropertyValue("grid-auto-rows"));
 
-    /* Make the images take all the available space in the cell/item */
-    bounds.style.height = rowSpan * 10 - 10 + "px";
-}
-
-/**
- * Apply spanning to all the masonry items
- *
- * Loop through all the items and apply the spanning to them using
- * `resizeMasonryItem()` function.
- *
- * @uses resizeMasonryItem
- */
-function resizeAllMasonryItems() {
-    // Get all item class objects in one list
-    var allItems = document.getElementsByClassName("grid__item");
-
-    /*
-     * Loop through the above list and execute the spanning function to
-     * each list-item (i.e. each masonry item)
-     */
-    for (var i = 0; i > allItems.length; i++) {
-        resizeMasonryItem(allItems[i]);
+        /* Wait for images to load en initialize events */
+        this.imagesLoaded();
     }
-}
+    imagesLoaded() {
+        imagesLoaded(this.DOM.el, () => {
+            this.initEvents();
+        });
+    }
+    initEvents() {
+        /* Resize all the grid items on the load and resize events */
+        const masonryEvents = ["load", "resize"];
+        masonryEvents.forEach(event => {
+            window.addEventListener(event, this.resizeAllMasonryItems());
+        });
 
-/**
- * Resize the items when all the images inside the masonry grid
- * finish loading. This will ensure that all the content inside our
- * masonry items is visible.
- *
- * @uses ImagesLoaded
- * @uses resizeMasonryItem
- */
-function waitForImages() {
-    var allItems = document.getElementsByClassName("grid__item");
-    for (var i = 0; i < allItems.length; i++) {
-        imagesLoaded(allItems[i], function(instance) {
-            var item = instance.elements[0];
-            resizeMasonryItem(item);
+        /* Get video's and pauze them on load */
+        document.querySelectorAll("[data-vimeo-player]").forEach(video => {
+            const player = new Player(video);
+            player.pause();
+        });
+
+        /* Initialize new Interestion observer */
+        new IntersectionObserver(this.onIntersection, { threshold: 1 }).observe(this.casesObserver);
+    }
+    resizeAllMasonryItems() {
+        /*
+         * Loop through the grid items and execute the spanning function to
+         * each list-item (i.e. each masonry item)
+         */
+        for (let index = 0; index < this.gridItems.length; index++) {
+            this.resizeMasonryItem(this.gridItems[index]);
+        }
+    }
+    resizeMasonryItem(item) {
+        /* Specify which kind of masonry item it is and run specific function */
+        if (item.classList.contains("grid__item--video") && window.innerWidth > 992) {
+            this.resizeMasonryVideo(item);
+        } else {
+            this.resizeMasonryImage(item);
+        }
+    }
+    resizeMasonryVideo(item) {
+        /* Get the bounds of the video */
+        const bounds = item.querySelector(".media__container");
+
+        /* Initialize a new Player class and stop the video from playing */
+        const player = new Player(bounds.children[0]);
+
+        /* Get video width and height */
+        Promise.all([player.getVideoWidth(), player.getVideoHeight()]).then(dimensions => {
+            const [width, height] = dimensions;
+            const paddingTop = `${(height / width) * 100}%`;
+
+            /* Calculate the rowSpan */
+            const rowSpan = Math.ceil(
+                (bounds.getBoundingClientRect().height + this.rowGap) / (this.rowHeight + this.rowGap)
+            );
+
+            /* Set the calculated padding to the video bounds */
+            bounds.style.padding = `${paddingTop} 0 0`;
+
+            /* Set the spanning as calculated above (S) */
+            item.style.gridRowEnd = "span " + rowSpan;
+
+            /* Make the video take all the available space in the cell/item */
+            bounds.style.height = rowSpan * 10 - 10 + "px";
+        });
+    }
+    resizeMasonryImage(item) {
+        /* Get the bounds of the image */
+        const bounds = item.querySelector(".img-fluid");
+
+        if (bounds !== null) {
+            /* Calculate the rowSpan */
+            const rowSpan = Math.ceil(
+                (bounds.getBoundingClientRect().height + this.rowGap) / (this.rowHeight + this.rowGap)
+            );
+
+            /* Set the spanning as calculated above (S) */
+            item.style.gridRowEnd = "span " + rowSpan;
+
+            /* Make the images take all the available space in the cell/item */
+            bounds.style.height = rowSpan * 10 + "px";
+        }
+    }
+    onIntersection(entries) {
+        entries.forEach(entry => {
+            if (entry.target.className === "cases-observer" && entry.intersectionRatio === 1) {
+                /* Get video's and play them on intersection */
+                document.querySelectorAll("[data-vimeo-player]").forEach(video => {
+                    const player = new Player(video);
+                    player.play();
+                });
+            }
         });
     }
 }
 
-/* Resize all the grid items on the load and resize events */
-var masonryEvents = ["load", "resize"];
-masonryEvents.forEach(function(event) {
-    window.addEventListener(event, resizeAllMasonryItems);
-});
-
-/* Do a resize once more when all the images finish loading */
-waitForImages();
+new Masonry(document.querySelector(".grid"));

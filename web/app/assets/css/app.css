@@ -8826,13 +8826,13 @@ body.showcase main {
       right: 0;
       bottom: 0;
       left: 0;
-      background-image: -webkit-gradient(linear, left top, left bottom, from(transparent), to(rgba(0, 0, 0, 0.5)));
-      background-image: linear-gradient(-180deg, transparent, rgba(0, 0, 0, 0.5));
+      background-image: -webkit-gradient(linear, left top, left bottom, from(transparent), to(rgba(0, 0, 0, 0)));
+      background-image: linear-gradient(-180deg, transparent, rgba(0, 0, 0, 0));
       z-index: 1;
       -webkit-transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
       transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1); }
     .media--cases a:after {
-      background-color: rgba(0, 0, 0, 0.1);
+      background-color: rgba(0, 0, 0, 0);
       background-image: none;
       top: 0; }
   .media--cases:hover a:after {
@@ -8865,7 +8865,18 @@ body.showcase main {
   position: relative;
   overflow: hidden;
   width: 100%;
-  padding-top: 56.25%; }
+  z-index: 1; }
+  @media (min-width: 992px) {
+    .media__container + .img-fluid {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      -o-object-fit: cover;
+         object-fit: cover; } }
 
 .media__video {
   position: absolute;
@@ -10537,5 +10548,3 @@ body.compensate-for-scrollbar {
     right: 110px; }
   .fancybox-thumbs__list a {
     max-width: calc(100% - 10px); } }
-
-/*# sourceMappingURL=app.css.map */
