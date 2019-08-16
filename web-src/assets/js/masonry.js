@@ -50,7 +50,7 @@ class Masonry {
     }
     resizeMasonryItem(item) {
         /* Specify which kind of masonry item it is and run specific function */
-        if (item.classList.contains("grid__item--video")) {
+        if (item.classList.contains("grid__item--video") && window.innerWidth > 992) {
             this.resizeMasonryVideo(item);
         } else {
             this.resizeMasonryImage(item);
@@ -87,16 +87,18 @@ class Masonry {
         /* Get the bounds of the image */
         const bounds = item.querySelector(".img-fluid");
 
-        /* Calculate the rowSpan */
-        const rowSpan = Math.ceil(
-            (bounds.getBoundingClientRect().height + this.rowGap) / (this.rowHeight + this.rowGap)
-        );
+        if (bounds !== null) {
+            /* Calculate the rowSpan */
+            const rowSpan = Math.ceil(
+                (bounds.getBoundingClientRect().height + this.rowGap) / (this.rowHeight + this.rowGap)
+            );
 
-        /* Set the spanning as calculated above (S) */
-        item.style.gridRowEnd = "span " + rowSpan;
+            /* Set the spanning as calculated above (S) */
+            item.style.gridRowEnd = "span " + rowSpan;
 
-        /* Make the images take all the available space in the cell/item */
-        bounds.style.height = rowSpan * 10 + "px";
+            /* Make the images take all the available space in the cell/item */
+            bounds.style.height = rowSpan * 10 + "px";
+        }
     }
     onIntersection(entries) {
         entries.forEach(entry => {
