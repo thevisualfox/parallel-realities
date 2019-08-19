@@ -63,6 +63,10 @@
     width: 100%;
     z-index: 1;
 
+    &--16by9 {
+        padding-top: 56.25%;
+    }
+
     @include media-breakpoint-up(lg) {
         + .img-fluid {
             position: absolute;

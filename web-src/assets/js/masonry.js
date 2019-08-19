@@ -10,6 +10,7 @@ class Masonry {
         this.cases = document.getElementById("cases");
         this.casesObserver = document.getElementsByClassName("cases-observer")[0];
         this.casesObserver.__link = this.cases;
+        this.casesIsPlaying = false;
 
         /* Get the grid object, its row-gap, and the size of its implicit rows */
         this.rowGap = parseInt(window.getComputedStyle(this.DOM.el).getPropertyValue("grid-row-gap"));
@@ -101,8 +102,13 @@ class Masonry {
         }
     }
     onIntersection(entries) {
+        if (this.casesIsPlaying) return;
+
         entries.forEach(entry => {
             if (entry.target.className === "cases-observer" && entry.intersectionRatio === 1) {
+                console.log("Vimeo player start");
+                this.casesIsPlaying = true;
+
                 /* Get video's and play them on intersection */
                 document.querySelectorAll("[data-vimeo-player]").forEach(video => {
                     const player = new Player(video);
