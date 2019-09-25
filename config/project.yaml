@@ -1,9 +1,11 @@
-dateModified: 1564255975
+dateModified: 1569423774
 email:
   fromEmail: jurjen.p.vos@gmail.com
   fromName: 'Parallel Realities'
   transportType: craft\mail\transportadapters\Sendmail
 fieldGroups:
+  2de68d2c-f760-4876-97b3-ee7f14075255:
+    name: Header
   4d3dab93-ed84-46d8-a38c-37042926fda1:
     name: Footer
   7f6ceebb-ff32-4474-a724-971cd458e4ef:
@@ -302,6 +304,27 @@ fields:
     translationKeyFormat: null
     translationMethod: site
     type: craft\fields\Matrix
+  b1956beb-f17c-445d-9106-83c7cb35e660:
+    name: 'Header color'
+    handle: headerColor
+    instructions: 'Choose a header color | default: white'
+    searchable: true
+    translationMethod: none
+    translationKeyFormat: null
+    type: craft\fields\Dropdown
+    settings:
+      optgroups: true
+      options:
+        -
+          label: White
+          value: white
+          default: '1'
+        -
+          label: Black
+          value: black
+          default: ''
+    contentColumnType: string
+    fieldGroup: 2de68d2c-f760-4876-97b3-ee7f14075255
   b9a3b52a-5e25-43bf-a170-76875b2fc8c6:
     contentColumnType: text
     fieldGroup: 4d3dab93-ed84-46d8-a38c-37042926fda1
@@ -409,6 +432,19 @@ fields:
     translationMethod: site
     type: craft\fields\Assets
 globalSets:
+  8c3cebef-3e8d-4cbf-a8bd-5bb59010a3bb:
+    name: Header
+    handle: header
+    fieldLayouts:
+      3d0cc591-080c-4fb5-87ae-1fdce94c993c:
+        tabs:
+          -
+            name: Header
+            sortOrder: 1
+            fields:
+              b1956beb-f17c-445d-9106-83c7cb35e660:
+                required: false
+                sortOrder: 1
   dfe5b088-d002-4805-bf80-a6d860e71ee9:
     fieldLayouts:
       50871530-6faf-46e5-8e56-7a92b413ccb6:
@@ -634,6 +670,26 @@ plugins:
       secretKey: 6LdhMK4UAAAAAOgIYTBzwBcGJja1-XOhDA4XFuoM
       validateContactForm: '1'
 sections:
+  242380ba-9a3d-4f96-b5fe-e91a4f34a3a6:
+    name: Configurator
+    handle: configurator
+    type: single
+    enableVersioning: true
+    propagationMethod: all
+    siteSettings:
+      bbf8cb32-62ed-4353-8c5a-c091131d4962:
+        enabledByDefault: true
+        hasUrls: true
+        uriFormat: configurator
+        template: _singles/configurator.twig
+    entryTypes:
+      3b11eb26-6a3b-446a-aaa0-b410fc4f8d75:
+        name: Configurator
+        handle: configurator
+        hasTitleField: false
+        titleLabel: null
+        titleFormat: '{section.name|raw}'
+        sortOrder: 1
   29345a87-1cb6-4823-a8d5-c1ac5c6dda4a:
     enableVersioning: true
     entryTypes:
