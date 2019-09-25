@@ -21,7 +21,8 @@
         }
     }
 
-    &.is-sticky, .showcase & {
+    &.is-sticky,
+    .showcase & {
         background-color: $white;
         padding: 0 !important;
 
@@ -46,9 +47,22 @@
             }
         }
     }
+
+    &--black {
+
+        .logo__image,
+        .nav--primary .nav-text {
+            color: $base;
+        }
+
+        .nav-link:after  {
+            background-color: $base;
+        }
+    }
 }
 
-.main-header__logo, .main-header__nav {
+.main-header__logo,
+.main-header__nav {
     transition: transform 400ms $transition-bezier;
 }
 

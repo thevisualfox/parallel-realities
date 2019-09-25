@@ -1,5 +1,5 @@
 {% set image  = entry.backgroundImage.one() %}
-{% set imageTransform = { width: 1920, height: 1080, mode: 'crop' } %}
+{% set imageTransform = { width: 2560, height: 1440, mode: 'crop' } %}
 
 <section id="hero" class="hero" {% if image %}style="background: url({{ image.getUrl(imageTransform) }}) no-repeat 50% 50% / cover"{% endif %}>
     <div class="hero__video-wrapper d-none d-lg-flex">
