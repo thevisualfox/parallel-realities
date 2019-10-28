@@ -1,4 +1,4 @@
-dateModified: 1569423774
+dateModified: 1572273838
 email:
   fromEmail: jurjen.p.vos@gmail.com
   fromName: 'Parallel Realities'
@@ -670,68 +670,6 @@ plugins:
       secretKey: 6LdhMK4UAAAAAOgIYTBzwBcGJja1-XOhDA4XFuoM
       validateContactForm: '1'
 sections:
-  242380ba-9a3d-4f96-b5fe-e91a4f34a3a6:
-    name: Configurator
-    handle: configurator
-    type: single
-    enableVersioning: true
-    propagationMethod: all
-    siteSettings:
-      bbf8cb32-62ed-4353-8c5a-c091131d4962:
-        enabledByDefault: true
-        hasUrls: true
-        uriFormat: configurator
-        template: _singles/configurator.twig
-    entryTypes:
-      3b11eb26-6a3b-446a-aaa0-b410fc4f8d75:
-        name: Configurator
-        handle: configurator
-        hasTitleField: false
-        titleLabel: null
-        titleFormat: '{section.name|raw}'
-        sortOrder: 1
-  29345a87-1cb6-4823-a8d5-c1ac5c6dda4a:
-    enableVersioning: true
-    entryTypes:
-      d833d7c3-3e71-4f82-b2f2-aecd74e2a367:
-        fieldLayouts:
-          3aaee4a3-46c9-4ee1-b50c-956df835a1ec:
-            tabs:
-              -
-                fields:
-                  00b3e9bf-8280-4397-8d41-33cc4de75003:
-                    required: false
-                    sortOrder: 4
-                  3ecd3dc4-5028-4407-b30a-7bf60783badf:
-                    required: false
-                    sortOrder: 1
-                  5c93d5a7-8552-4922-bcbf-4a6433846899:
-                    required: false
-                    sortOrder: 2
-                  606b7e8b-a826-4489-89c7-7c85e13b6541:
-                    required: false
-                    sortOrder: 3
-                name: Work
-                sortOrder: 1
-        handle: highlights
-        hasTitleField: true
-        name: highlights
-        sortOrder: 1
-        titleFormat: ''
-        titleLabel: Title
-    handle: highlights
-    name: Highlights
-    siteSettings:
-      bbf8cb32-62ed-4353-8c5a-c091131d4962:
-        enabledByDefault: true
-        hasUrls: false
-        template: null
-        uriFormat: null
-    structure:
-      maxLevels: '1'
-      uid: 56eca767-f8b6-46f5-887b-172a01e6616d
-    type: structure
-    propagationMethod: all
   4b203b52-92e5-4057-affc-294af5e9931d:
     enableVersioning: true
     entryTypes:
