@@ -1,0 +1,15 @@
+.image-zoom {
+    position: relative;
+    overflow: hidden;
+
+    img {
+        transition: $transition-base;
+        transition-duration: 750ms;
+    }
+
+    &:hover {
+        img {
+            transform: scale(1.03);
+        }
+    }
+}

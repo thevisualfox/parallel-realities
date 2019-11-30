@@ -4,5 +4,7 @@
   "/app/assets/img/symbols.js": "/app/assets/img/symbols.js",
   "/app/assets/img/symbols.svg": "/app/assets/img/symbols.svg",
   "/app/assets/js/main.js": "/app/assets/js/main.js",
-  "/app/assets/img/logo.svg": "/app/assets/img/logo.svg"
+  "/app/assets/img/chevron-down-base.svg": "/app/assets/img/chevron-down-base.svg",
+  "/app/assets/img/logo.svg": "/app/assets/img/logo.svg",
+  "/web-src/assets/img/chevron-down-base.svg": "/web-src/assets/img/chevron-down-base.svg"
 }

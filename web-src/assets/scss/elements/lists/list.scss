@@ -1,0 +1,27 @@
+.list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.list__item {
+    &:not(:last-child) {
+        margin-right: 1.5rem;
+    }
+}
+
+.list--spaced {
+    > .list__item {
+        margin-right: 0;
+        margin-bottom: 1em;
+        text-align: center;
+
+        @include media-breakpoint-up(md) {
+            text-align: left;
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}

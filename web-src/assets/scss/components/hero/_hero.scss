@@ -1,0 +1,39 @@
+.hero {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.hero__video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+}
+
+.hero__video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.hero__anchor {
+    position: absolute;
+    left: 50%;
+    top: 85%;
+    transform: translate(-50%, -85%);
+    animation: move 1s infinite alternate;
+
+    @include media-breakpoint-up(lg) {
+        left: 2rem;
+        transform: none;
+    }
+}
+
+@keyframes move {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-15px); }
+}
