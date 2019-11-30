@@ -1,4 +1,4 @@
-dateModified: 1572273838
+dateModified: 1575109817
 email:
   fromEmail: jurjen.p.vos@gmail.com
   fromName: 'Parallel Realities'
@@ -669,6 +669,10 @@ plugins:
       siteKey: 6LdhMK4UAAAAAOtVBisQ70xX1I26yQ21a5RHqKAU
       secretKey: 6LdhMK4UAAAAAOgIYTBzwBcGJja1-XOhDA4XFuoM
       validateContactForm: '1'
+  assetrev:
+    edition: standard
+    enabled: true
+    schemaVersion: 1.0.0
 sections:
   4b203b52-92e5-4057-affc-294af5e9931d:
     enableVersioning: true

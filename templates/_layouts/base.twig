@@ -33,7 +33,7 @@
                 </title>
             {% endif %}
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <link rel="stylesheet" type="text/css" href="{{ alias('@web/app/assets/css/app.css') }}">
+            <link rel="stylesheet" type="text/css" href="{{ rev('/app/assets/css/main.css') }}">
 
             {% if env == "live" %}
                 <script>
@@ -55,7 +55,7 @@
         {% endblock %}
 
         {% block foot %}
-            <script src="{{ alias('@web/app/assets/js/app.js') }}"></script>
+            <script src="{{ rev('/app/assets/js/main.js') }}"></script>
         {% endblock %}
     </body>
 </html>

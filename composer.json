@@ -4,7 +4,8 @@
     "vlucas/phpdotenv": "^2.4.0",
     "craftcms/redactor": "2.3.3.2",
     "craftcms/contact-form": "2.2.5",
-    "matt-west/craft-recaptcha": "^1.3"
+    "matt-west/craft-recaptcha": "^1.3",
+    "clubstudioltd/craft-asset-rev": "6.0.2"
   },
   "autoload": {
     "psr-4": {

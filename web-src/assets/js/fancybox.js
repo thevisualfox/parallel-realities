@@ -15,3 +15,5 @@ $('[data-fancybox="default"]').fancybox({
 		return $(this).next('figcaption').html();
 	}
 });
+
+fancybox.init()
