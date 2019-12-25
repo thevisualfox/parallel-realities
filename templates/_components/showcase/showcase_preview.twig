@@ -6,14 +6,13 @@
 {% if entry.separatePage %}
     {% set href = entry.url %}
 
-    {% elseif image %}
-    {% set href = image.getUrl() %}
-
     {% elseif entry.video %}
     {% set href = 'https://vimeo.com/' ~ entry.video %}
 
-{% endif %}
+    {% elseif image %}
+    {% set href = image.getUrl() %}
 
+{% endif %}
 
 <div class="grid__item {{ entry.video ? "grid__item--video" : "" }}">
     <figure class="media media--cases image-zoom mb-0">
@@ -23,7 +22,7 @@
                title="{{ entry.title }}" {% if entry.separatePage == 0 %} data-fancybox="default" {% endif %}>
                 {% if image or entry.video %}
                     {% if entry.video %}
-                        <div class="media__container">
+                        <div class="media__container d-none d-lg-block">
                             <iframe data-vimeo-player class="media__video" src="https://player.vimeo.com/video/{{ entry.video }}?background=1" frameborder="0" webkitallowfullscreen
                                     mozallowfullscreen allowfullscreen></iframe>
                         </div>

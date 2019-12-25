@@ -13,17 +13,25 @@
 {% endif %}
 
 {% block body %}
-    <header id="main-header" class="main-header py-3" role="banner">
-        {% include '_compositions/main-header.twig' %}
-    </header>
 
-    <main id="main" role="main">
-        {% block main %}{% endblock %}
-    </main>
+    {% block header %}
+        {% set headerColor = header.headerColor.value|default("") %}
+        <header id="main-header" class="main-header {{ 'main-header--'~ headerColor }} py-3" role="banner">
+            {% include '_compositions/main-header.twig' %}
+        </header>
+    {% endblock %}
 
-    <footer id="contact" class="main-footer" role="contentinfo">
-        {% include '_compositions/main-footer.twig' %}
-    </footer>
+    {% block content %}
+        <main id="main" role="main">
+            {% block main %}{% endblock %}
+        </main>
+    {% endblock %}
+
+    {% block footer %}
+        <footer id="contact" class="main-footer" role="contentinfo">
+            {% include '_compositions/main-footer.twig' %}
+        </footer>
+    {% endblock %}
 
 {% endblock %}
 

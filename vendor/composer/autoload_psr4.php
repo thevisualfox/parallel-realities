@@ -31,6 +31,7 @@ return array(
     'craft\\contactform\\' => array($vendorDir . '/craftcms/contact-form/src'),
     'craft\\composer\\' => array($vendorDir . '/craftcms/plugin-installer/src'),
     'craft\\' => array($vendorDir . '/craftcms/cms/src'),
+    'club\\assetrev\\' => array($vendorDir . '/clubstudioltd/craft-asset-rev/src'),
     'cebe\\markdown\\' => array($vendorDir . '/cebe/markdown'),
     'Zend\\Stdlib\\' => array($vendorDir . '/zendframework/zend-stdlib/src'),
     'Zend\\Feed\\' => array($vendorDir . '/zendframework/zend-feed/src'),

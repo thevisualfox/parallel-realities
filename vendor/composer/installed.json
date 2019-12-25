@@ -51,6 +51,44 @@
         ]
     },
     {
+        "name": "clubstudioltd/craft-asset-rev",
+        "version": "6.0.2",
+        "version_normalized": "6.0.2.0",
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/clubstudioltd/craft-asset-rev/zipball/b4d4ada7902af654ceb081103ab4f5abb6a7e19c",
+            "reference": "b4d4ada7902af654ceb081103ab4f5abb6a7e19c",
+            "shasum": ""
+        },
+        "require": {
+            "craftcms/cms": "^3.0.0-beta.29"
+        },
+        "time": "2018-11-20T14:45:15+00:00",
+        "type": "craft-plugin",
+        "extra": {
+            "name": "Asset Rev",
+            "handle": "assetrev",
+            "hasCpSettings": false,
+            "hasCpSection": false,
+            "changelogUrl": "https://github.com/clubstudioltd/craft-asset-rev/blob/master/CHANGELOG.md",
+            "documentationUrl": "https://github.com/clubstudioltd/craft-asset-rev",
+            "downloadUrl": "https://github.com/clubstudioltd/craft-asset-rev/archive/v6.zip",
+            "developer": "Club Studio Ltd",
+            "developerUrl": "https://clubstudio.co.uk",
+            "class": "club\\assetrev\\AssetRev"
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "club\\assetrev\\": "src/"
+            }
+        },
+        "license": [
+            "MIT"
+        ],
+        "description": "A plugin to aid cache-busting in Craft 3"
+    },
+    {
         "name": "composer/ca-bundle",
         "version": "1.1.4",
         "version_normalized": "1.1.4.0",

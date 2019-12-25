@@ -10,6 +10,7 @@ class Masonry {
         this.cases = document.getElementById("cases");
         this.casesObserver = document.getElementsByClassName("cases-observer")[0];
         this.casesObserver.__link = this.cases;
+        this.casesIsPlaying = false;
 
         /* Get the grid object, its row-gap, and the size of its implicit rows */
         this.rowGap = parseInt(window.getComputedStyle(this.DOM.el).getPropertyValue("grid-row-gap"));
@@ -50,7 +51,7 @@ class Masonry {
     }
     resizeMasonryItem(item) {
         /* Specify which kind of masonry item it is and run specific function */
-        if (item.classList.contains("grid__item--video")) {
+        if (item.classList.contains("grid__item--video") && window.innerWidth > 992) {
             this.resizeMasonryVideo(item);
         } else {
             this.resizeMasonryImage(item);
@@ -87,20 +88,26 @@ class Masonry {
         /* Get the bounds of the image */
         const bounds = item.querySelector(".img-fluid");
 
-        /* Calculate the rowSpan */
-        const rowSpan = Math.ceil(
-            (bounds.getBoundingClientRect().height + this.rowGap) / (this.rowHeight + this.rowGap)
-        );
+        if (bounds !== null) {
+            /* Calculate the rowSpan */
+            const rowSpan = Math.ceil(
+                (bounds.getBoundingClientRect().height + this.rowGap) / (this.rowHeight + this.rowGap)
+            );
 
-        /* Set the spanning as calculated above (S) */
-        item.style.gridRowEnd = "span " + rowSpan;
+            /* Set the spanning as calculated above (S) */
+            item.style.gridRowEnd = "span " + rowSpan;
 
-        /* Make the images take all the available space in the cell/item */
-        bounds.style.height = rowSpan * 10 + "px";
+            /* Make the images take all the available space in the cell/item */
+            bounds.style.height = rowSpan * 10 + "px";
+        }
     }
     onIntersection(entries) {
+        if (this.casesIsPlaying) return;
+
         entries.forEach(entry => {
             if (entry.target.className === "cases-observer" && entry.intersectionRatio === 1) {
+                this.casesIsPlaying = true;
+
                 /* Get video's and play them on intersection */
                 document.querySelectorAll("[data-vimeo-player]").forEach(video => {
                     const player = new Player(video);

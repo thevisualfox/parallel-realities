@@ -6,6 +6,6 @@
     @return mix($color, $black, $percentage);
 }
 
-@function pxToRem($px) {
+@function px-to-rem($px) {
     @return ($px / 16) * 1rem;
 }

@@ -59,6 +59,7 @@ class ComposerStaticInit70d92dba1629a59f323fa6ebf42cd7e9
             'craft\\contactform\\' => 18,
             'craft\\composer\\' => 15,
             'craft\\' => 6,
+            'club\\assetrev\\' => 14,
             'cebe\\markdown\\' => 14,
         ),
         'Z' => 
@@ -237,6 +238,10 @@ class ComposerStaticInit70d92dba1629a59f323fa6ebf42cd7e9
         'craft\\' => 
         array (
             0 => __DIR__ . '/..' . '/craftcms/cms/src',
+        ),
+        'club\\assetrev\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/clubstudioltd/craft-asset-rev/src',
         ),
         'cebe\\markdown\\' => 
         array (
@@ -1991,6 +1996,16 @@ class ComposerStaticInit70d92dba1629a59f323fa6ebf42cd7e9
         'cebe\\markdown\\tests\\MarkdownTest' => __DIR__ . '/..' . '/cebe/markdown/tests/MarkdownTest.php',
         'cebe\\markdown\\tests\\ParserTest' => __DIR__ . '/..' . '/cebe/markdown/tests/ParserTest.php',
         'cebe\\markdown\\tests\\TestParser' => __DIR__ . '/..' . '/cebe/markdown/tests/ParserTest.php',
+        'club\\assetrev\\AssetRev' => __DIR__ . '/..' . '/clubstudioltd/craft-asset-rev/src/AssetRev.php',
+        'club\\assetrev\\AssetRevTwigExtension' => __DIR__ . '/..' . '/clubstudioltd/craft-asset-rev/src/AssetRevTwigExtension.php',
+        'club\\assetrev\\exceptions\\ContinueException' => __DIR__ . '/..' . '/clubstudioltd/craft-asset-rev/src/exceptions/ContinueException.php',
+        'club\\assetrev\\models\\Settings' => __DIR__ . '/..' . '/clubstudioltd/craft-asset-rev/src/models/Settings.php',
+        'club\\assetrev\\services\\AssetRev' => __DIR__ . '/..' . '/clubstudioltd/craft-asset-rev/src/services/AssetRev.php',
+        'club\\assetrev\\utilities\\FilenameRev' => __DIR__ . '/..' . '/clubstudioltd/craft-asset-rev/src/utilities/FilenameRev.php',
+        'club\\assetrev\\utilities\\Strategy' => __DIR__ . '/..' . '/clubstudioltd/craft-asset-rev/src/utilities/Strategy.php',
+        'club\\assetrev\\utilities\\StrategyContract' => __DIR__ . '/..' . '/clubstudioltd/craft-asset-rev/src/utilities/StrategyContract.php',
+        'club\\assetrev\\utilities\\strategies\\ManifestFileStrategy' => __DIR__ . '/..' . '/clubstudioltd/craft-asset-rev/src/utilities/strategies/ManifestFileStrategy.php',
+        'club\\assetrev\\utilities\\strategies\\QueryStringStrategy' => __DIR__ . '/..' . '/clubstudioltd/craft-asset-rev/src/utilities/strategies/QueryStringStrategy.php',
         'craft\\app\\web\\UrlRule' => __DIR__ . '/..' . '/craftcms/cms/src/app/web/UrlRule.php',
         'craft\\base\\ApplicationTrait' => __DIR__ . '/..' . '/craftcms/cms/src/base/ApplicationTrait.php',
         'craft\\base\\BlockElementInterface' => __DIR__ . '/..' . '/craftcms/cms/src/base/BlockElementInterface.php',
