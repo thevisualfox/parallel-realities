@@ -15,7 +15,7 @@ module.exports = {
         "app/assets/css/main": "./web-src/assets/scss/main.scss"
     },
     output: {
-        filename: isProduction ? "[name].[contenthash].js" : "[name].js",
+        filename: isProduction ? "[name].[hash].js" : "[name].js",
         path: path.resolve(__dirname, "./web"),
         publicPath: "/"
     },
@@ -37,7 +37,7 @@ module.exports = {
                         loader: "file-loader",
                         options: {
                             context: "",
-                            name: isProduction ? "[path][name].[contenthash].[ext]" : "[path][name].[ext]"
+                            name: isProduction ? "[path][name].[hash].[ext]" : "[path][name].[ext]"
                         }
                     }
                 ]
@@ -79,7 +79,7 @@ module.exports = {
             }
         ),
         new MiniCssExtractPlugin({
-            filename: isProduction ? "[name].[contenthash].css" : "[name].css"
+            filename: isProduction ? "[name].[hash].css" : "[name].css"
         }),
         new StyleLintPlugin({
             files: './**/*.s?(a|c)ss'

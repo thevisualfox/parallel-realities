@@ -1,17 +1,18 @@
-{% set image  = entry.backgroundImage.one() %}
+{% set image  = entry.heroImage.one() %}
+{% set videoId = entry.heroVideoId %}
 {% set imageTransform = { width: 2560, height: 1440, mode: 'crop' } %}
 
-<section id="hero" class="hero" {% if image %}style="background: url({{ image.getUrl(imageTransform) }}) no-repeat 50% 50% / cover"{% endif %}>
-    <div class="hero__video-wrapper d-none d-lg-flex">
-        {% if entry.video_id %}
-            <iframe class="hero__video" src="https://player.vimeo.com/video/{{ entry.video_id }}?background=1" frameborder="0" webkitallowfullscreen
-                    mozallowfullscreen allowfullscreen></iframe>
-        {% endif %}
-    </div>
-        <a class="hero__anchor" href="#highlights" title="Scoll Down" data-smooth-scroll>
-            <svg class="icon icon--24">
-                <use xlink:href="{{ alias('@web/app/assets/img/symbols.svg#anchor') }}"></use>
-            </svg>
-        </a>
-    <div class="main-header__observer"></div>
+<section class="hero">
+    {% if videoId and image %}
+        <div class="hero__video-wrapper">
+            <figure class="hero__media media">
+                <img class="hero__image img-fluid" src="{{ image.getUrl(imageTransform) }}" alt="{{ image.title }}">
+            </figure>
+            <iframe class="hero__video d-none d-lg-flex" src="https://player.vimeo.com/video/{{ videoId }}?background=1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+        </div>
+    {% else %}
+        <figure class="hero__media media">
+            <img class="hero__image img-fluid" src="{{ image.getUrl(imageTransform) }}" alt="{{ image.title }}">
+        </figure>
+    {% endif %}
 </section>

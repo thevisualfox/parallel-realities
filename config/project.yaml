@@ -1,4 +1,4 @@
-dateModified: 1577269287
+dateModified: 1577270159
 email:
   fromEmail: jurjen.p.vos@gmail.com
   fromName: 'Parallel Realities'
@@ -15,7 +15,7 @@ fieldGroups:
   dbf2593b-4a3a-4add-ae4e-83b18beeab71:
     name: 'Work Entry'
   ef1c93cc-c3d2-4e56-aea3-e04ff1400d2a:
-    name: Homepage
+    name: Home
 fields:
   00b3e9bf-8280-4397-8d41-33cc4de75003:
     contentColumnType: string
@@ -78,78 +78,33 @@ fields:
     translationKeyFormat: null
     translationMethod: none
     type: craft\redactor\Field
-  15c9f221-ff91-4fbd-9c62-4b769f6922d9:
-    contentColumnType: text
-    fieldGroup: ef1c93cc-c3d2-4e56-aea3-e04ff1400d2a
-    handle: textBlock
-    instructions: 'Insert the "about" text'
-    name: 'Text field'
-    searchable: '1'
-    settings:
-      availableTransforms: '*'
-      availableVolumes: '*'
-      columnType: text
-      purifierConfig: ''
-      purifyHtml: '1'
-      redactorConfig: Standard.json
-      removeInlineStyles: '1'
-      removeEmptyTags: '1'
-      removeNbsp: '1'
-    translationKeyFormat: null
-    translationMethod: none
-    type: craft\redactor\Field
-  18a478f8-4b5e-4ca9-8300-70075e472304:
-    contentColumnType: string
-    fieldGroup: ef1c93cc-c3d2-4e56-aea3-e04ff1400d2a
-    handle: clients
-    instructions: 'Insert client logo''s'
-    name: Clients
-    searchable: true
-    settings:
-      allowedKinds:
-        - image
-      defaultUploadLocationSource: 'volume:081457f1-b9d3-4dc5-b850-ff375be3255d'
-      defaultUploadLocationSubpath: ''
-      limit: ''
-      localizeRelations: false
-      restrictFiles: '1'
-      selectionLabel: 'Upload media'
-      singleUploadLocationSource: 'volume:081457f1-b9d3-4dc5-b850-ff375be3255d'
-      singleUploadLocationSubpath: ''
-      source: null
-      sources: '*'
-      targetSiteId: null
-      useSingleFolder: ''
-      viewMode: large
-    translationKeyFormat: null
-    translationMethod: site
-    type: craft\fields\Assets
   24734fcf-ded7-4346-b13f-f726403e1308:
-    contentColumnType: string
-    fieldGroup: ef1c93cc-c3d2-4e56-aea3-e04ff1400d2a
-    handle: backgroundImage
-    instructions: 'Insert a background image if the video can''t be loaded and for tablet/mobile devices'
-    name: 'Background Image'
-    searchable: '1'
+    name: 'Hero image'
+    handle: heroImage
+    instructions: 'Insert a fullscreen hero image. (recommended image size: 2560x1440)'
+    searchable: true
+    translationMethod: site
+    translationKeyFormat: null
+    type: craft\fields\Assets
     settings:
-      allowedKinds:
-        - image
+      useSingleFolder: ''
       defaultUploadLocationSource: 'volume:081457f1-b9d3-4dc5-b850-ff375be3255d'
       defaultUploadLocationSubpath: ''
-      limit: '1'
-      localizeRelations: false
-      restrictFiles: '1'
-      selectionLabel: 'Upload media'
       singleUploadLocationSource: 'volume:081457f1-b9d3-4dc5-b850-ff375be3255d'
       singleUploadLocationSubpath: ''
-      source: null
+      restrictFiles: '1'
+      allowedKinds:
+        - image
       sources: '*'
+      source: null
       targetSiteId: null
-      useSingleFolder: ''
       viewMode: large
-    translationKeyFormat: null
-    translationMethod: site
-    type: craft\fields\Assets
+      limit: '1'
+      selectionLabel: 'Upload media'
+      localizeRelations: false
+      validateRelatedElements: ''
+    contentColumnType: string
+    fieldGroup: ef1c93cc-c3d2-4e56-aea3-e04ff1400d2a
   26b4ea34-7905-4560-a11f-4803d203d42f:
     contentColumnType: text
     fieldGroup: 4d3dab93-ed84-46d8-a38c-37042926fda1
@@ -412,22 +367,22 @@ fields:
     translationMethod: site
     type: craft\fields\Assets
   f3fcd12b-79e6-44c4-8bff-af9ad554b773:
+    name: 'Hero video'
+    handle: heroVideoId
+    instructions: 'Insert a Vimeo video ID (for example: 263188343)'
+    searchable: true
+    translationMethod: none
+    translationKeyFormat: null
+    type: craft\fields\PlainText
+    settings:
+      placeholder: ''
+      code: ''
+      multiline: ''
+      initialRows: '4'
+      charLimit: ''
+      columnType: text
     contentColumnType: text
     fieldGroup: ef1c93cc-c3d2-4e56-aea3-e04ff1400d2a
-    handle: video_id
-    instructions: 'Insert the Vimeo video ID (eg: the part which comes after video: "263188343")'
-    name: 'Vimeo ID'
-    searchable: '1'
-    settings:
-      charLimit: ''
-      code: ''
-      columnType: text
-      initialRows: '4'
-      multiline: ''
-      placeholder: ''
-    translationKeyFormat: null
-    translationMethod: none
-    type: craft\fields\PlainText
   fc3392ab-6860-496f-b25c-445f259c7983:
     contentColumnType: string
     fieldGroup: 4d3dab93-ed84-46d8-a38c-37042926fda1
@@ -773,44 +728,38 @@ sections:
         titleFormat: '{section.name|raw}'
         sortOrder: 1
   7e37f191-8e39-43ff-b15e-650e919cad4a:
-    enableVersioning: '1'
-    entryTypes:
-      4185a582-1be2-46e1-98dc-9e2b42da4cb6:
-        fieldLayouts:
-          867b3b29-2a8c-4b02-ac5d-b1b5926489d2:
-            tabs:
-              -
-                fields:
-                  15c9f221-ff91-4fbd-9c62-4b769f6922d9:
-                    required: false
-                    sortOrder: 3
-                  18a478f8-4b5e-4ca9-8300-70075e472304:
-                    required: false
-                    sortOrder: 4
-                  24734fcf-ded7-4346-b13f-f726403e1308:
-                    required: false
-                    sortOrder: 2
-                  f3fcd12b-79e6-44c4-8bff-af9ad554b773:
-                    required: false
-                    sortOrder: 1
-                name: Homepage
-                sortOrder: 1
-        handle: homepage
-        hasTitleField: false
-        name: Homepage
-        sortOrder: 1
-        titleFormat: '{section.name|raw}'
-        titleLabel: ''
-    handle: homepage
-    name: Homepage
+    name: Home
+    handle: home
+    type: single
+    enableVersioning: true
+    propagationMethod: all
     siteSettings:
       bbf8cb32-62ed-4353-8c5a-c091131d4962:
-        enabledByDefault: '1'
-        hasUrls: '1'
-        template: index.twig
+        enabledByDefault: true
+        hasUrls: true
         uriFormat: __home__
-    type: single
-    propagationMethod: all
+        template: index.twig
+    entryTypes:
+      4185a582-1be2-46e1-98dc-9e2b42da4cb6:
+        name: Home
+        handle: homepage
+        hasTitleField: false
+        titleLabel: ''
+        titleFormat: '{section.name|raw}'
+        sortOrder: 1
+        fieldLayouts:
+          0fd4edda-33c9-4c87-a32d-1ed75f37c7c3:
+            tabs:
+              -
+                name: Home
+                sortOrder: 1
+                fields:
+                  24734fcf-ded7-4346-b13f-f726403e1308:
+                    required: false
+                    sortOrder: 1
+                  f3fcd12b-79e6-44c4-8bff-af9ad554b773:
+                    required: false
+                    sortOrder: 2
   8314a5dd-bf6f-4794-b583-319cbf51d123:
     name: Navigation
     handle: navigation
