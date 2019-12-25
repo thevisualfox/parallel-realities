@@ -14,18 +14,24 @@
 
 {% block body %}
 
-    {% set headerColor = header.headerColor.value|default("") %}
-    <header id="main-header" class="main-header {{ 'main-header--'~ headerColor }} py-3" role="banner">
-        {% include '_compositions/main-header.twig' %}
-    </header>
+    {% block header %}
+        {% set headerColor = header.headerColor.value|default("") %}
+        <header id="main-header" class="main-header {{ 'main-header--'~ headerColor }} py-3" role="banner">
+            {% include '_compositions/main-header.twig' %}
+        </header>
+    {% endblock %}
 
-    <main id="main" role="main">
-        {% block main %}{% endblock %}
-    </main>
+    {% block content %}
+        <main id="main" role="main">
+            {% block main %}{% endblock %}
+        </main>
+    {% endblock %}
 
-    <footer id="contact" class="main-footer" role="contentinfo">
-        {% include '_compositions/main-footer.twig' %}
-    </footer>
+    {% block footer %}
+        <footer id="contact" class="main-footer" role="contentinfo">
+            {% include '_compositions/main-footer.twig' %}
+        </footer>
+    {% endblock %}
 
 {% endblock %}
 

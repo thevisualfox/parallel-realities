@@ -1,0 +1,11 @@
+.logo {}
+
+.logo__title {
+    font-size: px-to-rem(30);
+    letter-spacing: normal;
+    margin-bottom: 0;
+
+    @include media-breakpoint-up(lg) {
+        font-size: px-to-rem(45);
+    }
+}

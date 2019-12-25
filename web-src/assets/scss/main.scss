@@ -57,13 +57,14 @@
 @import "./elements/media/media";
 @import "./elements/lists/list";
 @import "./elements/buttons/buttons";
+@import "./elements/logos/logo";
 
 // Components
 
 @import "./components/hero/hero";
 @import "./components/panes/pane";
 @import "./components/grids/grid";
-@import "./components/navs/primary-nav";
+@import "./components/navs/nav-primary";
 @import "./components/forms/form";
 @import "./components/alerts/alert";
 

@@ -4,6 +4,7 @@ const CleanWebpackPlugin = require("clean-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const ManifestPlugin = require("webpack-manifest-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const StyleLintPlugin = require('stylelint-webpack-plugin');
 const SVGSpritemapPlugin = require("svg-spritemap-webpack-plugin");
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -79,6 +80,9 @@ module.exports = {
         ),
         new MiniCssExtractPlugin({
             filename: isProduction ? "[name].[contenthash].css" : "[name].css"
+        }),
+        new StyleLintPlugin({
+            files: './**/*.s?(a|c)ss'
         }),
         new SVGSpritemapPlugin("./web-src/symbols/**/*.svg", {
             output: {

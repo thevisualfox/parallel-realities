@@ -8,5 +8,5 @@ module.exports = {
         "selector-pseudo-element-colon-notation": "single",
         "scss/at-rule-no-unknown": true
     },
-    ignoreFiles: ["./vendor/**/*", "./web/**/*"]
+    ignoreFiles: ["./vendor/**/*", "./web/**/*", "**/variables/_variables.scss"]
 };
