@@ -1,3 +1,6 @@
+
+{% set navigation = craft.entries.section('navigation') %}
+
 <div class="container-fluid d-flex align-items-center justify-content-between">
     <div class="main-header__logo logo">
         <a class="logo__link" href="{{ siteUrl }}#hero" title="Parallel Realities">
@@ -15,26 +18,13 @@
     </div>
     <nav class="main-header__nav" data-toggler data-toggler-observe="[data-toggle-nav]">
         <ul class="nav nav--primary flex-nowrap" id="main-nav">
-            <li class="nav-item">
-                <a class="nav-link" href="{{ siteUrl }}#hero">
-                    <span class="nav-text">Home</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ siteUrl }}#about">
-                    <span class="nav-text">Work</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ siteUrl }}#cases">
-                    <span class="nav-text">Studio</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ siteUrl }}#contact">
-                    <span class="nav-text">Contact</span>
-                </a>
-            </li>
+            {% nav item in navigation %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ item.navigationLink[0].url }}" title="{{ item.title }}">
+                        <span class="nav-text">{{ item.title }}</span>
+                    </a>
+                </li>
+            {% endnav %}
         </ul>
     </nav>
 </div>
