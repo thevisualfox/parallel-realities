@@ -926,3 +926,9 @@ $print-body-min-width: map-get($grid-breakpoints, "lg");
 // Icons
 
 $icon-sizes: 10, 12, 16, 20, 24, 30, 32, 36, 40, 48, 64, 80, 96, 112, 128;
+
+// Custom properties
+
+:root {
+    --headerColor: #{$base};
+}

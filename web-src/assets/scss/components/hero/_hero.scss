@@ -1,5 +1,9 @@
 .hero {
     height: 100vh;
+
+    &--narrow {
+        height: 85vh;
+    }
 }
 
 .hero__media {

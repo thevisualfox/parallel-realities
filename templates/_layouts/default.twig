@@ -15,22 +15,13 @@
 {% block body %}
 
     {% block header %}
-        {% set headerColor = header.headerColor.value|default("") %}
-        <header id="main-header" class="main-header {{ 'main-header--'~ headerColor }} py-3" role="banner">
-            {% include '_compositions/main-header.twig' %}
-        </header>
+        {% include '_compositions/main-header.twig' %}
     {% endblock %}
 
-    {% block content %}
-        <main id="main" role="main">
-            {% block main %}{% endblock %}
-        </main>
-    {% endblock %}
+    {% block content %}{% endblock %}
 
     {% block footer %}
-        <footer id="contact" class="main-footer" role="contentinfo">
-            {% include '_compositions/main-footer.twig' %}
-        </footer>
+        {% include '_compositions/main-footer.twig' %}
     {% endblock %}
 
 {% endblock %}

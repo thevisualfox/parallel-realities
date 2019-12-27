@@ -1,11 +1,11 @@
-dateModified: 1577270159
+dateModified: 1577453104
 email:
   fromEmail: jurjen.p.vos@gmail.com
   fromName: 'Parallel Realities'
   transportType: craft\mail\transportadapters\Sendmail
 fieldGroups:
   2de68d2c-f760-4876-97b3-ee7f14075255:
-    name: Header
+    name: Singles
   4d3dab93-ed84-46d8-a38c-37042926fda1:
     name: Footer
   7f6ceebb-ff32-4474-a724-971cd458e4ef:
@@ -15,7 +15,7 @@ fieldGroups:
   dbf2593b-4a3a-4add-ae4e-83b18beeab71:
     name: 'Work Entry'
   ef1c93cc-c3d2-4e56-aea3-e04ff1400d2a:
-    name: Home
+    name: Hero
 fields:
   00b3e9bf-8280-4397-8d41-33cc4de75003:
     contentColumnType: string
@@ -264,7 +264,7 @@ fields:
   b1956beb-f17c-445d-9106-83c7cb35e660:
     name: 'Header color'
     handle: headerColor
-    instructions: 'Choose a header color | default: white'
+    instructions: 'Choose a color for the header.'
     searchable: true
     translationMethod: none
     translationKeyFormat: null
@@ -273,12 +273,12 @@ fields:
       optgroups: true
       options:
         -
-          label: White
-          value: white
-          default: '1'
-        -
           label: Black
           value: black
+          default: '1'
+        -
+          label: White
+          value: white
           default: ''
     contentColumnType: string
     fieldGroup: 2de68d2c-f760-4876-97b3-ee7f14075255
@@ -410,19 +410,6 @@ fields:
     translationMethod: site
     type: craft\fields\Assets
 globalSets:
-  8c3cebef-3e8d-4cbf-a8bd-5bb59010a3bb:
-    name: Header
-    handle: header
-    fieldLayouts:
-      3d0cc591-080c-4fb5-87ae-1fdce94c993c:
-        tabs:
-          -
-            name: Header
-            sortOrder: 1
-            fields:
-              b1956beb-f17c-445d-9106-83c7cb35e660:
-                required: false
-                sortOrder: 1
   dfe5b088-d002-4805-bf80-a6d860e71ee9:
     fieldLayouts:
       50871530-6faf-46e5-8e56-7a92b413ccb6:
@@ -738,11 +725,11 @@ sections:
         enabledByDefault: true
         hasUrls: true
         uriFormat: __home__
-        template: index.twig
+        template: _pages/home
     entryTypes:
       4185a582-1be2-46e1-98dc-9e2b42da4cb6:
         name: Home
-        handle: homepage
+        handle: home
         hasTitleField: false
         titleLabel: ''
         titleFormat: '{section.name|raw}'
@@ -751,7 +738,7 @@ sections:
           0fd4edda-33c9-4c87-a32d-1ed75f37c7c3:
             tabs:
               -
-                name: Home
+                name: Hero
                 sortOrder: 1
                 fields:
                   24734fcf-ded7-4346-b13f-f726403e1308:
@@ -760,6 +747,13 @@ sections:
                   f3fcd12b-79e6-44c4-8bff-af9ad554b773:
                     required: false
                     sortOrder: 2
+              -
+                name: Header
+                sortOrder: 2
+                fields:
+                  b1956beb-f17c-445d-9106-83c7cb35e660:
+                    required: false
+                    sortOrder: 1
   8314a5dd-bf6f-4794-b583-319cbf51d123:
     name: Navigation
     handle: navigation
@@ -824,15 +818,35 @@ sections:
         enabledByDefault: true
         hasUrls: true
         uriFormat: contact
-        template: ''
+        template: _pages/contact
     entryTypes:
       82c5cade-4e05-4574-82ea-ebc77cf05f73:
         name: Contact
         handle: contact
         hasTitleField: false
-        titleLabel: null
+        titleLabel: ''
         titleFormat: '{section.name|raw}'
         sortOrder: 1
+        fieldLayouts:
+          4b77d800-7912-4ba2-8523-887501f99ddb:
+            tabs:
+              -
+                name: Hero
+                sortOrder: 1
+                fields:
+                  24734fcf-ded7-4346-b13f-f726403e1308:
+                    required: false
+                    sortOrder: 1
+                  f3fcd12b-79e6-44c4-8bff-af9ad554b773:
+                    required: false
+                    sortOrder: 2
+              -
+                name: Header
+                sortOrder: 2
+                fields:
+                  b1956beb-f17c-445d-9106-83c7cb35e660:
+                    required: false
+                    sortOrder: 1
 siteGroups:
   ed727250-f082-4ecf-9658-70db6d5aeb93:
     name: 'Parallel Realities'

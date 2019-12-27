@@ -1,0 +1,22 @@
+{% extends "_layouts/default" %}
+
+{% set entry = craft.entries.section('contact').one() %}
+{% set headerColor = entry.headerColor.value %}
+{% set title = entry.title %}
+
+{% block header %}
+    {% include '_compositions/main-header.twig' with {
+        headerColor: headerColor
+    } %}
+{% endblock %}
+
+{% block content %}
+    <main role="main">
+        {% include '_components/hero.twig' with {
+            extensionClasses: ['hero--narrow']
+        } %}
+    </main>
+{% endblock %}
+
+{# Reset footer #}
+{% block footer %}{% endblock %}
