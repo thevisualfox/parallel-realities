@@ -4,6 +4,14 @@
     left: 0;
     width: 100%;
     z-index: $zindex-fixed;
+
+    &--white {
+        --headerColor: #{$white};
+    }
+
+    &--black {
+        --headerColor: #{$base};
+    }
 }
 
 .main-header__logo {
@@ -29,7 +37,7 @@
         background-color: transparent;
     }
 
-    &.is-open {
+    .is-nav-open & {
         transform: translate(0);
         pointer-events: auto;
 
@@ -40,7 +48,8 @@
         .nav--primary .nav-text {
             transform: translate(0);
             opacity: 1;
-            transition: transform 500ms 125ms $transition-bezier, opacity 500ms 125ms ease;
+            transition: transform 500ms 125ms $transition-bezier, opacity 500ms 125ms ease, color 250ms $transition-bezier;
+            color: $base;
         }
     }
 }
@@ -49,6 +58,12 @@
     z-index: 1;
 
     .btn {
+        color: var(--headerColor);
+        transition: color 250ms 250ms $transition-bezier;
+    }
+
+    .btn.is-active {
         color: $base;
+        transition: color 250ms $transition-bezier;
     }
 }

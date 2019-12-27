@@ -30,7 +30,7 @@
             right: 0;
             left: 0;
             height: 1px;
-            background-color: $base;
+            background-color: var(--headerColor);
             transform: scaleX(0);
             transform-origin: right;
             transition: transform 350ms $transition-bezier;
@@ -49,10 +49,10 @@
         font-weight: 400;
         line-height: 1;
         text-transform: uppercase;
-        color: $base;
+        color: var(--headerColor);
         transform: translateY(100%);
         opacity: 0;
-        transition: transform 500ms $transition-bezier, opacity 500ms ease;
+        transition: transform 500ms $transition-bezier, opacity 500ms ease, color 250ms 250ms $transition-bezier;
 
         @include media-breakpoint-up(lg) {
             font-size: px-to-rem(16);

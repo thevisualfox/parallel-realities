@@ -1,30 +1,32 @@
 
 {% set navigation = craft.entries.section('navigation') %}
 
-<div class="container-fluid d-flex align-items-center justify-content-between">
-    <div class="main-header__logo logo">
-        <a class="logo__link" href="{{ siteUrl }}#hero" title="Parallel Realities">
-            <h2 class="logo__title text-uppercase">Parallel</h2>
-        </a>
+<header class="main-header main-header--{{ headerColor }} py-2" data-toggler data-toggler-observe="[data-toggle-nav]" data-toggler-class="is-nav-open">
+    <div class="container-fluid d-flex align-items-center justify-content-between">
+        <div class="main-header__logo logo">
+            <a class="logo__link" href="{{ siteUrl }}#hero" title="Parallel Realities">
+                <h2 class="logo__title text-uppercase">Parallel</h2>
+            </a>
+        </div>
+        <div class="main-header__nav-toggle d-lg-none">
+            <button class="btn btn-link px-0" data-toggle-nav>
+                <div class="icon icon--hamburger">
+                    <div class="icon__top"></div>
+                    <div class="icon__middle"></div>
+                    <div class="icon__bottom"></div>
+                </div>
+            </button>
+        </div>
+        <nav class="main-header__nav">
+            <ul class="nav nav--primary flex-nowrap">
+                {% nav item in navigation %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ item.navigationLink[0].url }}" title="{{ item.title }}">
+                            <span class="nav-text">{{ item.title }}</span>
+                        </a>
+                    </li>
+                {% endnav %}
+            </ul>
+        </nav>
     </div>
-    <div class="main-header__nav-toggle d-lg-none">
-        <button class="btn btn-link px-0" data-toggle-nav>
-            <div class="icon icon--hamburger">
-                <div class="icon__top"></div>
-                <div class="icon__middle"></div>
-                <div class="icon__bottom"></div>
-            </div>
-        </button>
-    </div>
-    <nav class="main-header__nav" data-toggler data-toggler-observe="[data-toggle-nav]">
-        <ul class="nav nav--primary flex-nowrap" id="main-nav">
-            {% nav item in navigation %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ item.navigationLink[0].url }}" title="{{ item.title }}">
-                        <span class="nav-text">{{ item.title }}</span>
-                    </a>
-                </li>
-            {% endnav %}
-        </ul>
-    </nav>
-</div>
+</header>
