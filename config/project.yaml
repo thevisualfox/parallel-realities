@@ -1,4 +1,4 @@
-dateModified: 1577450459
+dateModified: 1577453104
 email:
   fromEmail: jurjen.p.vos@gmail.com
   fromName: 'Parallel Realities'
@@ -725,11 +725,11 @@ sections:
         enabledByDefault: true
         hasUrls: true
         uriFormat: __home__
-        template: index.twig
+        template: _pages/home
     entryTypes:
       4185a582-1be2-46e1-98dc-9e2b42da4cb6:
         name: Home
-        handle: homepage
+        handle: home
         hasTitleField: false
         titleLabel: ''
         titleFormat: '{section.name|raw}'
@@ -818,7 +818,7 @@ sections:
         enabledByDefault: true
         hasUrls: true
         uriFormat: contact
-        template: ''
+        template: _pages/contact
     entryTypes:
       82c5cade-4e05-4574-82ea-ebc77cf05f73:
         name: Contact

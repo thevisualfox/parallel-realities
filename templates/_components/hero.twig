@@ -2,7 +2,13 @@
 {% set videoId = entry.heroVideoId %}
 {% set imageTransform = { width: 2560, height: 1440, mode: 'crop' } %}
 
-<section class="hero">
+{% set heroClass = ['hero'] %}
+
+{% if extensionClasses|default %}
+    {% set heroClass = heroClass|merge(extensionClasses) %}
+{% endif %}
+
+<section class="{{ heroClass|join(' ') }}">
     {% if videoId and image %}
         <div class="hero__video-wrapper">
             <figure class="hero__media media">
@@ -10,7 +16,7 @@
             </figure>
             <iframe class="hero__video d-none d-lg-flex" src="https://player.vimeo.com/video/{{ videoId }}?background=1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
         </div>
-    {% else %}
+    {% elseif image %}
         <figure class="hero__media media">
             <img class="hero__image img-fluid" src="{{ image.getUrl(imageTransform) }}" alt="{{ image.title }}">
         </figure>
