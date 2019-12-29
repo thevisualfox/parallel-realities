@@ -1,4 +1,4 @@
-dateModified: 1577638646
+dateModified: 1577640598
 email:
   fromEmail: jurjen.p.vos@gmail.com
   fromName: 'Parallel Realities'
@@ -803,7 +803,7 @@ system:
   edition: solo
   live: true
   name: 'Parallel Realities'
-  schemaVersion: 3.2.16
+  schemaVersion: 3.3.3
   timeZone: America/Los_Angeles
 users:
   allowPublicRegistration: false

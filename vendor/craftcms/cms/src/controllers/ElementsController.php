@@ -26,7 +26,7 @@ use yii\web\Response;
  * Note that all actions in the controller require an authenticated Craft session via [[allowAnonymous]].
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 3.0
+ * @since 3.0.0
  */
 class ElementsController extends BaseElementsController
 {
@@ -382,19 +382,15 @@ class ElementsController extends BaseElementsController
         $response = [];
 
         if ($includeSites) {
-            if (count($siteIds) > 1) {
-                $response['siteIds'] = [];
+            $response['sites'] = [];
 
-                foreach ($siteIds as $siteId) {
-                    $site = Craft::$app->getSites()->getSiteById($siteId);
+            foreach ($siteIds as $siteId) {
+                $site = Craft::$app->getSites()->getSiteById($siteId);
 
-                    $response['sites'][] = [
-                        'id' => $siteId,
-                        'name' => Craft::t('site', $site->name),
-                    ];
-                }
-            } else {
-                $response['sites'] = null;
+                $response['sites'][] = [
+                    'id' => $siteId,
+                    'name' => Craft::t('site', $site->name),
+                ];
             }
         }
 

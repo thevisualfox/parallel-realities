@@ -16,7 +16,7 @@ use craft\queue\BaseJob;
  * UpdateSearchIndex job
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 3.2
+ * @since 3.2.0
  */
 class UpdateSearchIndex extends BaseJob
 {
@@ -44,14 +44,14 @@ class UpdateSearchIndex extends BaseJob
         $class = $this->elementType;
         $elements = $class::find()
             ->id($this->elementId)
-            ->siteId('*')
+            ->siteId($this->siteId)
             ->anyStatus()
             ->all();
         $total = count($elements);
         $searchService = Craft::$app->getSearch();
 
         foreach ($elements as $i => $element) {
-            $this->setProgress($queue, $i + 1 / $total);
+            $this->setProgress($queue, ($i + 1) / $total);
             $searchService->indexElementAttributes($element);
         }
     }

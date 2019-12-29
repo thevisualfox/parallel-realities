@@ -36,7 +36,7 @@ use yii\web\NotFoundHttpException;
  * @property string $queryStringWithoutPath The request’s query string, without the path parameter.
  * @property-read bool $isPreview Whether this is an element preview request.
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 3.0
+ * @since 3.0.0
  */
 class Request extends \yii\web\Request
 {
@@ -62,6 +62,7 @@ class Request extends \yii\web\Request
 
     /**
      * @param int The highest page number that Craft should accept.
+     * @since 3.1.14
      */
     public $maxPageNum = 100000;
 
@@ -295,10 +296,10 @@ class Request extends \yii\web\Request
      * If $returnRealPathInfo is returned, then [[parent::getPathInfo()]] will be returned.
      *
      * @param bool $returnRealPathInfo Whether the real path info should be returned instead.
-     * @see \yii\web\UrlManager::processRequest()
-     * @see \yii\web\UrlRule::processRequest()
      * @return string The requested path, or the path info.
      * @throws InvalidConfigException if the path info cannot be determined due to unexpected server configuration
+     * @see \yii\web\UrlManager::processRequest()
+     * @see \yii\web\UrlRule::processRequest()
      */
     public function getPathInfo(bool $returnRealPathInfo = false): string
     {
@@ -389,6 +390,7 @@ class Request extends \yii\web\Request
      * Returns the token submitted with the request, if there is one.
      *
      * @return string|null The token, or `null` if there isn’t one.
+     * @throws BadRequestHttpException if an invalid token is supplied
      */
     public function getToken()
     {
@@ -397,6 +399,10 @@ class Request extends \yii\web\Request
             $this->_token = $this->getQueryParam($param)
                 ?? $this->getHeaders()->get('X-Craft-Token')
                 ?? false;
+            if ($this->_token && !preg_match('/^[A-Za-z0-9_-]+$/', $this->_token)) {
+                $this->_token = false;
+                throw new BadRequestHttpException('Invalid token');
+            }
         }
 
         return $this->_token ?: null;
@@ -460,7 +466,7 @@ class Request extends \yii\web\Request
      * Returns whether the current request is solely an action request.
      *
      * @return bool
-     * @deprecated in 3.2
+     * @deprecated in 3.2.0
      */
     public function getIsSingleActionRequest(): bool
     {
@@ -496,7 +502,7 @@ class Request extends \yii\web\Request
      */
     public function getIsPreview(): bool
     {
-        return $this->getQueryParam('x-craft-preview') !== null;
+        return $this->getQueryParam('x-craft-preview') !== null || $this->getQueryParam('x-craft-live-preview') !== null;
     }
 
     /**
@@ -511,7 +517,7 @@ class Request extends \yii\web\Request
      * ```
      *
      * @return bool Whether this is a Live Preview request.
-     * @deprecated in 3.2
+     * @deprecated in 3.2.0
      */
     public function getIsLivePreview(): bool
     {
@@ -984,6 +990,22 @@ class Request extends \yii\web\Request
     }
 
     /**
+     * Returns the normalized content type.
+     *
+     * @return string|null
+     * @since 3.3.8
+     */
+    public function getNormalizedContentType()
+    {
+        $rawContentType = $this->getContentType();
+        if (($pos = strpos($rawContentType, ';')) !== false) {
+            // e.g. text/html; charset=UTF-8
+            return substr($rawContentType, 0, $pos);
+        }
+        return $rawContentType;
+    }
+
+    /**
      * @inheritdoc
      * @internal Based on \yii\web\Request::resolve(), but we don't modify $_GET/$this->_queryParams in the process.
      */
@@ -1101,10 +1123,7 @@ class Request extends \yii\web\Request
      */
     private function _segments(string $path): array
     {
-        return array_values(array_filter(explode('/', $path), function($segment) {
-            // Explicitly check in case there is a 0 in a segment (i.e. foo/0 or foo/0/bar)
-            return $segment !== '';
-        }));
+        return array_values(ArrayHelper::filterEmptyStringsFromArray(explode('/', $path)));
     }
 
     /**
@@ -1155,6 +1174,8 @@ class Request extends \yii\web\Request
                 $parsed['host'] !== $hostName &&
                 (
                     !function_exists('idn_to_ascii') ||
+                    !defined('IDNA_NONTRANSITIONAL_TO_ASCII') ||
+                    !defined('INTL_IDNA_VARIANT_UTS46') ||
                     idn_to_ascii($parsed['host'], IDNA_NONTRANSITIONAL_TO_ASCII, INTL_IDNA_VARIANT_UTS46) !== $hostName
                 )
             ) {
@@ -1208,8 +1229,11 @@ class Request extends \yii\web\Request
     private function _getQueryStringPath(): string
     {
         $pathParam = Craft::$app->getConfig()->getGeneral()->pathParam;
-
-        return $this->getQueryParam($pathParam, '');
+        $value = $this->getQueryParam($pathParam, '');
+        if (!is_string($value)) {
+            return '';
+        }
+        return $value;
     }
 
     /**
@@ -1240,7 +1264,12 @@ class Request extends \yii\web\Request
             }
 
             $hasTriggerMatch = ($firstSegment === $generalConfig->actionTrigger && count($this->_segments) > 1);
-            $hasActionParam = ($actionParam = $this->getParam('action')) !== null;
+            if ($this->getNormalizedContentType() !== 'application/json') {
+                $actionParam = $this->getParam('action');
+            } else {
+                $actionParam = $this->getQueryParam('action');
+            }
+            $hasActionParam = $actionParam !== null;
             $hasSpecialPath = in_array($this->_path, [$loginPath, $logoutPath, $updatePath], true);
 
             if ($hasTriggerMatch || $hasActionParam || $hasSpecialPath) {
@@ -1301,7 +1330,11 @@ class Request extends \yii\web\Request
             return $this->_utf8AllTheThings($value);
         }
 
-        return StringHelper::convertToUtf8($value);
+        if (is_string($value)) {
+            return StringHelper::convertToUtf8($value);
+        }
+
+        return $value;
     }
 
     /**

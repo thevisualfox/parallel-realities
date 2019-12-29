@@ -82,6 +82,7 @@ class ResaveController extends Controller
 
     /**
      * @var string|null The type handle(s) of the elements to resave.
+     * @since 3.1.16
      */
     public $type;
 
@@ -113,6 +114,8 @@ class ResaveController extends Controller
             case 'assets':
                 $options[] = 'volume';
                 break;
+            case 'tags':
+            case 'users':
             case 'categories':
                 $options[] = 'group';
                 break;
@@ -123,12 +126,6 @@ class ResaveController extends Controller
             case 'matrix-blocks':
                 $options[] = 'field';
                 $options[] = 'type';
-                break;
-            case 'tags':
-                $options[] = 'group';
-                break;
-            case 'users':
-                $options[] = 'group';
                 break;
         }
 
@@ -183,8 +180,10 @@ class ResaveController extends Controller
     /**
      * Re-saves Matrix blocks.
      *
+     * Note that you must supply the --field or --element-id argument for this to work properly.
+     *
      * @return int
-     * @since 3.2
+     * @since 3.2.0
      */
     public function actionMatrixBlocks(): int
     {
@@ -238,14 +237,13 @@ class ResaveController extends Controller
     /**
      * @param ElementQueryInterface $query
      * @return int
+     * @since 3.2.0
      */
     public function saveElements(ElementQueryInterface $query): int
     {
         /** @var ElementQuery $query */
         /** @var ElementInterface $elementType */
         $elementType = $query->elementType;
-        $type = mb_strtolower($elementType::displayName());
-        $pType = mb_strtolower($elementType::pluralDisplayName());
 
         if ($this->elementId) {
             $query->id(is_int($this->elementId) ? $this->elementId : explode(',', $this->elementId));
@@ -276,11 +274,11 @@ class ResaveController extends Controller
         $count = (int)$query->count();
 
         if ($count === 0) {
-            $this->stdout("No {$pType} exist for that criteria." . PHP_EOL, Console::FG_YELLOW);
+            $this->stdout('No ' . $elementType::pluralLowerDisplayName() . ' exist for that criteria.' . PHP_EOL, Console::FG_YELLOW);
             return ExitCode::OK;
         }
 
-        $elementsText = $count === 1 ? $type : $pType;
+        $elementsText = $count === 1 ? $elementType::lowerDisplayName() : $elementType::pluralLowerDisplayName();
         $this->stdout("Resaving {$count} {$elementsText} ..." . PHP_EOL, Console::FG_YELLOW);
 
         $elementsService = Craft::$app->getElements();

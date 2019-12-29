@@ -34,7 +34,7 @@ use yii\base\InvalidConfigException;
  *
  * @property CategoryGroup $group the category's group
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 3.0
+ * @since 3.0.0
  */
 class Category extends Element
 {
@@ -52,9 +52,25 @@ class Category extends Element
     /**
      * @inheritdoc
      */
+    public static function lowerDisplayName(): string
+    {
+        return Craft::t('app', 'category');
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function pluralDisplayName(): string
     {
         return Craft::t('app', 'Categories');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function pluralLowerDisplayName(): string
+    {
+        return Craft::t('app', 'categories');
     }
 
     /**
@@ -112,6 +128,26 @@ class Category extends Element
     public static function find(): ElementQueryInterface
     {
         return new CategoryQuery(static::class);
+    }
+
+    /**
+     * @inheritdoc
+     * @since 3.3.0
+     */
+    public static function gqlTypeNameByContext($context): string
+    {
+        /** @var CategoryGroup $context */
+        return $context->handle . '_Category';
+    }
+
+    /**
+     * @inheritdoc
+     * @since 3.3.0
+     */
+    public static function gqlScopesByContext($context): array
+    {
+        /** @var CategoryGroup $context */
+        return ['categorygroups.' . $context->uid];
     }
 
     /**
@@ -458,6 +494,15 @@ class Category extends Element
         return $html;
     }
 
+    /**
+     * @inheritdoc
+     * @since 3.3.0
+     */
+    public function getGqlTypeName(): string
+    {
+        return static::gqlTypeNameByContext($this->getGroup());
+    }
+
     // Events
     // -------------------------------------------------------------------------
 
@@ -594,7 +639,9 @@ class Category extends Element
             // Make sure that each of the category's ancestors are related wherever the category is related
             $newRelationValues = [];
 
-            $ancestorIds = $this->getAncestors()->ids();
+            $ancestorIds = $this->getAncestors()
+                ->anyStatus()
+                ->ids();
 
             $sources = (new Query())
                 ->select(['fieldId', 'sourceId', 'sourceSiteId'])

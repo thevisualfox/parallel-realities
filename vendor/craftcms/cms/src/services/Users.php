@@ -44,7 +44,7 @@ use yii\db\Exception as DbException;
  * An instance of the Users service is globally accessible in Craft via [[\craft\base\ApplicationTrait::getUsers()|`Craft::$app->users`]].
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 3.0
+ * @since 3.0.0
  */
 class Users extends Component
 {
@@ -619,12 +619,11 @@ class Users extends Component
 
         $userRecord = $this->_getUserRecordById($user->id);
         $userRecord->email = $user->unverifiedEmail;
+        $userRecord->unverifiedEmail = null;
 
         if (Craft::$app->getConfig()->getGeneral()->useEmailAsUsername) {
             $userRecord->username = $user->unverifiedEmail;
         }
-
-        $userRecord->unverifiedEmail = null;
 
         if (!$userRecord->save()) {
             $user->addErrors($userRecord->getErrors());
@@ -883,22 +882,15 @@ class Users extends Component
         $expire = DateTimeHelper::currentUTCDateTime();
         $pastTime = $expire->sub($interval);
 
-        $userIds = (new Query())
-            ->select(['id'])
-            ->from([Table::USERS])
-            ->where([
-                'and',
-                ['pending' => true],
-                ['<', 'verificationCodeIssuedDate', Db::prepareDateForDb($pastTime)]
-            ])
-            ->column();
+        $query = User::find()
+            ->status('pending')
+            ->andWhere(['<', 'users.verificationCodeIssuedDate', Db::prepareDateForDb($pastTime)]);
 
         $elementsService = Craft::$app->getElements();
 
-        foreach ($userIds as $userId) {
-            $user = $this->getUserById($userId);
+        foreach ($query->each() as $user) {
             $elementsService->deleteElement($user);
-            Craft::info("Just deleted pending user {$user->username} ({$userId}), because they took too long to activate their account.", __METHOD__);
+            Craft::info("Just deleted pending user {$user->username} ({$user->id}), because they took too long to activate their account.", __METHOD__);
         }
     }
 
@@ -1073,7 +1065,7 @@ class Users extends Component
      * @param User $impersonator
      * @param User $impersonatee
      * @return bool
-     * @since 3.2
+     * @since 3.2.0
      */
     public function canImpersonate(User $impersonator, User $impersonatee): bool
     {

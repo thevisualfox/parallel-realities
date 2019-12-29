@@ -19,7 +19,9 @@ Craft.DraftEditor = Garnish.Base.extend(
         lastSerializedValue: null,
         timeout: null,
         saving: false,
+        saveXhr: null,
         checkFormAfterUpdate: false,
+        submittingForm: false,
 
         duplicatedElements: null,
         errors: null,
@@ -60,7 +62,6 @@ Craft.DraftEditor = Garnish.Base.extend(
 
             // Store the initial form value
             this.lastSerializedValue = this.serializeForm(true);
-            Craft.cp.$primaryForm.data('initialSerializedValue', this.lastSerializedValue);
 
             // Override the serializer to use our own
             Craft.cp.$primaryForm.data('serializer', function() {
@@ -94,7 +95,7 @@ Craft.DraftEditor = Garnish.Base.extend(
             // Create the edit draft button
             this.createEditMetaBtn();
 
-            this.addListener(Garnish.$bod, 'keypress keyup change focus blur click mousedown mouseup', function(ev) {
+            this.addListener(Garnish.$bod, 'keypress,keyup,change,focus,blur,click,mousedown,mouseup', function(ev) {
                 if ($(ev.target).is(this.statusIcons())) {
                     return;
                 }
@@ -170,15 +171,12 @@ Craft.DraftEditor = Garnish.Base.extend(
                 $li = $('<li/>').appendTo($ul);
                 $a = $('<a/>', {
                     text: this.settings.previewTargets[i].label,
-                    data: {
-                        url: this.settings.previewTargets[i].url,
-                    }
                 }).appendTo($li);
                 this.addListener($a, 'click', {
-                    url: this.settings.previewTargets[i].url,
+                    target: i,
                 }, function(ev) {
-                    this.openShareLink(ev.data.url);
-                });
+                    this.openShareLink(this.settings.previewTargets[ev.data.target].url);
+                }.bind(this));
             }
         },
 
@@ -206,13 +204,13 @@ Craft.DraftEditor = Garnish.Base.extend(
             }.bind(this));
         },
 
-        getTokenizedPreviewUrl: function(url, forceRandomParam) {
+        getTokenizedPreviewUrl: function(url, randoParam) {
             return new Promise(function(resolve, reject) {
                 var params = {};
 
-                if (forceRandomParam || !this.settings.isLive) {
+                if (randoParam || !this.settings.isLive) {
                     // Randomize the URL so CDNs don't return cached pages
-                    params['x-craft-preview'] = Craft.randomString(10);
+                    params[randoParam || 'x-craft-preview'] = Craft.randomString(10);
                 }
 
                 // No need for a token if we're looking at a live element
@@ -254,7 +252,7 @@ Craft.DraftEditor = Garnish.Base.extend(
 
         ensureIsDraftOrRevision: function() {
             return new Promise(function(resolve, reject) {
-                if (!this.settings.draftId && !this.settings.revisionid) {
+                if (!this.settings.draftId && !this.settings.revisionId) {
                     this.createDraft()
                         .then(resolve)
                         .catch(reject);
@@ -292,7 +290,10 @@ Craft.DraftEditor = Garnish.Base.extend(
 
             // Has anything changed?
             var data = this.serializeForm(true);
-            if (force || (data !== this.lastSerializedValue)) {
+            if (
+                (data !== Craft.cp.$primaryForm.data('initialSerializedValue')) &&
+                (force || (data !== this.lastSerializedValue))
+            ) {
                 this.saveDraft(data);
             }
         },
@@ -311,6 +312,12 @@ Craft.DraftEditor = Garnish.Base.extend(
 
         saveDraft: function(data) {
             return new Promise(function(resolve, reject) {
+                // Ignore if we're already submitting the main form
+                if (this.submittingForm) {
+                    reject();
+                    return;
+                }
+
                 this.lastSerializedValue = data;
 
                 if (this.saving) {
@@ -329,12 +336,16 @@ Craft.DraftEditor = Garnish.Base.extend(
                 var url = Craft.getActionUrl(this.settings.saveDraftAction);
                 var i;
 
-                Craft.postActionRequest(url, this.prepareData(data), function(response, textStatus) {
+                this.saveXhr = Craft.postActionRequest(url, this.prepareData(data), function(response, textStatus) {
                     $spinners.addClass('hidden');
                     if (this.$saveMetaBtn) {
                         this.$saveMetaBtn.removeClass('active');
                     }
                     this.saving = false;
+
+                    if (textStatus === 'abort') {
+                        return;
+                    }
 
                     if (textStatus !== 'success' || response.errors) {
                         this.errors = (response ? response.errors : null) || [];
@@ -436,6 +447,14 @@ Craft.DraftEditor = Garnish.Base.extend(
                         }));
                     }
 
+                    // Did the controller send us updated preview targets?
+                    if (
+                        response.previewTargets &&
+                        JSON.stringify(response.previewTargets) !== JSON.stringify(this.settings.previewTargets)
+                    ) {
+                        this.updatePreviewTargets(response.previewTargets);
+                    }
+
                     this.afterUpdate(data);
 
                     if (draftCreated) {
@@ -467,13 +486,22 @@ Craft.DraftEditor = Garnish.Base.extend(
                 data += '&draftId=' + this.settings.draftId
                     + '&draftName=' + encodeURIComponent(this.settings.draftName)
                     + '&draftNotes=' + encodeURIComponent(this.settings.draftNotes || '');
-
-                if (this.settings.propagateAll) {
-                    data += '&propagateAll=1';
-                }
             }
 
             return data;
+        },
+
+        updatePreviewTargets: function(previewTargets) {
+            // index the current preview targets by label
+            var currentTargets = {};
+            for (var i = 0; i < this.settings.previewTargets.length; i++) {
+                currentTargets[this.settings.previewTargets[i].label] = this.settings.previewTargets[i];
+            }
+            for (i = 0; i < previewTargets.length; i++) {
+                if (currentTargets[previewTargets[i].label]) {
+                    currentTargets[previewTargets[i].label].url = previewTargets[i].url;
+                }
+            }
         },
 
         afterUpdate: function(data) {
@@ -487,11 +515,7 @@ Craft.DraftEditor = Garnish.Base.extend(
 
             if (this.checkFormAfterUpdate) {
                 this.checkFormAfterUpdate = false;
-
-                // Only actually check the form if there's no active timeout for it
-                if (!this.timeout) {
-                    this.checkForm();
-                }
+                this.checkForm(true);
             }
         },
 
@@ -541,8 +565,8 @@ Craft.DraftEditor = Garnish.Base.extend(
 
             this.addListener(this.$notesTextInput, 'keydown', 'onNotesKeydown');
 
-            this.addListener(this.$nameTextInput, 'textchange', 'checkMetaValues');
-            this.addListener(this.$notesTextInput, 'textchange', 'checkMetaValues');
+            this.addListener(this.$nameTextInput, 'input', 'checkMetaValues');
+            this.addListener(this.$notesTextInput, 'input', 'checkMetaValues');
 
             this.metaHud.on('show', this.onMetaHudShow.bind(this));
             this.metaHud.on('hide', this.onMetaHudHide.bind(this));
@@ -620,10 +644,23 @@ Craft.DraftEditor = Garnish.Base.extend(
         handleFormSubmit: function(ev) {
             ev.preventDefault();
 
+            // Prevent double form submits
+            if (this.submittingForm) {
+                return;
+            }
+
             // If we're editing a draft, this isn't a custom trigger, and the user isn't allowed to update the source,
             // then ignore the submission
             if (!ev.customTrigger && !this.settings.isUnsavedDraft && this.settings.draftId && !this.settings.canUpdateSource) {
                 return;
+            }
+
+            // Prevent the normal unload confirmation dialog
+            Craft.cp.$confirmUnloadForms = Craft.cp.$confirmUnloadForms.not(Craft.cp.$primaryForm);
+
+            // Abort the current save request if there is one
+            if (this.saving) {
+                this.saveXhr.abort();
             }
 
             // Duplicate the form with normalized data
@@ -669,6 +706,7 @@ Craft.DraftEditor = Garnish.Base.extend(
 
             $form.appendTo(Garnish.$bod);
             $form.submit();
+            this.submittingForm = true;
         },
     },
     {
@@ -682,7 +720,6 @@ Craft.DraftEditor = Garnish.Base.extend(
             revisionId: null,
             draftName: null,
             draftNotes: null,
-            propagateAll: false,
             canDeleteDraft: false,
             canUpdateSource: false,
             saveDraftAction: null,
