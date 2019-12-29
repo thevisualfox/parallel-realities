@@ -1,0 +1,28 @@
+<li class="list__item">
+    <a href="{{ block.channelAddress }}" title="{{ footer.companyName }} | {{ block.channel }}"
+       target="_blank" rel="noreferrer">
+        {% switch block.channel %}
+
+        {% case 'facebook' %}
+           <span class="badge badge--bordered">
+                <p>FB</p>
+           </span>
+
+        {% case 'instagram' %}
+            <span class="badge badge--bordered">
+                <p>IG</p>
+            </span>
+
+        {% case 'linkedin' %}
+            <span class="badge badge--bordered">
+                <p>LD</p>
+            </span>
+
+        {% case 'youtube' %}
+            <span class="badge badge--bordered">
+                <p>YT</p>
+            </span>
+
+        {% endswitch %}
+    </a>
+</li>
