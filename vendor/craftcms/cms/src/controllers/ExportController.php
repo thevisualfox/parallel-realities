@@ -12,11 +12,6 @@ use craft\base\ElementInterface;
 use craft\helpers\ElementHelper;
 use craft\helpers\FileHelper;
 use craft\web\Controller;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Csv;
-use PhpOffice\PhpSpreadsheet\Writer\Ods;
-use PhpOffice\PhpSpreadsheet\Writer\Xls;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
 
@@ -100,7 +95,7 @@ class ExportController extends Controller
                 throw new BadRequestHttpException('Invalid export format: ' . $format);
         }
 
-        $filename = mb_strtolower($elementType::pluralDisplayName()) . '.' . $format;
+        $filename = $elementType::pluralLowerDisplayName() . '.' . $format;
         $mimeType = FileHelper::getMimeTypeByExtension($filename);
 
         $response = Craft::$app->getResponse();

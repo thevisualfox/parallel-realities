@@ -23,3 +23,29 @@
         border: none !important;
     }
 }
+
+.btn-link {
+    position: relative;
+    display: inline-flex;
+    padding: 0;
+    margin: 0;
+
+    &:after {
+        content: "";
+        position: absolute;
+        top: calc(100% + 3px);
+        right: 0;
+        left: 0;
+        height: 1px;
+        background-color: var(--headerColor);
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform 350ms $transition-bezier;
+    }
+
+    &:hover:after,
+    &:focus:after {
+        transform: scaleX(1);
+        transform-origin: left;
+    }
+}

@@ -5,12 +5,34 @@
     width: 100%;
     z-index: $zindex-fixed;
 
+    &:after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: rgba($white, 0.65);
+        backdrop-filter: blur(15px);
+        opacity: 0;
+        transition: opacity 350ms ease;
+        pointer-events: none;
+    }
+
     &--white {
         --headerColor: #{$white};
     }
 
     &--black {
         --headerColor: #{$base};
+    }
+
+    &--bg-white {
+        --headerColor: #{$base};
+
+        &:after {
+            opacity: 1;
+        }
     }
 }
 
@@ -66,4 +88,17 @@
         color: $base;
         transition: color 250ms $transition-bezier;
     }
+
+    .btn-link:hover:after,
+    .btn-link:focus:after {
+        content: none;
+    }
+}
+
+.main-header-observer {
+    height: 1px;
+    margin-top: -1px;
+    position: absolute;
+    top: 80%;
+    width: 1px;
 }

@@ -151,7 +151,7 @@ Craft.EditableTable = Garnish.Base.extend(
 
             // Focus the first input in the row
             if (focus !== false) {
-                $tr.find('input,textarea,select').first().trigger('focus');
+                $tr.find('input:visible,textarea:visible,select:visible').first().trigger('focus');
             }
 
             this.rowCount++;
@@ -445,8 +445,8 @@ Craft.EditableTable.Row = Garnish.Base.extend(
                     }));
 
                     this.addListener($textarea, 'keypress', {tdIndex: i, type: col.type}, 'handleKeypress');
-                    this.addListener($textarea, 'textchange', {type: col.type}, 'validateValue');
-                    $textarea.trigger('textchange');
+                    this.addListener($textarea, 'input', {type: col.type}, 'validateValue');
+                    $textarea.trigger('input');
 
                     textareasByColId[colId] = $textarea;
                 } else if (col.type === 'checkbox') {

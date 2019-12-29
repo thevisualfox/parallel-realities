@@ -1,4 +1,4 @@
-dateModified: 1577453104
+dateModified: 1577640598
 email:
   fromEmail: jurjen.p.vos@gmail.com
   fromName: 'Parallel Realities'
@@ -58,26 +58,6 @@ fields:
     translationKeyFormat: null
     translationMethod: site
     type: craft\fields\Matrix
-  142de099-2ba4-4a49-a14d-fe29e0a6a502:
-    contentColumnType: text
-    fieldGroup: 4d3dab93-ed84-46d8-a38c-37042926fda1
-    handle: customText
-    instructions: 'Enter any text you want to display in the footer. '
-    name: 'Custom Text'
-    searchable: '1'
-    settings:
-      availableTransforms: '*'
-      availableVolumes: '*'
-      columnType: text
-      purifierConfig: ''
-      purifyHtml: '1'
-      redactorConfig: ''
-      removeInlineStyles: '1'
-      removeEmptyTags: '1'
-      removeNbsp: '1'
-    translationKeyFormat: null
-    translationMethod: none
-    type: craft\redactor\Field
   24734fcf-ded7-4346-b13f-f726403e1308:
     name: 'Hero image'
     handle: heroImage
@@ -190,6 +170,23 @@ fields:
     translationKeyFormat: null
     translationMethod: none
     type: craft\fields\PlainText
+  7bf6b224-094e-4d55-a71a-c183a53a9c02:
+    name: 'Company Slogan'
+    handle: companySlogan
+    instructions: 'Add a company slogan that is placed underneath the company name.'
+    searchable: true
+    translationMethod: none
+    translationKeyFormat: null
+    type: craft\fields\PlainText
+    settings:
+      placeholder: ''
+      code: ''
+      multiline: ''
+      initialRows: '4'
+      charLimit: ''
+      columnType: text
+    contentColumnType: text
+    fieldGroup: 4d3dab93-ed84-46d8-a38c-37042926fda1
   8313fac4-f0e0-49b4-b4f3-d7aeafaa513f:
     name: 'Separate Page'
     handle: separatePage
@@ -340,32 +337,6 @@ fields:
     translationKeyFormat: null
     translationMethod: none
     type: craft\redactor\Field
-  dcab0ced-0bef-4428-9a32-7960201f5d5c:
-    contentColumnType: string
-    fieldGroup: 4d3dab93-ed84-46d8-a38c-37042926fda1
-    handle: termsConditions
-    instructions: 'Add your terms and conditions.'
-    name: 'Terms / Conditions'
-    searchable: '1'
-    settings:
-      allowedKinds:
-        - pdf
-      defaultUploadLocationSource: 'volume:081457f1-b9d3-4dc5-b850-ff375be3255d'
-      defaultUploadLocationSubpath: ''
-      limit: '1'
-      localizeRelations: false
-      restrictFiles: '1'
-      selectionLabel: ''
-      singleUploadLocationSource: 'volume:081457f1-b9d3-4dc5-b850-ff375be3255d'
-      singleUploadLocationSubpath: ''
-      source: null
-      sources: '*'
-      targetSiteId: null
-      useSingleFolder: ''
-      viewMode: large
-    translationKeyFormat: null
-    translationMethod: site
-    type: craft\fields\Assets
   f3fcd12b-79e6-44c4-8bff-af9ad554b773:
     name: 'Hero video'
     handle: heroVideoId
@@ -383,67 +354,35 @@ fields:
       columnType: text
     contentColumnType: text
     fieldGroup: ef1c93cc-c3d2-4e56-aea3-e04ff1400d2a
-  fc3392ab-6860-496f-b25c-445f259c7983:
-    contentColumnType: string
-    fieldGroup: 4d3dab93-ed84-46d8-a38c-37042926fda1
-    handle: guidelines
-    instructions: 'Add your guidelines.'
-    name: Guidelines
-    searchable: '1'
-    settings:
-      allowedKinds:
-        - pdf
-      defaultUploadLocationSource: 'volume:081457f1-b9d3-4dc5-b850-ff375be3255d'
-      defaultUploadLocationSubpath: ''
-      limit: '1'
-      localizeRelations: false
-      restrictFiles: '1'
-      selectionLabel: ''
-      singleUploadLocationSource: 'volume:081457f1-b9d3-4dc5-b850-ff375be3255d'
-      singleUploadLocationSubpath: ''
-      source: null
-      sources: '*'
-      targetSiteId: null
-      useSingleFolder: ''
-      viewMode: large
-    translationKeyFormat: null
-    translationMethod: site
-    type: craft\fields\Assets
 globalSets:
   dfe5b088-d002-4805-bf80-a6d860e71ee9:
+    name: Footer
+    handle: footer
     fieldLayouts:
       50871530-6faf-46e5-8e56-7a92b413ccb6:
         tabs:
           -
+            name: Footer
+            sortOrder: 1
             fields:
               119135cc-b864-4f64-898a-aa56706beb24:
-                required: '0'
-                sortOrder: '5'
-              142de099-2ba4-4a49-a14d-fe29e0a6a502:
-                required: '0'
-                sortOrder: '6'
+                required: false
+                sortOrder: 6
               26b4ea34-7905-4560-a11f-4803d203d42f:
-                required: '0'
-                sortOrder: '4'
+                required: false
+                sortOrder: 5
               3a66a56c-2e03-4d5d-a20b-fbf4028ee3e2:
-                required: '0'
-                sortOrder: '1'
+                required: false
+                sortOrder: 1
+              7bf6b224-094e-4d55-a71a-c183a53a9c02:
+                required: false
+                sortOrder: 2
               b9a3b52a-5e25-43bf-a170-76875b2fc8c6:
-                required: '0'
-                sortOrder: '3'
+                required: false
+                sortOrder: 4
               d9e2fd0a-6dcc-44a8-a80a-d534f0f621c9:
-                required: '0'
-                sortOrder: '2'
-              dcab0ced-0bef-4428-9a32-7960201f5d5c:
-                required: '0'
-                sortOrder: '7'
-              fc3392ab-6860-496f-b25c-445f259c7983:
-                required: '0'
-                sortOrder: '8'
-            name: Footer
-            sortOrder: '1'
-    handle: footer
-    name: Footer
+                required: false
+                sortOrder: 3
 matrixBlockTypes:
   309deaee-d4ad-4b1a-9cde-df0d5bfb6030:
     field: b002e492-a7e2-4813-b1b1-c15e998d353c
@@ -864,7 +803,7 @@ system:
   edition: solo
   live: true
   name: 'Parallel Realities'
-  schemaVersion: 3.2.16
+  schemaVersion: 3.3.3
   timeZone: America/Los_Angeles
 users:
   allowPublicRegistration: false

@@ -27,7 +27,7 @@ use yii\web\ServerErrorHttpException;
  * Note that all actions in the controller are open to do not require an authenticated Craft session in order to execute.
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 3.0
+ * @since 3.0.0
  */
 class TemplatesController extends Controller
 {
@@ -83,7 +83,13 @@ class TemplatesController extends Controller
     public function actionRender(string $template, array $variables = []): Response
     {
         // Does that template exist?
-        if (!$this->getView()->doesTemplateExist($template)) {
+        if (
+            (
+                Craft::$app->getConfig()->getGeneral()->headlessMode &&
+                Craft::$app->getRequest()->getIsSiteRequest()
+            ) ||
+            !$this->getView()->doesTemplateExist($template)
+        ) {
             throw new NotFoundHttpException('Template not found: ' . $template);
         }
 
@@ -235,6 +241,7 @@ class TemplatesController extends Controller
             'code' => $exception->getCode(),
             'file' => $exception->getFile(),
             'line' => $exception->getLine(),
+            'statusCode' => $statusCode,
         ], get_object_vars($exception));
 
         // If this is a PHP error and html_errors (http://php.net/manual/en/errorfunc.configuration.php#ini.html-errors)
