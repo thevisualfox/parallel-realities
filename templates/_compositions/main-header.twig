@@ -2,7 +2,7 @@
 {% set navigation = craft.entries.section('navigation').all() %}
 
 <header class="main-header main-header--{{ headerColor }} py-2" data-toggler data-toggler-observe="[data-toggle-nav]" data-toggler-class="is-nav-open">
-    <div class="container-fluid d-flex align-items-center justify-content-between">
+    <div class="container d-flex align-items-center justify-content-between">
         <div class="main-header__logo logo">
             <a class="logo__link" href="{{ siteUrl }}" title="Parallel Realities">
                 <h2 class="logo__title text-uppercase">Parallel</h2>
@@ -30,3 +30,4 @@
         </nav>
     </div>
 </header>
+<div class="main-header-observer"></div>

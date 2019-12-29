@@ -10,3 +10,4 @@ import "bootstrap";
 /* Custom */
 
 import "./custom/toggler";
+import "./custom/intersectionNav";
