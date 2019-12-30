@@ -3,10 +3,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     background-color: $white;
     border: 1px solid $base;
+
+    @include media-breakpoint-up(lg) {
+        width: 40px;
+        height: 40px;
+    }
 
     &:before {
         content: "";
@@ -27,7 +32,7 @@
         transform-origin: left;
     }
 
-    p {
+    .badge__text {
         mix-blend-mode: difference;
         color: $white;
     }

@@ -3,7 +3,11 @@
     overflow: hidden;
 
     &--narrow {
-        height: 85vh;
+        height: 65vh;
+
+        @include media-breakpoint-up(lg) {
+            height: 85vh;
+        }
     }
 }
 
