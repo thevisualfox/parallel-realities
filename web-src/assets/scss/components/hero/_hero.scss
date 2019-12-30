@@ -1,12 +1,17 @@
 .hero {
-    height: 100vh;
     overflow: hidden;
 
-    &--narrow {
-        height: 65vh;
+    > .hero__media {
+        height: 100vh;
+    }
 
+    &--narrow > .hero__media {
+        height: 65vh;
+    }
+
+    &--narrow {
         @include media-breakpoint-up(lg) {
-            height: 85vh;
+            max-height: 80vh;
         }
     }
 }
@@ -25,17 +30,13 @@
 }
 
 .hero__video-wrapper {
-    height: 100%;
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
 
-    @include media-breakpoint-up(lg) {
-        position: relative;
-        padding-bottom: 56.25%;
-        height: 0;
-        overflow: hidden;
-
-        .hero__image {
-            height: unset;
-        }
+    .hero__image {
+        height: unset;
     }
 }
 

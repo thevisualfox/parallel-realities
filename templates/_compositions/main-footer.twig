@@ -1,29 +1,33 @@
 <footer class="main-footer" role="contentinfo">
     <div class="container">
-        <div class="row row--equalized justify-content-md-between justify-content-xl-center gutters-2">
-            <div class="col-12 col-lg-auto col-xl-3">
-                <h2 class="main-footer__title text-larger mb-0">{{ footer.companyName }}</h2>
-                <p class="main-footer__subtitle text-uppercase">{{ footer.companySlogan }}</p>
-            </div>
-            <div class="col-12 col-md-4 col-lg-2">
-                <a class="text-small" href="https://goo.gl/maps/v826RK52vydbqAk16" target="_blank" rel="noopener noreferrer">
-                    {{ footer.companyAddress|raw }}
-                </a>
-            </div>
-            <div class="col-12 col-md-4 col-lg-2 d-flex flex-column align-items-baseline">
-                <a class="btn btn-link text-small flex-grow-0" href="mailto:{{ footer.companyEmail }}" title="{{ footer.companyName }} | Email">
-                   <span>{{ footer.companyEmail }}</span>
-                </a>
-                <a class="btn btn-link text-small flex-grow-0 mt-xl-auto" href="tel:{{ footer.companyPhone }}" title="{{ footer.companyName }} | Phone Number">
-                    <span>{{ footer.companyPhone }}</span>
-                </a>
-            </div>
-            <div class="col-12 col-md-4 col-lg-auto">
-                <ul class="list d-flex">
-                    {% for block in footer.socialMedia.all() %}
-                        {% include '_blocks/social-media.twig' %}
-                    {% endfor %}
-                </ul>
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10">
+                <div class="row row--equalized justify-content-md-between gutters-2">
+                    <div class="col-12 col-lg-auto col-xl-3">
+                        <h2 class="main-footer__title text-larger mb-0">{{ footer.companyName }}</h2>
+                        <p class="main-footer__subtitle text-uppercase">{{ footer.companySlogan }}</p>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-2">
+                        <a class="text-small" href="https://goo.gl/maps/v826RK52vydbqAk16" target="_blank" rel="noopener noreferrer">
+                            {{ footer.companyAddress|raw }}
+                        </a>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-2 d-flex flex-column align-items-baseline">
+                        <a class="btn btn-link text-small flex-grow-0" href="mailto:{{ footer.companyEmail }}" title="{{ footer.companyName }} | Email">
+                        <span>{{ footer.companyEmail }}</span>
+                        </a>
+                        <a class="btn btn-link text-small flex-grow-0 mt-xl-auto" href="tel:{{ footer.companyPhone }}" title="{{ footer.companyName }} | Phone Number">
+                            <span>{{ footer.companyPhone }}</span>
+                        </a>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-auto">
+                        <ul class="list d-flex">
+                            {% for block in footer.socialMedia.all() %}
+                                {% include '_blocks/social-media.twig' %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

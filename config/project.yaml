@@ -1,4 +1,4 @@
-dateModified: 1577640598
+dateModified: 1577721949
 email:
   fromEmail: jurjen.p.vos@gmail.com
   fromName: 'Parallel Realities'
@@ -16,6 +16,8 @@ fieldGroups:
     name: 'Work Entry'
   ef1c93cc-c3d2-4e56-aea3-e04ff1400d2a:
     name: Hero
+  f697421b-6984-4171-af0e-2199e664da5b:
+    name: Common
 fields:
   00b3e9bf-8280-4397-8d41-33cc4de75003:
     contentColumnType: string
@@ -58,10 +60,31 @@ fields:
     translationKeyFormat: null
     translationMethod: site
     type: craft\fields\Matrix
+  1993744d-ae6c-4efd-8a83-e4fb602977c1:
+    name: Text
+    handle: text
+    instructions: 'Add a paragraph.'
+    searchable: true
+    translationMethod: none
+    translationKeyFormat: null
+    type: craft\redactor\Field
+    settings:
+      redactorConfig: ''
+      purifierConfig: ''
+      cleanupHtml: true
+      removeInlineStyles: '1'
+      removeEmptyTags: '1'
+      removeNbsp: '1'
+      purifyHtml: '1'
+      columnType: text
+      availableVolumes: '*'
+      availableTransforms: '*'
+    contentColumnType: text
+    fieldGroup: f697421b-6984-4171-af0e-2199e664da5b
   24734fcf-ded7-4346-b13f-f726403e1308:
     name: 'Hero image'
     handle: heroImage
-    instructions: 'Insert a fullscreen hero image. (recommended image size: 2560x1440)'
+    instructions: 'Insert a fullscreen hero image. (recommended image size: 3840x2160)'
     searchable: true
     translationMethod: site
     translationKeyFormat: null
@@ -780,8 +803,15 @@ sections:
                     required: false
                     sortOrder: 2
               -
-                name: Header
+                name: Details
                 sortOrder: 2
+                fields:
+                  1993744d-ae6c-4efd-8a83-e4fb602977c1:
+                    required: false
+                    sortOrder: 1
+              -
+                name: Header
+                sortOrder: 3
                 fields:
                   b1956beb-f17c-445d-9106-83c7cb35e660:
                     required: false

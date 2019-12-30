@@ -2,7 +2,6 @@ import "bootstrap";
 
 // Core
 
-// import "./intersectionNav";
 // import "./disableImageDownload";
 // import "./masonry";
 // import "./contactForm";
@@ -10,4 +9,3 @@ import "bootstrap";
 /* Custom */
 
 import "./custom/toggler";
-import "./custom/intersectionNav";
