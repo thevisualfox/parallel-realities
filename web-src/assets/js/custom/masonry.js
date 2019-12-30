@@ -81,7 +81,7 @@ class Masonry {
             item.style.gridRowEnd = "span " + rowSpan;
 
             /* Make the video take all the available space in the cell/item */
-            bounds.style.height = rowSpan * 10 - 10 + "px";
+            bounds.style.height = rowSpan * 5 - 5 + "px";
         });
     }
     resizeMasonryImage(item) {
@@ -98,7 +98,7 @@ class Masonry {
             item.style.gridRowEnd = "span " + rowSpan;
 
             /* Make the images take all the available space in the cell/item */
-            bounds.style.height = rowSpan * 10 + "px";
+            bounds.style.height = rowSpan * 5 + "px";
         }
     }
     onIntersection(entries) {

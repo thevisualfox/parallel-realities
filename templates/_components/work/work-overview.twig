@@ -1,0 +1,10 @@
+{% set workEntries = craft.entries.section('workEntries').all() %}
+
+<section class="pane py-0">
+    <div class="cases-observer"></div>
+    <div class="grid">
+        {% for entry in workEntries %}
+            {% include '_components/work/work-preview.twig' %}
+        {% endfor %}
+    </div>
+</section>

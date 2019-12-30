@@ -1,4 +1,4 @@
-dateModified: 1577721949
+dateModified: 1577723080
 email:
   fromEmail: jurjen.p.vos@gmail.com
   fromName: 'Parallel Realities'
@@ -602,8 +602,8 @@ plugins:
     schemaVersion: 1.0.0
 sections:
   4b203b52-92e5-4057-affc-294af5e9931d:
-    name: Cases
-    handle: showcase
+    name: 'Work entries'
+    handle: workEntries
     type: structure
     enableVersioning: true
     propagationMethod: all
@@ -611,8 +611,8 @@ sections:
       bbf8cb32-62ed-4353-8c5a-c091131d4962:
         enabledByDefault: true
         hasUrls: true
-        uriFormat: 'cases/{slug}'
-        template: /_components/showcase/showcase_entry.twig
+        uriFormat: 'work/{slug}'
+        template: /_components/work/work-entry.twig
     structure:
       uid: 99fb6993-469a-4f4d-9d43-eb454a738e58
       maxLevels: 1
@@ -667,15 +667,25 @@ sections:
         enabledByDefault: true
         hasUrls: true
         uriFormat: work
-        template: ''
+        template: _pages/work
     entryTypes:
       b3a589ae-383a-41eb-8baf-7a912b40bb11:
         name: Work
         handle: work
         hasTitleField: false
-        titleLabel: null
+        titleLabel: ''
         titleFormat: '{section.name|raw}'
         sortOrder: 1
+        fieldLayouts:
+          eb588d6b-6798-4e82-867d-1f2b13344461:
+            tabs:
+              -
+                name: Header
+                sortOrder: 1
+                fields:
+                  b1956beb-f17c-445d-9106-83c7cb35e660:
+                    required: false
+                    sortOrder: 1
   7e37f191-8e39-43ff-b15e-650e919cad4a:
     name: Home
     handle: home
