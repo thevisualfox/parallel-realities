@@ -1,0 +1,23 @@
+.media--work {
+    position: relative;
+
+    .media__text {
+        display: block;
+        transform: translateY(100%);
+        transition: transform 500ms $transition-bezier;
+    }
+
+    .media__link {
+        height: 100%;
+        width: 100%;
+
+        &:hover + .media__caption .media__text {
+            transform: translateY(0);
+        }
+
+        &:hover.gradient:after {
+            opacity: 1;
+        }
+    }
+
+}

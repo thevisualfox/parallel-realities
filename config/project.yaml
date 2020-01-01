@@ -1,4 +1,4 @@
-dateModified: 1577789762
+dateModified: 1577879405
 email:
   fromEmail: jurjen.p.vos@gmail.com
   fromName: 'Parallel Realities'
@@ -10,39 +10,38 @@ fieldGroups:
     name: 'Work Preview'
   c36ca5f6-39f2-48c9-9490-ded81eab1ccc:
     name: Navigation
-  dbf2593b-4a3a-4add-ae4e-83b18beeab71:
-    name: 'Work Page'
   ef1c93cc-c3d2-4e56-aea3-e04ff1400d2a:
     name: Hero
   f697421b-6984-4171-af0e-2199e664da5b:
     name: Common
 fields:
   00b3e9bf-8280-4397-8d41-33cc4de75003:
-    contentColumnType: string
-    fieldGroup: 7f6ceebb-ff32-4474-a724-971cd458e4ef
+    name: Image
     handle: image
     instructions: 'Select a background image'
-    name: Image
-    searchable: '1'
+    searchable: true
+    translationMethod: site
+    translationKeyFormat: null
+    type: craft\fields\Assets
     settings:
-      allowedKinds:
-        - image
+      useSingleFolder: ''
       defaultUploadLocationSource: 'volume:081457f1-b9d3-4dc5-b850-ff375be3255d'
       defaultUploadLocationSubpath: ''
-      limit: '1'
-      localizeRelations: false
-      restrictFiles: '1'
-      selectionLabel: 'Upload media'
       singleUploadLocationSource: 'volume:081457f1-b9d3-4dc5-b850-ff375be3255d'
       singleUploadLocationSubpath: ''
-      source: null
+      restrictFiles: '1'
+      allowedKinds:
+        - image
       sources: '*'
+      source: null
       targetSiteId: null
-      useSingleFolder: ''
       viewMode: large
-    translationKeyFormat: null
-    translationMethod: site
-    type: craft\fields\Assets
+      limit: '1'
+      selectionLabel: 'Upload media'
+      localizeRelations: false
+      validateRelatedElements: ''
+    contentColumnType: string
+    fieldGroup: 7f6ceebb-ff32-4474-a724-971cd458e4ef
   119135cc-b864-4f64-898a-aa56706beb24:
     contentColumnType: string
     fieldGroup: 4d3dab93-ed84-46d8-a38c-37042926fda1
@@ -203,65 +202,6 @@ fields:
       default: ''
     contentColumnType: boolean
     fieldGroup: 7f6ceebb-ff32-4474-a724-971cd458e4ef
-  87364506-c4ff-493e-a56c-f11ff937a25c:
-    contentColumnType: string
-    fieldGroup: dbf2593b-4a3a-4add-ae4e-83b18beeab71
-    handle: gallery
-    instructions: 'Insert images/videos in the gallery'
-    name: Gallery
-    searchable: '1'
-    settings:
-      allowedKinds:
-        - image
-        - video
-      defaultUploadLocationSource: 'volume:081457f1-b9d3-4dc5-b850-ff375be3255d'
-      defaultUploadLocationSubpath: ''
-      limit: ''
-      localizeRelations: false
-      restrictFiles: '1'
-      selectionLabel: 'Upload media'
-      singleUploadLocationSource: 'volume:081457f1-b9d3-4dc5-b850-ff375be3255d'
-      singleUploadLocationSubpath: ''
-      source: null
-      sources: '*'
-      targetSiteId: null
-      useSingleFolder: ''
-      viewMode: large
-    translationKeyFormat: null
-    translationMethod: site
-    type: craft\fields\Assets
-  999b962f-d4b0-438a-bd6e-e853d96ef747:
-    contentColumnType: text
-    fieldGroup: dbf2593b-4a3a-4add-ae4e-83b18beeab71
-    handle: showcaseSubtitle
-    instructions: 'Add a subtitle'
-    name: Subtitle
-    searchable: '1'
-    settings:
-      charLimit: ''
-      code: ''
-      columnType: text
-      initialRows: '4'
-      multiline: ''
-      placeholder: ''
-    translationKeyFormat: null
-    translationMethod: none
-    type: craft\fields\PlainText
-  b002e492-a7e2-4813-b1b1-c15e998d353c:
-    contentColumnType: string
-    fieldGroup: dbf2593b-4a3a-4add-ae4e-83b18beeab71
-    handle: showcaseBody
-    instructions: 'Insert an image, video or text block anywhere on the page.'
-    name: Body
-    searchable: '1'
-    settings:
-      contentTable: '{{%matrixcontent_showcasebody}}'
-      localizeBlocks: false
-      maxBlocks: ''
-      minBlocks: ''
-    translationKeyFormat: null
-    translationMethod: site
-    type: craft\fields\Matrix
   b1956beb-f17c-445d-9106-83c7cb35e660:
     name: 'Header color'
     handle: headerColor
@@ -388,34 +328,6 @@ globalSets:
                 required: false
                 sortOrder: 3
 matrixBlockTypes:
-  309deaee-d4ad-4b1a-9cde-df0d5bfb6030:
-    field: b002e492-a7e2-4813-b1b1-c15e998d353c
-    fieldLayouts:
-      e4cb15ad-cdfa-44dd-b4ec-5d68db937cb3:
-        tabs:
-          -
-            fields:
-              2a23baaf-73bc-4f3f-bede-2c29596b2e18:
-                required: '0'
-                sortOrder: 1
-            name: Content
-            sortOrder: 1
-    fields:
-      2a23baaf-73bc-4f3f-bede-2c29596b2e18:
-        contentColumnType: string
-        fieldGroup: null
-        handle: iframe
-        instructions: 'Use this field to insert a video from video or an iFrame from RoundMe. (important: use the embed url)'
-        name: iFrame
-        searchable: '1'
-        settings:
-          placeholder: ''
-        translationKeyFormat: null
-        translationMethod: none
-        type: craft\fields\Url
-    handle: iframeField
-    name: 'iFrame Field'
-    sortOrder: 3
   850e23a7-f5fe-4e72-a951-1885b1435abd:
     field: 119135cc-b864-4f64-898a-aa56706beb24
     fieldLayouts:
@@ -475,84 +387,6 @@ matrixBlockTypes:
     handle: socialMedia
     name: 'Social Media'
     sortOrder: 1
-  c2bdc0ea-7f98-49cc-a453-731f2ac710d2:
-    field: b002e492-a7e2-4813-b1b1-c15e998d353c
-    fieldLayouts:
-      d3295f15-27c2-461a-937d-2954e6d14c93:
-        tabs:
-          -
-            fields:
-              24a13c99-18b0-4b32-9dc8-eaf8f1272151:
-                required: '0'
-                sortOrder: 1
-            name: Content
-            sortOrder: 1
-    fields:
-      24a13c99-18b0-4b32-9dc8-eaf8f1272151:
-        contentColumnType: string
-        fieldGroup: null
-        handle: image
-        instructions: 'Add an image'
-        name: Image
-        searchable: '1'
-        settings:
-          allowedKinds:
-            - image
-          defaultUploadLocationSource: 'volume:081457f1-b9d3-4dc5-b850-ff375be3255d'
-          defaultUploadLocationSubpath: ''
-          limit: ''
-          localizeRelations: false
-          restrictFiles: '1'
-          selectionLabel: 'Upload media'
-          singleUploadLocationSource: 'volume:081457f1-b9d3-4dc5-b850-ff375be3255d'
-          singleUploadLocationSubpath: ''
-          source: null
-          sources: '*'
-          targetSiteId: null
-          useSingleFolder: ''
-          viewMode: large
-        translationKeyFormat: null
-        translationMethod: site
-        type: craft\fields\Assets
-    handle: imageField
-    name: 'Image Field'
-    sortOrder: 2
-  dc9ed93d-1fb7-41c2-855a-d14d6034f06a:
-    field: b002e492-a7e2-4813-b1b1-c15e998d353c
-    fieldLayouts:
-      3658385f-08f0-40d3-b5c9-c841aeb28aaa:
-        tabs:
-          -
-            fields:
-              63a86735-52aa-4e13-a939-06354d1c121d:
-                required: '0'
-                sortOrder: 1
-            name: Content
-            sortOrder: 1
-    fields:
-      63a86735-52aa-4e13-a939-06354d1c121d:
-        contentColumnType: text
-        fieldGroup: null
-        handle: text
-        instructions: 'Add some text to the page'
-        name: Text
-        searchable: '1'
-        settings:
-          availableTransforms: '*'
-          availableVolumes: '*'
-          columnType: text
-          purifierConfig: ''
-          purifyHtml: '1'
-          redactorConfig: Standard.json
-          removeInlineStyles: '1'
-          removeEmptyTags: '1'
-          removeNbsp: '1'
-        translationKeyFormat: null
-        translationMethod: none
-        type: craft\redactor\Field
-    handle: textField
-    name: 'Text Field'
-    sortOrder: 1
 plugins:
   redactor:
     enabled: '1'
@@ -593,7 +427,7 @@ sections:
         enabledByDefault: true
         hasUrls: true
         uriFormat: 'work/{slug}'
-        template: /_components/work/work-entry.twig
+        template: _pages/work-entry
     structure:
       uid: 99fb6993-469a-4f4d-9d43-eb454a738e58
       maxLevels: 1
@@ -628,15 +462,9 @@ sections:
                 name: 'Work page'
                 sortOrder: 2
                 fields:
-                  87364506-c4ff-493e-a56c-f11ff937a25c:
-                    required: false
-                    sortOrder: 3
-                  999b962f-d4b0-438a-bd6e-e853d96ef747:
+                  b1956beb-f17c-445d-9106-83c7cb35e660:
                     required: false
                     sortOrder: 1
-                  b002e492-a7e2-4813-b1b1-c15e998d353c:
-                    required: false
-                    sortOrder: 2
   7855ed42-d67c-4bbb-919e-8dcb4abf1e7e:
     name: Work
     handle: work

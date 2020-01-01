@@ -1,0 +1,39 @@
+{% extends "_layouts/default" %}
+
+{% set headerColor = entry.headerColor.value %}
+{% set title = entry.title|lower|capitalize %}
+
+{% block header %}
+    {% include '_compositions/main-header.twig' with {
+        headerColor: headerColor
+    } %}
+{% endblock %}
+
+{% block content %}
+    <main class="main main--base" role="main">
+        {% set image  = entry.image.one() %}
+
+        {% if image or entry.video %}
+            {% embed "_components/media/media.twig" with {
+                extensionClasses: ['media--visual', 'gradient', 'justify-content-center']
+            } %}
+                {% block mediaVideo %}
+                    <div class="media__container">
+                        <iframe data-vimeo-player data-calculate-video-height class="media__video" src="https://player.vimeo.com/video/{{ entry.video }}?background=1" frameborder="0" webkitallowfullscreen
+                                mozallowfullscreen allowfullscreen></iframe>
+                    </div>
+                {% endblock %}
+
+                {% block mediaImage %}
+                    <img class="media__image img-fluid" src="{{ image.getUrl() }}" alt="{{ image.title }}">
+                {% endblock %}
+
+                {% block mediaControls %}
+                    <a class="text-white mb-2" href="{{ siteUrl }}/work">Back</a>
+                {% endblock %}
+            {% endembed %}
+        {% endif %}
+    </main>
+{% endblock %}
+
+{% block footer %}{% endblock %}

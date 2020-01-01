@@ -4,33 +4,11 @@
 
 {% if image or entry.video %}
     <div class="row__item {{ entry.fullWidth == 1 ? 'col-12' : 'col-6' }}">
-        <figure class="media media--work image-zoom mb-0">
-            <a class="media__link text-white" href="{{ entry.url }}" title="{{ entry.title }}">
-                {% if entry.video %}
-                    <div class="media__container">
-                        <iframe data-vimeo-player class="media__video" src="https://player.vimeo.com/video/{{ entry.video }}?background=1" frameborder="0" webkitallowfullscreen
-                                mozallowfullscreen allowfullscreen></iframe>
-                    </div>
-                {% endif %}
-
-                {% if image %}
-                    <img class="img-fluid w-100" src="{{ image.getUrl(imageTransform) }}" srcset="{{ image.getUrl(retinaImageTransform) }} 2x" alt="{{ image.title }}">
-                {% endif %}
-            </a>
-            {% if entry.title or entry.subtitle %}
-                <figcaption class="d-flex flex-column media__caption">
-                    {% if entry.title %}
-                        <p class="text-small text-regular text-spaced mb-0 text-white overflow-hidden">
-                            <span class="media__text">{{ entry.title }}</span>
-                        </p>
-                    {% endif %}
-                    {% if entry.subtitle %}
-                        <p class="text-smaller text-light text-white overflow-hidden">
-                            <span class="media__text">{{ entry.subtitle }}</span>
-                        </p>
-                    {% endif %}
-                </figcaption>
-            {% endif %}
-        </figure>
+        {% if entry.video or image %}
+            {% include "_components/media/media.twig" with {
+                extensionClasses: ['media--work', 'image-zoom'],
+                url: entry.url
+            } %}
+        {% endif %}
     </div>
 {% endif %}

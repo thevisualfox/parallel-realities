@@ -1,45 +1,25 @@
 import Masonry from "masonry-layout";
 import imagesLoaded from "imagesloaded";
-import Player from "@vimeo/player";
+import CalculateVideoHeight from './CalculateVideoHeight';
 
 class MasonryGrid {
     constructor(el) {
         this.DOM = { el: el };
         this.DOM.videos = Array.from(this.DOM.el.querySelectorAll("[data-vimeo-player]"));
-        this.grid = null;
-
-        this.initMasonry();
-    }
-    initMasonry = () => {
         this.grid = new Masonry(this.DOM.el, {
             itemSelector: ".row__item",
             columnWidth: ".row__item",
             percentPosition: true
         });
 
+        this.initMasonry();
+    }
+    initMasonry = () => {
         new imagesLoaded(this.DOM.el, () => {
             this.grid.layout();
         });
 
-        this.DOM.videos.forEach(video => this.calculateVideoHeight(video));
-    };
-    calculateVideoHeight = video => {
-        /* Get the bounds of the video */
-        const videoWrapper = video.parentNode;
-
-        /* Initialize a new Player class and stop the video from playing */
-        const player = new Player(video);
-
-        /* Get video width and height */
-        Promise.all([player.getVideoWidth(), player.getVideoHeight()]).then(dimensions => {
-            const [width, height] = dimensions;
-            const paddingTop = `${(height / width) * 100}%`;
-
-            /* Set the calculated padding to the video bounds */
-            videoWrapper.style.padding = `${paddingTop} 0 0`;
-
-            this.grid.layout();
-        });
+        new CalculateVideoHeight(this.DOM.videos, this.grid)
     };
 }
 
@@ -160,4 +140,7 @@ class MasonryGrid {
 //     }
 // }
 
-new MasonryGrid(document.querySelector(".row--masonry"));
+const gridNode = document.querySelector(".row--masonry");
+if (gridNode !== null) {
+    new MasonryGrid(gridNode);
+}

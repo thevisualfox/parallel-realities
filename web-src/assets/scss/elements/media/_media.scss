@@ -1,46 +1,10 @@
-.media--work {
-    position: relative;
-}
-
-.media__text {
-    display: block;
-    transform: translateY(100%);
-    transition: transform 500ms $transition-bezier;
-}
-
-.media__link {
-    position: relative;
-    height: 100%;
-    width: 100%;
-
-    &:after {
-        content: "";
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        background-image: linear-gradient(45deg, $base 0%, rgba($base, 0) 20%);
-        opacity: 0;
-        transition: opacity 350ms ease;
-        z-index: 1;
-    }
-
-    &:hover + .media__caption .media__text {
-        transform: translateY(0);
-    }
-
-    &:hover:after {
-        opacity: 1;
-    }
-}
+.media {}
 
 .media__caption {
     position: absolute;
     bottom: 1.25rem;
     left: 0.75rem;
     transition: transform 350ms $transition-bezier, opacity 350ms ease;
-    pointer-events: none;
     z-index: 2;
 
     @include media-breakpoint-up(lg) {
@@ -79,18 +43,4 @@
     width: 100%;
     height: 100%;
     border: 0;
-}
-
-.media--clients {
-    justify-content: center;
-
-    img {
-        width: 100%;
-        max-width: 100px;
-        opacity: 0.5;
-
-        @include media-breakpoint-up(md) {
-            max-width: 150px;
-        }
-    }
 }
