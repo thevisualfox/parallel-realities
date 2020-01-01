@@ -1,0 +1,50 @@
+{% set mediaClasses = ['media', 'mb-0'] %}
+
+{% if extensionClasses|default %}
+    {% set mediaClasses = mediaClasses|merge(extensionClasses) %}
+{% endif %}
+
+<figure class="{{ mediaClasses|join(' ') }}">
+    {% block mediaBody %}
+        {% if url|default %}
+            <a class="media__link gradient text-white" href="{{ entry.url }}" title="{{ entry.title }}">
+        {% endif %}
+
+            {% block mediaVideo %}
+                {% if entry.video %}
+                    <div class="media__container">
+                        <iframe data-vimeo-player class="media__video" src="https://player.vimeo.com/video/{{ entry.video }}?background=1" frameborder="0" webkitallowfullscreen
+                                mozallowfullscreen allowfullscreen></iframe>
+                    </div>
+                {% endif %}
+            {% endblock %}
+
+            {% block mediaImage %}
+                {% if image %}
+                    <img class="img-fluid w-100" src="{{ image.getUrl(imageTransform) }}" srcset="{{ image.getUrl(retinaImageTransform) }} 2x" alt="{{ image.title }}">
+                {% endif %}
+            {% endblock %}
+
+        {% if url|default %}
+            </a>
+        {% endif %}
+
+        {% block mediaCaption %}
+            {% if entry.title or entry.subtitle %}
+                <figcaption class="d-flex flex-column media__caption">
+                    {% block mediaControls %}{% endblock %}
+                    {% if entry.title %}
+                        <p class="text-small text-regular text-spaced mb-0 text-white overflow-hidden">
+                            <span class="media__text">{{ entry.title }}</span>
+                        </p>
+                    {% endif %}
+                    {% if entry.subtitle %}
+                        <p class="text-smaller text-light text-white overflow-hidden">
+                            <span class="media__text">{{ entry.subtitle }}</span>
+                        </p>
+                    {% endif %}
+                </figcaption>
+            {% endif %}
+        {% endblock %}
+    {% endblock %}
+</figure>

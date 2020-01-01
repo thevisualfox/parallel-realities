@@ -55,6 +55,9 @@
 
 @import "./elements/icons/icons";
 @import "./elements/media/media";
+@import "./elements/media/media-work";
+@import "./elements/media/media-visual";
+@import "./elements/media/media-clients";
 @import "./elements/lists/list";
 @import "./elements/buttons/buttons";
 @import "./elements/logos/logo";
@@ -77,6 +80,7 @@
 // Utilities
 
 @import "./utilities/image-zoom";
+@import "./utilities/gradient";
 
 // Vendor
 

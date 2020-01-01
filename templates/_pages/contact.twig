@@ -15,5 +15,9 @@
         {% include '_components/hero.twig' with {
             extensionClasses: ['hero--narrow']
         } %}
+
+        {% include "_elements/text.twig" with {
+            entry: entry
+        } %}
     </main>
 {% endblock %}
