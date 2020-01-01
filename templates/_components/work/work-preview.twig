@@ -2,27 +2,35 @@
 {% set imageTransform = { width: 1280, mode: 'crop' } %}
 {% set retinaImageTransform = { width: 2560, mode: 'crop' } %}
 
-<div class="grid__item {{ entry.video ? "grid__item--video" : "" }}">
-    <figure class="media media--cases image-zoom mb-0">
-        {% if image or entry.video %}
-            <a class="text-white" href="{{ entry.url }}" title="{{ entry.title }}">
+{% if image or entry.video %}
+    <div class="row__item {{ entry.fullWidth == 1 ? 'col-12' : 'col-6' }}">
+        <figure class="media media--work image-zoom mb-0">
+            <a class="media__link text-white" href="{{ entry.url }}" title="{{ entry.title }}">
                 {% if entry.video %}
-                    <div class="media__container d-none d-lg-block">
+                    <div class="media__container">
                         <iframe data-vimeo-player class="media__video" src="https://player.vimeo.com/video/{{ entry.video }}?background=1" frameborder="0" webkitallowfullscreen
                                 mozallowfullscreen allowfullscreen></iframe>
                     </div>
                 {% endif %}
 
                 {% if image %}
-                    <img class="img-fluid" src="{{ image.getUrl(imageTransform) }}" alt="{{ image.title }}">
+                    <img class="img-fluid w-100" src="{{ image.getUrl(imageTransform) }}" srcset="{{ image.getUrl(retinaImageTransform) }} 2x" alt="{{ image.title }}">
                 {% endif %}
             </a>
-        {% endif %}
-        {% if entry.title and entry.subtitle %}
-            <figcaption class="d-flex flex-column media__caption">
-                <p class="text-small text-regular text-spaced mb-0 text-white">{{ entry.title }}</p>
-                <p class="text-smaller text-light text-white">{{ entry.subtitle }}</p>
-            </figcaption>
-        {% endif %}
-    </figure>
-</div>
+            {% if entry.title or entry.subtitle %}
+                <figcaption class="d-flex flex-column media__caption">
+                    {% if entry.title %}
+                        <p class="text-small text-regular text-spaced mb-0 text-white overflow-hidden">
+                            <span class="media__text">{{ entry.title }}</span>
+                        </p>
+                    {% endif %}
+                    {% if entry.subtitle %}
+                        <p class="text-smaller text-light text-white overflow-hidden">
+                            <span class="media__text">{{ entry.subtitle }}</span>
+                        </p>
+                    {% endif %}
+                </figcaption>
+            {% endif %}
+        </figure>
+    </div>
+{% endif %}

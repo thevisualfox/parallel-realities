@@ -86,16 +86,7 @@
 }
 
 .grid {
-    display: grid;
-    grid-gap: 5px;
-    grid-template-columns: repeat(1, 1fr);
-    grid-auto-rows: 0;
-
-    @include media-breakpoint-up(md) {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
     .grid__item {
-        overflow: hidden;
+        width: 50%;
     }
 }

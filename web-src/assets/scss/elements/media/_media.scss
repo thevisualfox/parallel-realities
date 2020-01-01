@@ -1,60 +1,52 @@
-.media {
-    margin-bottom: 0.5rem;
+.media--work {
+    position: relative;
 }
 
-.media--cases {
+.media__text {
+    display: block;
+    transform: translateY(100%);
+    transition: transform 500ms $transition-bezier;
+}
+
+.media__link {
     position: relative;
+    height: 100%;
+    width: 100%;
 
-    a {
-        position: relative;
-        height: 100%;
-        width: 100%;
-
-        &:before,
-        &:after {
-            content: "";
-            position: absolute;
-            top: 60%;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            background-image: linear-gradient(-180deg, transparent, rgba(0, 0, 0, 0));
-            z-index: 1;
-            transition: $transition-base;
-        }
-
-        &:after {
-            background-color: rgba(#000, 0);
-            background-image: none;
-            top: 0;
-        }
+    &:after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-image: linear-gradient(45deg, $base 0%, rgba($base, 0) 20%);
+        opacity: 0;
+        transition: opacity 350ms ease;
+        z-index: 1;
     }
 
+    &:hover + .media__caption .media__text {
+        transform: translateY(0);
+    }
 
-    &:hover {
-        a:after {
-            background-color: transparent;
-        }
+    &:hover:after {
+        opacity: 1;
     }
 }
 
 .media__caption {
     position: absolute;
-    bottom: 1.5rem;
-    left: 1rem;
+    bottom: 1.25rem;
+    left: 0.75rem;
     transition: transform 350ms $transition-bezier, opacity 350ms ease;
     pointer-events: none;
     z-index: 2;
-}
 
-.media__icon {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: scale(0) translate(-50%, -50%);
-    transform-origin: 0 0;
-    opacity: 0;
-    transition: $transition-base;
+    @include media-breakpoint-up(lg) {
+        bottom: 2.5rem;
+        left: 2rem;
+    }
 }
 
 .media__container {
@@ -62,22 +54,21 @@
     overflow: hidden;
     width: 100%;
     z-index: 1;
+    pointer-events: none;
 
     &--16by9 {
         padding-top: 56.25%;
     }
 
-    @include media-breakpoint-up(lg) {
-        + .img-fluid {
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            height: 100%;
-            width: 100%;
-            object-fit: cover;
-        }
+    + .img-fluid {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
     }
 }
 

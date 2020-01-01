@@ -182,6 +182,9 @@ $grid-gutter-width: 40px;
 
 $grid-gutter-widths: (
     0: 0,
+    h1: (
+        $grid-gutter-width * 0.125
+    ),
     1: (
         $grid-gutter-width * 0.25
     ),
