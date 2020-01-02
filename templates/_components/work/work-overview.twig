@@ -1,9 +1,11 @@
-{% set workEntries = craft.entries.section('workEntries').all() %}
+{% set workEntries = craft.entries.section('workEntries').limit(6) %}
+
+{% paginate workEntries as pageInfo, pageEntries %}
 
 <section class="pane py-0">
     <div class="cases-observer"></div>
-    <div class="row row--masonry row--equalized gutters-h1">
-        {% for entry in workEntries %}
+    <div class="row row--masonry row--equalized gutters-h1" data-total-pages={{ pageInfo.totalPages }} data-page-type="work">
+        {% for entry in pageEntries %}
             {% include '_components/work/work-preview.twig' %}
         {% endfor %}
     </div>
