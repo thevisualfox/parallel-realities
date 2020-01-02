@@ -42,12 +42,12 @@ a {
     transition: $transition-base;
 
     .icon {
-        transition: $transition-base;
+        transition: transform 250ms $transition-bezier;
     }
 
     &:hover {
         .icon {
-            transform: translateY(-5px);
+            transform: translateX(-5px) scaleX(-1);
         }
     }
 }

@@ -12,6 +12,8 @@
 {% block content %}
     <main class="main main--base" role="main">
         {% set image  = entry.image.one() %}
+        {% set imageTransform = { width: 1280, mode: 'crop' } %}
+        {% set retinaImageTransform = { width: 2560, mode: 'crop' } %}
 
         {% if image or entry.video %}
             {% embed "_components/media/media.twig" with {
@@ -25,11 +27,16 @@
                 {% endblock %}
 
                 {% block mediaImage %}
-                    <img class="media__image img-fluid" src="{{ image.getUrl() }}" alt="{{ image.title }}">
+                    <img class="media__image img-fluid" src="{{ image.getUrl(imageTransform) }}" srcset="{{ image.getUrl(retinaImageTransform) }} 2x" alt="{{ image.title }}">
                 {% endblock %}
 
                 {% block mediaControls %}
-                    <a class="text-white mb-2" href="{{ siteUrl }}/work">Back</a>
+                    <a class="text-white text-uppercase mb-3 d-flex align-items-center" href="{{ siteUrl }}work">
+                        <svg class="icon icon--20 icon--reverse mt-0 mr-2">
+                            <use xlink:href="{{ alias('@web/app/assets/img/symbols.svg#arrow') }}"></use>
+                        </svg>
+                        Back
+                    </a>
                 {% endblock %}
             {% endembed %}
         {% endif %}

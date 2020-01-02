@@ -6,6 +6,10 @@
     fill: currentColor;
 }
 
+.icon--reverse {
+    transform: scaleX(-1);
+}
+
 // Icon sizes
 
 @each $size in $icon-sizes {
