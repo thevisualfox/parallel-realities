@@ -1,4 +1,8 @@
-.media {}
+.media {
+    transform: scale(0.5) translateY(10%);
+    opacity: 0;
+    overflow: hidden;
+}
 
 .media__caption {
     position: absolute;
@@ -43,4 +47,18 @@
     width: 100%;
     height: 100%;
     border: 0;
+}
+
+.media__link {
+    position: relative;
+}
+
+.media__image {}
+
+.media__image--large {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
 }

@@ -27,7 +27,9 @@
                 {% endblock %}
 
                 {% block mediaImage %}
-                    <img class="media__image img-fluid" src="{{ image.getUrl(imageTransform) }}" srcset="{{ image.getUrl(retinaImageTransform) }} 2x" alt="{{ image.title }}">
+                    {% if not entry.video %}
+                        <img class="media__image img-fluid" src="{{ image.getUrl(imageTransform) }}" srcset="{{ image.getUrl(retinaImageTransform) }} 2x" alt="{{ image.title }}">
+                    {% endif %}
                 {% endblock %}
 
                 {% block mediaControls %}

@@ -1,78 +1,57 @@
 import Masonry from "masonry-layout";
-import InfiniteScroll from "infinite-scroll";
-import CalculateVideoHeight from "./CalculateVideoHeight";
 import imagesLoaded from "imagesloaded";
 import Player from "@vimeo/player";
-
-InfiniteScroll.imagesLoaded = imagesLoaded;
+import LazyComponent from "./LazyComponent";
 
 class MasonryGrid {
     constructor(el) {
         this.DOM = { el: el };
+        this.DOM.wrapper = this.DOM.el.querySelector(".media__wrapper");
         this.DOM.videos = Array.from(this.DOM.el.querySelectorAll("[data-vimeo-player]"));
+        this.DOM.images = Array.from(this.DOM.el.querySelectorAll("[data-lazy-component]"));
 
+        this.videoIndexes = [];
         this.grid = new Masonry(this.DOM.el, {
-            itemSelector: "none",
+            itemSelector: ".row__item",
             columnWidth: ".row__item",
             percentPosition: true,
-            visibleStyle: { transform: "translateY(0)", opacity: 1 },
-            hiddenStyle: { transform: "translateY(100px)", opacity: 0 }
+            initLayout: false
         });
 
         this.initMasonry();
     }
     initMasonry = () => {
-        new CalculateVideoHeight(this.DOM.videos, this.grid);
-
         imagesLoaded(this.DOM.el, () => {
-            const gridItems = this.DOM.el.querySelectorAll(".row__item");
-            this.grid.options.itemSelector = ".row__item";
-            this.grid.appended(gridItems);
-        });
+            if (this.DOM.videos.length > 0) {
+                this.DOM.videos.forEach(async (video, videoIndex) => {
+                    const status = await this.calculateVideoHeight(video, videoIndex);
 
-        const infiniteScroll = new InfiniteScroll(this.DOM.el, {
-            path: function() {
-                const pageType = this.element.dataset.pageType;
-                const totalPages = this.element.dataset.totalPages;
-
-                if (this.loadCount < totalPages) {
-                    if (this.loadCount === 0) this.loadCount = 1; // Start at 1
-
-                    const nextIndex = this.loadCount + 1;
-                    return `${pageType}/p${nextIndex}`;
-                }
-            },
-            append: ".row__item",
-            history: false,
-            outlayer: this.grid
-        });
-
-        infiniteScroll.on("append", (response, path, items) => {
-            items.forEach(item => {
-                const video = item.querySelector("[data-vimeo-player]");
-
-                if (video !== null) {
-                    this.calculateVideoHeight(video);
-                }
-            });
+                    if (status === "done") {
+                        this.grid.layout();
+                        new LazyComponent(this.DOM.images, this.DOM.el, this.DOM.wrapper);
+                    }
+                });
+            } else {
+                this.grid.layout();
+                new LazyComponent(this.DOM.images, this.DOM.el, this.DOM.wrapper);
+            }
         });
     };
-    calculateVideoHeight = video => {
-        /* Get the bounds of the video */
+    calculateVideoHeight = async (video, videoIndex) => {
         const videoWrapper = video.parentNode;
-
-        /* Initialize a new Player class and stop the video from playing */
         const player = new Player(video);
 
-        /* Get video width and height */
-        Promise.all([player.getVideoWidth(), player.getVideoHeight()]).then(dimensions => {
+        return Promise.all([player.getVideoWidth(), player.getVideoHeight()]).then(dimensions => {
             const [width, height] = dimensions;
             const paddingTop = `${(height / width) * 100}%`;
 
-            /* Set the calculated padding to the video bounds */
             videoWrapper.style.padding = `${paddingTop} 0 0`;
 
-            this.grid.layout();
+            this.videoIndexes.push(videoIndex);
+
+            if (this.videoIndexes.length === this.DOM.videos.length) {
+                return "done";
+            }
         });
     };
 }

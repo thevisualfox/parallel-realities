@@ -1,6 +1,7 @@
 {% set image  = entry.image.one() %}
-{% set imageTransform = { width: 640, mode: 'crop' } %}
-{% set retinaImageTransform = { width: 1280, mode: 'crop' } %}
+{% set preImageTransform = { width: 100, mode: 'crop' } %}
+{% set imageTransform = { width: 1280, mode: 'crop' } %}
+{% set retinaImageTransform = { width: 2560, mode: 'crop' } %}
 
 {% if image or entry.video %}
     <div class="row__item {{ entry.fullWidth == 1 ? 'col-12' : 'col-6' }}">
