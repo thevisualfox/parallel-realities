@@ -4,7 +4,7 @@
     {% set mediaClasses = mediaClasses|merge(extensionClasses) %}
 {% endif %}
 
-<figure class="{{ mediaClasses|join(' ') }}" data-lazy-component>
+<figure class="{{ mediaClasses|join(' ') }}">
     {% block mediaBody %}
         {% if url|default %}
             <a class="media__link gradient text-white" href="{{ entry.url }}" title="{{ entry.title }}">
@@ -13,7 +13,7 @@
             {% block mediaVideo %}
                 {% if entry.video %}
                     <div class="media__container media__container--16by9">
-                        <iframe data-vimeo-player class="media__video" src="https://player.vimeo.com/video/{{ entry.video }}?background=1" frameborder="0" webkitallowfullscreen
+                        <iframe data-vimeo-player class="media__video" src="https://player.vimeo.com/video/{{ entry.video }}?autoplay=0&controls=0&muted=1&loop=1" frameborder="0" webkitallowfullscreen
                                 mozallowfullscreen allowfullscreen></iframe>
                     </div>
                 {% endif %}

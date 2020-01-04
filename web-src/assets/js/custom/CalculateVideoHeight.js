@@ -1,28 +1,26 @@
 import Player from "@vimeo/player";
 
 export default class CalculateVideoHeight {
-    constructor(videos, grid) {
-        this.DOM = { videos, grid };
-
-        this.DOM.videos.forEach(video => this.calculateVideoHeight(video));
+    constructor(videos) {
+        this.DOM = { videos };
+        this.videoIndexes = [];
     }
-    calculateVideoHeight = video => {
-        /* Get the bounds of the video */
+    editVideo = async (video, videoIndex = undefined) => {
         const videoWrapper = video.parentNode;
+        const videoPlayer = new Player(video);
 
-        /* Initialize a new Player class and stop the video from playing */
-        const player = new Player(video);
-
-        /* Get video width and height */
-        Promise.all([player.getVideoWidth(), player.getVideoHeight()]).then(dimensions => {
+        return Promise.all([videoPlayer.getVideoWidth(), videoPlayer.getVideoHeight()]).then(dimensions => {
             const [width, height] = dimensions;
             const paddingTop = `${(height / width) * 100}%`;
 
-            /* Set the calculated padding to the video bounds */
             videoWrapper.style.padding = `${paddingTop} 0 0`;
 
-            if (typeof this.DOM.grid !== "undefined") {
-                this.DOM.grid.layout();
+            this.videoIndexes.push(videoIndex);
+
+            if (this.videoIndexes.length === this.DOM.videos.length) {
+                return "done";
+            } else {
+                return "failed";
             }
         });
     };
@@ -30,5 +28,6 @@ export default class CalculateVideoHeight {
 
 const videoNodes = Array.from(document.querySelectorAll("[data-calculate-video-height]"));
 if (videoNodes !== null) {
-    new CalculateVideoHeight(videoNodes);
+    const videoPlayer = new CalculateVideoHeight(videoNodes);
+    videoNodes.forEach(video => videoPlayer.editVideo(video));
 }
