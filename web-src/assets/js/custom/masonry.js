@@ -1,21 +1,19 @@
 import Masonry from "masonry-layout";
 import imagesLoaded from "imagesloaded";
-import Player from "@vimeo/player";
-import LazyComponent from "./LazyComponent";
+import { LazyImage, LazyComponent, LazyVideo } from "./LazyComponent";
+import CalculateVideoHeight from "./CalculateVideoHeight";
 
 class MasonryGrid {
     constructor(el) {
         this.DOM = { el: el };
-        this.DOM.wrapper = this.DOM.el.querySelector(".media__wrapper");
         this.DOM.videos = Array.from(this.DOM.el.querySelectorAll("[data-vimeo-player]"));
-        this.DOM.images = Array.from(this.DOM.el.querySelectorAll("[data-lazy-component]"));
+        this.DOM.images = Array.from(this.DOM.el.querySelectorAll(".img-lazy"));
+        this.DOM.items = Array.from(this.DOM.el.querySelectorAll(".media"));
 
-        this.videoIndexes = [];
         this.grid = new Masonry(this.DOM.el, {
             itemSelector: ".row__item",
             columnWidth: ".row__item",
-            percentPosition: true,
-            initLayout: false
+            percentPosition: true
         });
 
         this.initMasonry();
@@ -23,36 +21,40 @@ class MasonryGrid {
     initMasonry = () => {
         imagesLoaded(this.DOM.el, () => {
             if (this.DOM.videos.length > 0) {
+                const videoPlayers = new CalculateVideoHeight(this.DOM.videos);
+
                 this.DOM.videos.forEach(async (video, videoIndex) => {
-                    const status = await this.calculateVideoHeight(video, videoIndex);
+                    const status = await videoPlayers.editVideo(video, videoIndex);
 
                     if (status === "done") {
                         this.grid.layout();
-                        new LazyComponent(this.DOM.images, this.DOM.el, this.DOM.wrapper);
+
+                        this.initLazyTypes(["images", "components", "videos"]);
                     }
                 });
             } else {
-                this.grid.layout();
-                new LazyComponent(this.DOM.images, this.DOM.el, this.DOM.wrapper);
+                this.initLazyTypes(["images", "components"]);
             }
         });
     };
-    calculateVideoHeight = async (video, videoIndex) => {
-        const videoWrapper = video.parentNode;
-        const player = new Player(video);
+    initLazyTypes = types => {
+        for (let index = 0; index < types.length; index++) {
+            const type = types[index];
 
-        return Promise.all([player.getVideoWidth(), player.getVideoHeight()]).then(dimensions => {
-            const [width, height] = dimensions;
-            const paddingTop = `${(height / width) * 100}%`;
-
-            videoWrapper.style.padding = `${paddingTop} 0 0`;
-
-            this.videoIndexes.push(videoIndex);
-
-            if (this.videoIndexes.length === this.DOM.videos.length) {
-                return "done";
+            switch (type) {
+                case "images":
+                    new LazyImage(this.DOM.images);
+                    break;
+                case "videos":
+                    new LazyVideo(this.DOM.videos);
+                    break;
+                case "components":
+                    new LazyComponent(this.DOM.items);
+                    break;
+                default:
+                    break;
             }
-        });
+        }
     };
 }
 
