@@ -13,6 +13,12 @@
     }
 }
 
+.media__wrapper {
+    display: flex;
+    flex-grow: 1;
+    height: 100%;
+}
+
 .media__container {
     position: relative;
     overflow: hidden;
@@ -47,14 +53,4 @@
 
 .media__link {
     position: relative;
-}
-
-.media__image {}
-
-.media__image--large {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
 }

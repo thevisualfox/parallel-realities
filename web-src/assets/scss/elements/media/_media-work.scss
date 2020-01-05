@@ -1,8 +1,14 @@
 .media--work {
     position: relative;
-    transform: scale(0.5) translateY(10%);
-    opacity: 0;
-    will-change: transform, opacity;
+    transform: translateY(-101%);
+    overflow: hidden;
+    will-change: transform;
+
+    .media__wrapper {
+        transform: translateY(101%);
+        will-change: transform;
+        overflow: hidden;
+    }
 
     .media__text {
         display: block;
@@ -13,6 +19,9 @@
     .media__link {
         height: 100%;
         width: 100%;
+        overflow: hidden;
+        transform: scale(1.2);
+        will-change: transform;
 
         &:hover + .media__caption .media__text {
             transform: translateY(0);
@@ -22,5 +31,4 @@
             opacity: 1;
         }
     }
-
 }
