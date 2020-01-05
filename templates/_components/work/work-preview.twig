@@ -1,15 +1,13 @@
 {% set image  = entry.image.one() %}
 {% set preImageTransform = { width: 100, mode: 'crop' } %}
-{% set imageTransform = { width: 1280, mode: 'crop' } %}
-{% set retinaImageTransform = { width: 2560, mode: 'crop' } %}
+{% set imageTransform = { width: 1024, mode: 'crop' } %}
+{% set retinaImageTransform = { width: 2048, mode: 'crop' } %}
 
 {% if image or entry.video %}
-    <div class="row__item {{ entry.fullWidth == 1 ? 'col-12' : 'col-6' }}">
-        {% if entry.video or image %}
-            {% include "_components/media/media.twig" with {
-                extensionClasses: ['media--work', 'image-zoom'],
-                url: entry.url
-            } %}
-        {% endif %}
-    </div>
+    {% if entry.video or image %}
+        {% include "_components/media/media.twig" with {
+            extensionClasses: ['media--work', 'image-zoom', position],
+            url: entry.url
+        } %}
+    {% endif %}
 {% endif %}

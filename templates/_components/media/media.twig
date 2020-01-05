@@ -4,42 +4,44 @@
     {% set mediaClasses = mediaClasses|merge(extensionClasses) %}
 {% endif %}
 
-<figure class="{{ mediaClasses|join(' ') }}">
-    {% block mediaBody %}
-        {% if url|default %}
-            <a class="media__link gradient text-white" href="{{ entry.url }}" title="{{ entry.title }}">
-        {% endif %}
+{% set mediaId = random(100000) %}
 
-            {% block mediaVideo %}
-                {% if entry.video %}
-                    <div class="media__container media__container--16by9">
-                        <iframe data-vimeo-player class="media__video" src="https://player.vimeo.com/video/{{ entry.video }}?autoplay=0&controls=0&muted=1&loop=1" frameborder="0" webkitallowfullscreen
-                                mozallowfullscreen allowfullscreen></iframe>
-                    </div>
-                {% endif %}
-            {% endblock %}
+<figure class="{{ mediaClasses|join(' ') }}" data-parent-{{ mediaId }}>
+    <div class="media__wrapper">
+        {% block mediaBody %}
+            {% if url|default %}
+                <a class="media__link gradient text-white" href="{{ entry.url }}" title="{{ entry.title }}">
+            {% endif %}
 
-            {% block mediaImage %}
-                {% if image %}
-                    <img class="media__image img-fluid w-100" src="{{ image.getUrl(preImageTransform) }}" alt="{{ image.title }}">
-                    <img class="media__image media__image--large img-fluid img-lazy w-100" data-src="{{ image.getUrl(imageTransform) }}" data-srcset="{{ image.getUrl(retinaImageTransform) }} 2x" alt="{{ image.title }}">
-                {% endif %}
-            {% endblock %}
-
-        {% if url|default %}
-            </a>
-        {% endif %}
-
-        {% block mediaCaption %}
-            {% if entry.title or entry.subtitle %}
-                <figcaption class="d-flex flex-column media__caption">
-                    {% block mediaControls %}{% endblock %}
-                    {% if entry.title %}
-                        <p class="text-small text-regular text-spaced mb-0 text-white overflow-hidden">
-                            <span class="media__text">{{ entry.title }}</span>
-                        </p>
+                {% block mediaVideo %}
+                    {% if entry.video %}
+                        <div class="media__container media__container--16by9">
+                            <iframe data-vimeo-player class="media__video" src="https://player.vimeo.com/video/{{ entry.video }}?autoplay=0&controls=0&muted=1&loop=1" frameborder="0" webkitallowfullscreen
+                                    mozallowfullscreen allowfullscreen></iframe>
+                        </div>
                     {% endif %}
-                    {% if entry.subtitle %}
+                {% endblock %}
+
+                {% block mediaImage %}
+                    {% if image %}
+                        <img class="media__image img-fluid w-100" data-parent="[data-parent-{{ mediaId }}]" src="{{ image.getUrl(preImageTransform) }}" data-normal="{{ image.getUrl(imageTransform) }}" data-retina="{{ image.getUrl(retinaImageTransform) }}" data-srcset="{{ image.getUrl(retinaImageTransform) }} 2x" alt="{{ image.title }}">
+                    {% endif %}
+                {% endblock %}
+
+            {% if url|default %}
+                </a>
+            {% endif %}
+
+            {% block mediaCaption %}
+                {% if entry.title or entry.subtitle %}
+                    <figcaption class="d-flex flex-column media__caption">
+                        {% block mediaControls %}{% endblock %}
+                        {% if entry.title %}
+                            <p class="text-small text-regular text-spaced mb-0 text-white overflow-hidden">
+                                <span class="media__text">{{ entry.title }}</span>
+                            </p>
+                        {% endif %}
+                        {% if entry.subtitle %}
                         <p class="text-smaller text-light text-white overflow-hidden">
                             <span class="media__text">{{ entry.subtitle }}</span>
                         </p>
@@ -48,4 +50,5 @@
             {% endif %}
         {% endblock %}
     {% endblock %}
+    </div>
 </figure>
