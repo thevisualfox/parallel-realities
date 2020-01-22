@@ -8941,18 +8941,18 @@ body.showcase main {
 .media__link {
   position: relative; }
 
-.media--work {
+.media--case {
   position: relative;
   -webkit-transform: translateY(-101%);
           transform: translateY(-101%);
   overflow: hidden;
   will-change: transform; }
-  .media--work .media__wrapper {
+  .media--case .media__wrapper {
     -webkit-transform: translateY(101%);
             transform: translateY(101%);
     will-change: transform;
     overflow: hidden; }
-  .media--work .media__text {
+  .media--case .media__text {
     display: block;
     -webkit-transform: translateY(100%);
             transform: translateY(100%);
@@ -8960,17 +8960,17 @@ body.showcase main {
     transition: -webkit-transform 500ms cubic-bezier(0.785, 0.135, 0.15, 0.86);
     transition: transform 500ms cubic-bezier(0.785, 0.135, 0.15, 0.86);
     transition: transform 500ms cubic-bezier(0.785, 0.135, 0.15, 0.86), -webkit-transform 500ms cubic-bezier(0.785, 0.135, 0.15, 0.86); }
-  .media--work .media__link {
+  .media--case .media__link {
     height: 100%;
     width: 100%;
     overflow: hidden;
     -webkit-transform: scale(1.2);
             transform: scale(1.2);
     will-change: transform; }
-    .media--work .media__link:hover + .media__caption .media__text {
+    .media--case .media__link:hover + .media__caption .media__text {
       -webkit-transform: translateY(0);
               transform: translateY(0); }
-    .media--work .media__link:hover.gradient:after {
+    .media--case .media__link:hover.gradient:after {
       opacity: 1; }
 
 .media--visual {

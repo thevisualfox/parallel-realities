@@ -1,18 +1,18 @@
-{% set workEntries = craft.entries.section('workEntries').all() %}
+{% set caseEntries = craft.entries.section(entries).all() %}
 
-<section class="pane py-0 min-vh-100">
+<section class="pane py-0 min-vh-100 overflow-hidden">
     <div class="cases-observer"></div>
     <div class="row row--masonry gutters-h1">
-        {% set totalEntries = workEntries|length %}
+        {% set totalEntries = caseEntries|length %}
 
-        {% for batch in workEntries|batch(totalEntries / 2) %}
+        {% for batch in caseEntries|batch(totalEntries / 2) %}
             {% set batchIndex = loop.index %}
 
             <div class="col-12 col-lg-6">
                 <div class="row gutters-h1">
                     {% for entry in batch %}
                         <div class="col-12">
-                            {% include '_components/work/work-preview.twig' with {
+                            {% include '_components/case/case-preview.twig' with {
                                 position: batchIndex== 1 ? 'media--left' : 'media--right'
                             } %}
                         </div>

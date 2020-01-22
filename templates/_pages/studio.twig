@@ -1,6 +1,6 @@
 {% extends "_layouts/default" %}
 
-{% set entry = craft.entries.section('work').one() %}
+{% set entry = craft.entries.section('studio').one() %}
 {% set headerColor = entry.headerColor.value %}
 {% set title = entry.title %}
 
@@ -12,6 +12,6 @@
 
 {% block content %}
     <main role="main">
-        {% include "_components/case/case-overview.twig" with { entries: 'workEntries' } %}
+        {% include "_components/case/case-overview.twig" with { entries: 'studioEntries' } %}
     </main>
 {% endblock %}
