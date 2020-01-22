@@ -9943,6 +9943,9 @@ textarea {
     .main-footer {
       padding-top: 50px;
       padding-bottom: 50px; } }
+  .main-footer .list__link:hover .icon {
+    -webkit-transform: translateY(-5px);
+            transform: translateY(-5px); }
 
 .main-footer__title {
   line-height: 1.3; }

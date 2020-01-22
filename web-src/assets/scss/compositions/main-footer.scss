@@ -9,6 +9,10 @@
         padding-top: 50px;
         padding-bottom: 50px;
     }
+
+    .list__link:hover .icon {
+        transform: translateY(-5px);
+    }
 }
 
 .main-footer__title {
