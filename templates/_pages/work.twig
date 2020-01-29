@@ -12,6 +12,6 @@
 
 {% block content %}
     <main role="main">
-        {% include "_components/work/work-overview.twig" %}
+        {% include "_components/case/case-overview.twig" with { entries: 'workEntries' } %}
     </main>
 {% endblock %}

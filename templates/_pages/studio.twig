@@ -1,0 +1,17 @@
+{% extends "_layouts/default" %}
+
+{% set entry = craft.entries.section('studio').one() %}
+{% set headerColor = entry.headerColor.value %}
+{% set title = entry.title %}
+
+{% block header %}
+    {% include '_compositions/main-header.twig' with {
+        headerColor: headerColor
+    } %}
+{% endblock %}
+
+{% block content %}
+    <main role="main">
+        {% include "_components/case/case-overview.twig" with { entries: 'studioEntries' } %}
+    </main>
+{% endblock %}

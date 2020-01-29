@@ -1,4 +1,4 @@
-.media--work {
+.media--case {
     position: relative;
     transform: translateY(-101%);
     overflow: hidden;
@@ -30,5 +30,9 @@
         &:hover.gradient:after {
             opacity: 1;
         }
+    }
+
+    .media__caption {
+        pointer-events: none;
     }
 }

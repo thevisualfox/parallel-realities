@@ -1,6 +1,7 @@
 import imagesLoaded from "imagesloaded";
 import { LazyVideo } from "./LazyComponent";
 import CalculateVideoHeight from "./CalculateVideoHeight";
+import Masonry from "masonry-layout";
 
 class MasonryGrid {
     constructor(el) {
@@ -8,6 +9,12 @@ class MasonryGrid {
         this.DOM.videos = Array.from(this.DOM.el.querySelectorAll("[data-vimeo-player]"));
         this.DOM.images = Array.from(this.DOM.el.querySelectorAll(".img-lazy"));
         this.DOM.items = Array.from(this.DOM.el.querySelectorAll(".media"));
+
+        this.masonry = new Masonry(this.DOM.el, {
+            itemSelector: ".row__item",
+            columnWidth: ".row__item",
+            percentPosition: true
+        });
 
         this.initMasonry();
     }
@@ -21,6 +28,8 @@ class MasonryGrid {
 
                     if (status === "done") {
                         this.initLazyTypes(["videos"]);
+
+                        this.masonry.layout();
                     }
                 });
             }

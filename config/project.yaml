@@ -1,4 +1,4 @@
-dateModified: 1577879405
+dateModified: 1579719192
 email:
   fromEmail: jurjen.p.vos@gmail.com
   fromName: 'Parallel Realities'
@@ -416,6 +416,55 @@ plugins:
     enabled: true
     schemaVersion: 1.0.0
 sections:
+  08f5919f-3d76-4f08-9806-57e67a9a546d:
+    name: 'Studio entries'
+    handle: studioEntries
+    type: structure
+    enableVersioning: true
+    propagationMethod: all
+    siteSettings:
+      bbf8cb32-62ed-4353-8c5a-c091131d4962:
+        enabledByDefault: true
+        hasUrls: true
+        uriFormat: 'studio/{slug}'
+        template: _pages/case-entry
+    structure:
+      uid: 5dad1d11-b572-445b-b1aa-52bff11a1406
+      maxLevels: null
+    entryTypes:
+      ab944c77-9271-415c-a092-a5154d00f42f:
+        name: 'Studio entries'
+        handle: studioEntries
+        hasTitleField: true
+        titleLabel: Title
+        titleFormat: ''
+        sortOrder: 1
+        fieldLayouts:
+          02632250-49b1-4584-a369-31b235339697:
+            tabs:
+              -
+                name: 'Sudio Preview'
+                sortOrder: 1
+                fields:
+                  00b3e9bf-8280-4397-8d41-33cc4de75003:
+                    required: false
+                    sortOrder: 3
+                  3ecd3dc4-5028-4407-b30a-7bf60783badf:
+                    required: false
+                    sortOrder: 1
+                  5c93d5a7-8552-4922-bcbf-4a6433846899:
+                    required: false
+                    sortOrder: 4
+                  8313fac4-f0e0-49b4-b4f3-d7aeafaa513f:
+                    required: false
+                    sortOrder: 2
+              -
+                name: 'Studio page'
+                sortOrder: 2
+                fields:
+                  b1956beb-f17c-445d-9106-83c7cb35e660:
+                    required: false
+                    sortOrder: 1
   4b203b52-92e5-4057-affc-294af5e9931d:
     name: 'Work entries'
     handle: workEntries
@@ -427,7 +476,7 @@ sections:
         enabledByDefault: true
         hasUrls: true
         uriFormat: 'work/{slug}'
-        template: _pages/work-entry
+        template: _pages/case-entry
     structure:
       uid: 99fb6993-469a-4f4d-9d43-eb454a738e58
       maxLevels: 1
@@ -579,15 +628,25 @@ sections:
         enabledByDefault: true
         hasUrls: true
         uriFormat: studio
-        template: ''
+        template: _pages/studio
     entryTypes:
       271c1b7c-dc96-4ddc-a370-c4c34cde4509:
         name: Studio
         handle: studio
         hasTitleField: false
-        titleLabel: null
+        titleLabel: ''
         titleFormat: '{section.name|raw}'
         sortOrder: 1
+        fieldLayouts:
+          7f79bb50-0d7d-442d-bd45-5fb274a11421:
+            tabs:
+              -
+                name: Header
+                sortOrder: 1
+                fields:
+                  b1956beb-f17c-445d-9106-83c7cb35e660:
+                    required: false
+                    sortOrder: 1
   ab2f9fa8-f3e4-4f9e-8d79-04e53fa45ec7:
     name: Contact
     handle: contact
