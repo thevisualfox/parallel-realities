@@ -5,19 +5,9 @@
     <div class="row row--masonry gutters-h1">
         {% set totalEntries = caseEntries|length %}
 
-        {% for batch in caseEntries|batch(totalEntries / 2) %}
-            {% set batchIndex = loop.index %}
-
-            <div class="col-12 col-lg-6">
-                <div class="row gutters-h1">
-                    {% for entry in batch %}
-                        <div class="col-12">
-                            {% include '_components/case/case-preview.twig' with {
-                                position: batchIndex== 1 ? 'media--left' : 'media--right'
-                            } %}
-                        </div>
-                    {% endfor %}
-                </div>
+        {% for entry in caseEntries %}
+            <div class="row__item {{ entry.fullWidth ? 'col-12' : 'col-6' }}">
+                {% include '_components/case/case-preview.twig' %}
             </div>
         {% endfor %}
     </div>

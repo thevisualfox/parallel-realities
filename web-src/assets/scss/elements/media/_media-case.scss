@@ -31,4 +31,8 @@
             opacity: 1;
         }
     }
+
+    .media__caption {
+        pointer-events: none;
+    }
 }

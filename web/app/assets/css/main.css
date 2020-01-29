@@ -8752,9 +8752,6 @@ body.showcase main {
 .overflow-hidden {
   overflow: hidden; }
 
-.main--base {
-  background-color: #333; }
-
 .text-regular {
   font-weight: 400; }
 
@@ -8972,6 +8969,8 @@ body.showcase main {
               transform: translateY(0); }
     .media--case .media__link:hover.gradient:after {
       opacity: 1; }
+  .media--case .media__caption {
+    pointer-events: none; }
 
 .media--visual {
   height: 100vh; }
@@ -10057,11 +10056,16 @@ textarea {
     right: 0;
     bottom: 0;
     left: 0;
-    background-image: linear-gradient(45deg, #333 0%, rgba(51, 51, 51, 0) 20%);
+    background-image: -webkit-gradient(linear, left bottom, left top, from(#333), color-stop(40%, rgba(51, 51, 51, 0)));
+    background-image: linear-gradient(0deg, #333 0%, rgba(51, 51, 51, 0) 40%);
     opacity: 0;
     -webkit-transition: opacity 350ms ease;
     transition: opacity 350ms ease;
-    z-index: 1; }
+    z-index: 1;
+    pointer-events: none; }
+    @media (min-width: 992px) {
+      .gradient:after {
+        background-image: linear-gradient(45deg, #333 0%, rgba(51, 51, 51, 0) 20%); } }
 
 body.compensate-for-scrollbar {
   overflow: hidden; }
