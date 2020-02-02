@@ -435,6 +435,18 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) *
 
 /***/ }),
 
+/***/ "./web-src/assets/js/custom/contactForm.js":
+/*!*************************************************!*\
+  !*** ./web-src/assets/js/custom/contactForm.js ***!
+  \*************************************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ \"./node_modules/jquery/dist/jquery.js\");\n/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);\n\njquery__WEBPACK_IMPORTED_MODULE_0___default()(\"#contact-form\").submit(function (event) {\n  event.preventDefault();\n  jquery__WEBPACK_IMPORTED_MODULE_0___default.a.post({\n    url: \"/\",\n    dataType: \"json\",\n    data: jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).serialize(),\n    success: function success(response) {\n      if (response.success) {\n        jquery__WEBPACK_IMPORTED_MODULE_0___default()(\"#confirmation\").fadeIn();\n        jquery__WEBPACK_IMPORTED_MODULE_0___default()(\"#contact-form\")[0].reset();\n        setTimeout(function () {\n          jquery__WEBPACK_IMPORTED_MODULE_0___default()(\"#confirmation\").fadeOut();\n        }, 5000);\n      } else {\n        jquery__WEBPACK_IMPORTED_MODULE_0___default()(\"#error\").fadeIn();\n        setTimeout(function () {\n          jquery__WEBPACK_IMPORTED_MODULE_0___default()(\"#error\").fadeOut();\n        }, 5000);\n      }\n    }\n  });\n});\n\n//# sourceURL=webpack:///./web-src/assets/js/custom/contactForm.js?");
+
+/***/ }),
+
 /***/ "./web-src/assets/js/custom/masonry.js":
 /*!*********************************************!*\
   !*** ./web-src/assets/js/custom/masonry.js ***!
@@ -467,7 +479,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _bab
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var bootstrap__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! bootstrap */ \"./node_modules/bootstrap/dist/js/bootstrap.js\");\n/* harmony import */ var bootstrap__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bootstrap__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _custom_toggler__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./custom/toggler */ \"./web-src/assets/js/custom/toggler.js\");\n/* harmony import */ var _custom_masonry__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./custom/masonry */ \"./web-src/assets/js/custom/masonry.js\");\n/* harmony import */ var _custom_CalculateVideoHeight__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./custom/CalculateVideoHeight */ \"./web-src/assets/js/custom/CalculateVideoHeight.js\");\n/* harmony import */ var _custom_LazyComponent__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./custom/LazyComponent */ \"./web-src/assets/js/custom/LazyComponent.js\");\n // Core\n// import \"./disableImageDownload\";\n// import \"./contactForm\";\n\n/* Custom */\n\n\n\n\n\n\n//# sourceURL=webpack:///./web-src/assets/js/main.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var bootstrap__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! bootstrap */ \"./node_modules/bootstrap/dist/js/bootstrap.js\");\n/* harmony import */ var bootstrap__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bootstrap__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _custom_toggler__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./custom/toggler */ \"./web-src/assets/js/custom/toggler.js\");\n/* harmony import */ var _custom_masonry__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./custom/masonry */ \"./web-src/assets/js/custom/masonry.js\");\n/* harmony import */ var _custom_CalculateVideoHeight__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./custom/CalculateVideoHeight */ \"./web-src/assets/js/custom/CalculateVideoHeight.js\");\n/* harmony import */ var _custom_LazyComponent__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./custom/LazyComponent */ \"./web-src/assets/js/custom/LazyComponent.js\");\n/* harmony import */ var _custom_contactForm__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./custom/contactForm */ \"./web-src/assets/js/custom/contactForm.js\");\n\n/* Custom */\n\n\n\n\n\n\n\n//# sourceURL=webpack:///./web-src/assets/js/main.js?");
 
 /***/ })
 

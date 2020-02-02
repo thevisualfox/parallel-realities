@@ -9936,12 +9936,12 @@ textarea {
 
 .main-footer {
   padding-top: 30px;
-  padding-bottom: 30px;
+  padding-bottom: 20px;
   margin-top: auto; }
   @media (min-width: 768px) {
     .main-footer {
       padding-top: 50px;
-      padding-bottom: 50px; } }
+      padding-bottom: 20px; } }
   .main-footer .list__link:hover .icon {
     -webkit-transform: translateY(-5px);
             transform: translateY(-5px); }

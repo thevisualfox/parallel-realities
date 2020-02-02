@@ -29,6 +29,26 @@
                     </div>
                 </div>
             </div>
+            <div class="col-12 col-lg-10 border-top pt-2 mt-2">
+                <div class="row gutters-2">
+                    {% set guidelines = footer.guidelines.one() %}
+                    {% set termsConditions = footer.termsConditions.one() %}
+
+                    {% if guidelines is not empty %}
+                        <div class="col-auto">
+                            <a class="btn btn-link text-small text-muted" href="{{ guidelines.getUrl() }}" title="{{ footer.companyName }} | Guidelines" target="_blank" rel="noreferrer">Guidelines</a>
+                        </div>
+                    {% endif %}
+                    {% if termsConditions is not empty %}
+                        <div class="col-auto">
+                            <a class="btn btn-link text-small text-muted" href="{{ termsConditions.getUrl() }}" title="{{ footer.companyName }} | Terms and Conditions" target="_blank" rel="noreferrer">Terms & conditions</a>
+                        </div>
+                    {% endif %}
+                    <div class="col-auto">
+                        <a class="btn btn-link text-small text-muted" href="mailto:{{ footer.companyEmail }}" itle="{{ footer.companyName }} | Jobs">Jobs</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </footer>

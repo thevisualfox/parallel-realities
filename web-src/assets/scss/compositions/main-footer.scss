@@ -1,13 +1,13 @@
 .main-footer {
     padding-top: 30px;
-    padding-bottom: 30px;
+    padding-bottom: 20px;
     margin-top: auto;
 
     // Medium and up
 
     @include media-breakpoint-up(md) {
         padding-top: 50px;
-        padding-bottom: 50px;
+        padding-bottom: 20px;
     }
 
     .list__link:hover .icon {

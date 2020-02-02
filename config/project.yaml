@@ -1,8 +1,17 @@
-dateModified: 1579719192
+dateModified: 1580659682
 email:
   fromEmail: jurjen.p.vos@gmail.com
   fromName: 'Parallel Realities'
-  transportType: craft\mail\transportadapters\Sendmail
+  template: null
+  transportType: craft\mail\transportadapters\Smtp
+  transportSettings:
+    host: mail.pa-re.eu
+    port: '25'
+    useAuthentication: '1'
+    username: test@pa-re.eu
+    password: Pascal19872()
+    encryptionMethod: ''
+    timeout: '10'
 fieldGroups:
   4d3dab93-ed84-46d8-a38c-37042926fda1:
     name: Footer
@@ -156,6 +165,62 @@ fields:
     translationKeyFormat: null
     translationMethod: none
     type: craft\fields\PlainText
+  4d1550d5-09a9-49da-a5f3-2403996974a6:
+    name: Guidelines
+    handle: guidelines
+    instructions: 'Add your guidelines.'
+    searchable: true
+    translationMethod: site
+    translationKeyFormat: null
+    type: craft\fields\Assets
+    settings:
+      useSingleFolder: ''
+      defaultUploadLocationSource: 'volume:081457f1-b9d3-4dc5-b850-ff375be3255d'
+      defaultUploadLocationSubpath: ''
+      singleUploadLocationSource: 'volume:081457f1-b9d3-4dc5-b850-ff375be3255d'
+      singleUploadLocationSubpath: ''
+      restrictFiles: '1'
+      allowedKinds:
+        - pdf
+        - word
+      sources: '*'
+      source: null
+      targetSiteId: null
+      viewMode: list
+      limit: ''
+      selectionLabel: ''
+      localizeRelations: false
+      validateRelatedElements: ''
+    contentColumnType: string
+    fieldGroup: 4d3dab93-ed84-46d8-a38c-37042926fda1
+  525cb06f-9fdb-481b-be85-0f608e6d46d1:
+    name: 'Terms / Conditions'
+    handle: termsConditions
+    instructions: "Add your terms and conditions.\r\n\r\n"
+    searchable: true
+    translationMethod: site
+    translationKeyFormat: null
+    type: craft\fields\Assets
+    settings:
+      useSingleFolder: ''
+      defaultUploadLocationSource: 'volume:081457f1-b9d3-4dc5-b850-ff375be3255d'
+      defaultUploadLocationSubpath: ''
+      singleUploadLocationSource: 'volume:081457f1-b9d3-4dc5-b850-ff375be3255d'
+      singleUploadLocationSubpath: ''
+      restrictFiles: '1'
+      allowedKinds:
+        - pdf
+        - word
+      sources: '*'
+      source: null
+      targetSiteId: null
+      viewMode: list
+      limit: ''
+      selectionLabel: ''
+      localizeRelations: false
+      validateRelatedElements: ''
+    contentColumnType: string
+    fieldGroup: 4d3dab93-ed84-46d8-a38c-37042926fda1
   5c93d5a7-8552-4922-bcbf-4a6433846899:
     name: Video
     handle: video
@@ -318,6 +383,12 @@ globalSets:
               3a66a56c-2e03-4d5d-a20b-fbf4028ee3e2:
                 required: false
                 sortOrder: 1
+              4d1550d5-09a9-49da-a5f3-2403996974a6:
+                required: false
+                sortOrder: 8
+              525cb06f-9fdb-481b-be85-0f608e6d46d1:
+                required: false
+                sortOrder: 7
               7bf6b224-094e-4d55-a71a-c183a53a9c02:
                 required: false
                 sortOrder: 2
