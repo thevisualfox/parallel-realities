@@ -1,4 +1,4 @@
-dateModified: 1580659682
+dateModified: 1581013590
 email:
   fromEmail: jurjen.p.vos@gmail.com
   fromName: 'Parallel Realities'
@@ -267,6 +267,27 @@ fields:
       default: ''
     contentColumnType: boolean
     fieldGroup: 7f6ceebb-ff32-4474-a724-971cd458e4ef
+  8475a05c-de96-4ea1-980c-93f358a94c2d:
+    name: 'Text color'
+    handle: textColor
+    instructions: 'Choose a color for the text.'
+    searchable: true
+    translationMethod: none
+    translationKeyFormat: null
+    type: craft\fields\Dropdown
+    settings:
+      optgroups: true
+      options:
+        -
+          label: White
+          value: white
+          default: '1'
+        -
+          label: Black
+          value: base
+          default: ''
+    contentColumnType: string
+    fieldGroup: f697421b-6984-4171-af0e-2199e664da5b
   b1956beb-f17c-445d-9106-83c7cb35e660:
     name: 'Header color'
     handle: headerColor
@@ -533,6 +554,9 @@ sections:
                 name: 'Studio page'
                 sortOrder: 2
                 fields:
+                  8475a05c-de96-4ea1-980c-93f358a94c2d:
+                    required: false
+                    sortOrder: 2
                   b1956beb-f17c-445d-9106-83c7cb35e660:
                     required: false
                     sortOrder: 1
@@ -582,6 +606,9 @@ sections:
                 name: 'Work page'
                 sortOrder: 2
                 fields:
+                  8475a05c-de96-4ea1-980c-93f358a94c2d:
+                    required: false
+                    sortOrder: 2
                   b1956beb-f17c-445d-9106-83c7cb35e660:
                     required: false
                     sortOrder: 1
