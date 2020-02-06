@@ -2,6 +2,7 @@ import imagesLoaded from "imagesloaded";
 import { LazyVideo } from "./LazyComponent";
 import CalculateVideoHeight from "./CalculateVideoHeight";
 import Masonry from "masonry-layout";
+import gsap from "gsap";
 
 class MasonryGrid {
     constructor(el) {
@@ -13,8 +14,11 @@ class MasonryGrid {
         this.masonry = new Masonry(this.DOM.el, {
             itemSelector: ".row__item",
             columnWidth: ".row__item",
-            percentPosition: true
+            percentPosition: true,
+            initLayout: false
         });
+
+        gsap.set(this.DOM.el, { opacity: 0 });
 
         this.initMasonry();
     }
@@ -28,6 +32,12 @@ class MasonryGrid {
 
                     if (status === "done") {
                         this.initLazyTypes(["videos"]);
+
+                        gsap.to(this.DOM.el, {
+                            opacity: 1,
+                            duration: 0.75,
+                            ease: "circ.inOut"
+                        });
 
                         this.masonry.layout();
                     }
@@ -49,6 +59,4 @@ class MasonryGrid {
 }
 
 const gridNode = document.querySelector(".row--masonry");
-if (gridNode !== null) {
-    new MasonryGrid(gridNode);
-}
+export const masonry = gridNode !== null ? new MasonryGrid(gridNode) : null;

@@ -10,14 +10,14 @@
 {% endblock %}
 
 {% block content %}
-    <main class="main" role="main">
+    <main class="main main--base" role="main">
         {% set image  = entry.image.one() %}
         {% set imageTransform = { width: 1024, mode: 'crop' } %}
         {% set retinaImageTransform = { width: 1280, mode: 'crop' } %}
 
         {% if image or entry.video %}
             {% embed "_components/media/media.twig" with {
-                extensionClasses: ['media--visual', 'gradient', 'justify-content-center']
+                extensionClasses: ['media--visual', 'justify-content-center']
             } %}
                 {% block mediaVideo %}
                     {% if entry.video %}
@@ -35,11 +35,10 @@
                 {% endblock %}
 
                 {% block mediaControls %}
-                    <a class="text-white text-uppercase mb-3 d-flex align-items-center" href="#0" onclick="window.history.back()">
-                        <svg class="icon icon--20 icon--reverse mt-0 mr-2">
-                            <use xlink:href="{{ alias('@web/app/assets/img/symbols.svg#arrow') }}"></use>
+                    <a class="{{ 'text-' ~ textColor }} text-uppercase mb-3 d-flex align-items-center" href="#0" onclick="window.history.back()">
+                        <svg class="icon icon--24 icon--reverse mt-0 mr-2">
+                            <use xlink:href="{{ rev('/app/assets/img/symbols.svg') }}#arrow"></use>
                         </svg>
-                        Back
                     </a>
                 {% endblock %}
             {% endembed %}

@@ -1,6 +1,7 @@
 import gsap from "gsap";
 import Player from "@vimeo/player";
 import Layzr from "layzr.js";
+import { masonry } from "./masonry";
 
 const lazyImages = Layzr({
     threshold: 10
@@ -29,6 +30,8 @@ lazyImages.on("src:after", image => {
         scale: 1,
         ease: "circ.inOut"
     });
+
+    masonry.masonry.layout();
 });
 
 export class LazyVideo {

@@ -1,4 +1,5 @@
 {% set mediaClasses = ['media', 'mb-0'] %}
+{% set textColor = entry.textColor.value|default('white') %}
 
 {% if extensionClasses|default %}
     {% set mediaClasses = mediaClasses|merge(extensionClasses) %}
@@ -37,12 +38,12 @@
                     <figcaption class="d-flex flex-column media__caption">
                         {% block mediaControls %}{% endblock %}
                         {% if entry.title %}
-                            <p class="text-small text-regular text-spaced mb-0 text-white overflow-hidden">
+                            <p class="text-small text-regular text-spaced mb-0 {{ 'text-' ~ textColor }} overflow-hidden">
                                 <span class="media__text">{{ entry.title }}</span>
                             </p>
                         {% endif %}
                         {% if entry.subtitle %}
-                        <p class="text-smaller text-light text-white overflow-hidden">
+                        <p class="text-smaller text-light {{ 'text-' ~ textColor }} overflow-hidden">
                             <span class="media__text">{{ entry.subtitle }}</span>
                         </p>
                     {% endif %}
