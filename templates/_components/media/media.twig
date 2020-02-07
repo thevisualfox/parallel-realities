@@ -1,55 +1,62 @@
 {% set mediaClasses = ['media', 'mb-0'] %}
+{% set attributes = [] %}
 {% set textColor = entry.textColor.value|default('white') %}
 
 {% if extensionClasses|default %}
     {% set mediaClasses = mediaClasses|merge(extensionClasses) %}
 {% endif %}
 
+{% if extensionAttributes|default %}
+    {% set attributes = attributes|merge(extensionAttributes) %}
+{% endif %}
+
 {% set mediaId = random(100000) %}
 
-<figure class="{{ mediaClasses|join(' ') }}" data-parent-{{ mediaId }}>
+<figure class="{{ mediaClasses|join(' ') }}" {% if extensionAttributes|default %} {{ attributes|join(' ') }} {% endif %}>
     <div class="media__wrapper">
-        {% block mediaBody %}
-            {% if url|default %}
-                <a class="media__link gradient text-white" href="{{ entry.url }}" title="{{ entry.title }}">
-            {% endif %}
+        <div class="media__inner">
+            {% block mediaBody %}
+                {% if url|default %}
+                    <a class="media__link gradient text-white" href="{{ entry.url }}" title="{{ entry.title }}">
+                {% endif %}
 
-                {% block mediaVideo %}
-                    {% if entry.video %}
-                        <div class="media__container media__container--16by9">
-                            <iframe data-vimeo-player class="media__video" src="https://player.vimeo.com/video/{{ entry.video }}?autoplay=0&controls=0&muted=1&loop=1" frameborder="0" webkitallowfullscreen
-                                    mozallowfullscreen allowfullscreen></iframe>
-                        </div>
-                    {% endif %}
-                {% endblock %}
+                    {% block mediaVideo %}
+                        {% if entry.video %}
+                            <div class="media__container media__container--16by9">
+                                <iframe data-vimeo-player class="media__video" src="https://player.vimeo.com/video/{{ entry.video }}?autoplay=0&controls=0&muted=1&loop=1" frameborder="0" webkitallowfullscreen
+                                        mozallowfullscreen allowfullscreen></iframe>
+                            </div>
+                        {% endif %}
+                    {% endblock %}
 
-                {% block mediaImage %}
-                    {% if image %}
-                        <img class="media__image img-fluid w-100" data-parent="[data-parent-{{ mediaId }}]" src="{{ image.getUrl(preImageTransform) }}" data-normal="{{ image.getUrl(imageTransform) }}" data-retina="{{ image.getUrl(retinaImageTransform) }}" data-srcset="{{ image.getUrl(retinaImageTransform) }} 2x" alt="{{ image.title }}">
-                    {% endif %}
-                {% endblock %}
+                    {% block mediaImage %}
+                        {% if image %}
+                            <img class="media__image img-fluid w-100" data-parent="[data-parent-{{ mediaId }}]" src="{{ image.getUrl(preImageTransform) }}" data-normal="{{ image.getUrl(imageTransform) }}" data-retina="{{ image.getUrl(retinaImageTransform) }}" data-srcset="{{ image.getUrl(retinaImageTransform) }} 2x" alt="{{ image.title }}">
+                        {% endif %}
+                    {% endblock %}
 
-            {% if url|default %}
-                </a>
-            {% endif %}
+                {% if url|default %}
+                    </a>
+                {% endif %}
 
-            {% block mediaCaption %}
-                {% if entry.title or entry.subtitle %}
-                    <figcaption class="d-flex flex-column media__caption">
-                        {% block mediaControls %}{% endblock %}
-                        {% if entry.title %}
-                            <p class="text-small text-regular text-spaced mb-0 {{ 'text-' ~ textColor }} overflow-hidden">
-                                <span class="media__text">{{ entry.title }}</span>
+                {% block mediaCaption %}
+                    {% if entry.title or entry.subtitle %}
+                        <figcaption class="d-flex flex-column media__caption">
+                            {% block mediaControls %}{% endblock %}
+                            {% if entry.title %}
+                                <p class="text-small text-regular text-spaced mb-0 {{ 'text-' ~ textColor }} overflow-hidden">
+                                    <span class="media__text">{{ entry.title }}</span>
+                                </p>
+                            {% endif %}
+                            {% if entry.subtitle %}
+                            <p class="text-smaller text-light {{ 'text-' ~ textColor }} overflow-hidden">
+                                <span class="media__text">{{ entry.subtitle }}</span>
                             </p>
                         {% endif %}
-                        {% if entry.subtitle %}
-                        <p class="text-smaller text-light {{ 'text-' ~ textColor }} overflow-hidden">
-                            <span class="media__text">{{ entry.subtitle }}</span>
-                        </p>
-                    {% endif %}
-                </figcaption>
-            {% endif %}
+                    </figcaption>
+                {% endif %}
+            {% endblock %}
         {% endblock %}
-    {% endblock %}
+        </div>
     </div>
 </figure>

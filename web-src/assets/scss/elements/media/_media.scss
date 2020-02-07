@@ -13,7 +13,8 @@
     }
 }
 
-.media__wrapper {
+.media__wrapper,
+.media__inner {
     display: flex;
     flex-grow: 1;
     height: 100%;
