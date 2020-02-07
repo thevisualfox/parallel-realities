@@ -1,8 +1,7 @@
 import imagesLoaded from "imagesloaded";
-import { LazyVideo } from "./LazyComponent";
+import { LazyVideo, LazyItems } from "./LazyComponent";
 import CalculateVideoHeight from "./CalculateVideoHeight";
 import Masonry from "masonry-layout";
-import gsap from "gsap";
 
 class MasonryGrid {
     constructor(el) {
@@ -14,11 +13,8 @@ class MasonryGrid {
         this.masonry = new Masonry(this.DOM.el, {
             itemSelector: ".row__item",
             columnWidth: ".row__item",
-            percentPosition: true,
-            initLayout: false
+            percentPosition: true
         });
-
-        gsap.set(this.DOM.el, { opacity: 0 });
 
         this.initMasonry();
     }
@@ -31,17 +27,11 @@ class MasonryGrid {
                     const status = await videoPlayers.editVideo(video, videoIndex);
 
                     if (status === "done") {
-                        this.initLazyTypes(["videos"]);
-
-                        gsap.to(this.DOM.el, {
-                            opacity: 1,
-                            duration: 0.75,
-                            ease: "circ.inOut"
-                        });
-
-                        this.masonry.layout();
+                        this.initLazyTypes(["videos", "items"]);
                     }
                 });
+            } else {
+                this.initLazyTypes(["items"]);
             }
         });
     };
@@ -52,6 +42,9 @@ class MasonryGrid {
             switch (type) {
                 case "videos":
                     new LazyVideo(this.DOM.items);
+                    break;
+                case "items":
+                    new LazyItems(this.DOM.items, this.masonry);
                     break;
             }
         }
