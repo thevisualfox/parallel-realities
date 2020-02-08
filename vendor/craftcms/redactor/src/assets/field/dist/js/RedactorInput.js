@@ -166,7 +166,7 @@ window.livePreviewHideFullscreen = false;
                 // Add the .focusable-input class for Craft.CP
                 this.redactor.container.getElement().addClass('focusable-input');
 
-                this.leaveFullscreetOnSaveShortcut();
+                this.leaveFullscreenOnSaveShortcut();
 
                 if (this.redactor.opts.toolbarFixed && !Craft.RedactorInput.scrollPageOnReady) {
                     Garnish.$doc.ready(function() {
@@ -178,16 +178,14 @@ window.livePreviewHideFullscreen = false;
             },
 
             onEditorFocus: function() {
-                this.redactor.container.getElement().addClass('focus');
                 this.redactor.container.getElement().trigger('focus');
             },
 
             onEditorBlur: function() {
-                this.redactor.container.getElement().removeClass('focus');
                 this.redactor.container.getElement().trigger('blur');
             },
 
-            leaveFullscreetOnSaveShortcut: function() {
+            leaveFullscreenOnSaveShortcut: function() {
                 if (typeof this.redactor.plugin.fullscreen !== 'undefined' && typeof this.redactor.plugin.fullscreen.close === 'function') {
                     Craft.cp.on('beforeSaveShortcut', $.proxy(function() {
                         if (this.redactor.plugin.fullscreen.isOpen) {

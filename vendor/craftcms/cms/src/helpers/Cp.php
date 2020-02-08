@@ -21,16 +21,10 @@ use yii\base\Event;
  */
 class Cp
 {
-    // Constants
-    // =========================================================================
-
     /**
-     * @event RegisterCpAlertsEvent The event that is triggered when registering CP alerts.
+     * @event RegisterCpAlertsEvent The event that is triggered when registering control panel alerts.
      */
     const EVENT_REGISTER_ALERTS = 'registerAlerts';
-
-    // Static
-    // =========================================================================
 
     /**
      * @param string|null $path
@@ -150,6 +144,18 @@ class Cp
                     $alerts[] = $message;
                 }
             }
+        }
+
+        // Display a warning if admin changes are allowed, and project.yaml is being used but not writable
+        if (
+            $user->admin &&
+            $generalConfig->allowAdminChanges &&
+            $generalConfig->useProjectConfigFile &&
+            !FileHelper::isWritable(Craft::$app->getPath()->getProjectConfigFilePath())
+        ) {
+            $alerts[] = Craft::t('app', 'Your {file} file isn’t writable.', [
+                'file' => \craft\services\ProjectConfig::CONFIG_FILENAME,
+            ]);
         }
 
         // Give plugins a chance to add their own alerts
