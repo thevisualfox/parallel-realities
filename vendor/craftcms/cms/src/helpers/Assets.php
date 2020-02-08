@@ -23,13 +23,10 @@ use yii\base\Exception;
  * Class Assets
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 3.0
+ * @since 3.0.0
  */
 class Assets
 {
-    // Constants
-    // =========================================================================
-
     const INDEX_SKIP_ITEMS_PATTERN = '/.*(Thumbs\.db|__MACOSX|__MACOSX\/|__MACOSX\/.*|\.DS_STORE)$/i';
 
     /**
@@ -42,9 +39,6 @@ class Assets
      */
     const EVENT_REGISTER_FILE_KINDS = 'registerFileKinds';
 
-    // Properties
-    // =========================================================================
-
     /**
      * @var array Supported file kinds
      * @see getFileKinds()
@@ -56,9 +50,6 @@ class Assets
      * @see getAllowedFileKinds()
      */
     private static $_allowedFileKinds;
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * Get a temporary file path.
@@ -296,6 +287,7 @@ class Assets
      * Returns a list of file kinds that are allowed to be uploaded.
      *
      * @return array The allowed file kinds
+     * @since 3.1.16
      */
     public static function getAllowedFileKinds(): array
     {
@@ -368,9 +360,6 @@ class Assets
 
         return [$folderId, $filename];
     }
-
-    // Private Methods
-    // =========================================================================
 
     /**
      * Builds the internal file kinds array, if it hasn't been built already.

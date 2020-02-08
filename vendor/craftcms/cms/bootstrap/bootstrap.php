@@ -136,16 +136,17 @@ if (!defined('CRAFT_LICENSE_KEY')) {
     }
 }
 
+if (!defined('CRAFT_EPHEMERAL') || CRAFT_EPHEMERAL === false) {
+    $ensureFolderIsReadable($storagePath, true);
 
-$ensureFolderIsReadable($storagePath, true);
+    // Create the storage/runtime/ folder if it doesn't already exist
+    $createFolder($storagePath . DIRECTORY_SEPARATOR . 'runtime');
+    $ensureFolderIsReadable($storagePath . DIRECTORY_SEPARATOR . 'runtime', true);
 
-// Create the storage/runtime/ folder if it doesn't already exist
-$createFolder($storagePath . DIRECTORY_SEPARATOR . 'runtime');
-$ensureFolderIsReadable($storagePath . DIRECTORY_SEPARATOR . 'runtime', true);
-
-// Create the storage/logs/ folder if it doesn't already exist
-$createFolder($storagePath . DIRECTORY_SEPARATOR . 'logs');
-$ensureFolderIsReadable($storagePath . DIRECTORY_SEPARATOR . 'logs', true);
+    // Create the storage/logs/ folder if it doesn't already exist
+    $createFolder($storagePath . DIRECTORY_SEPARATOR . 'logs');
+    $ensureFolderIsReadable($storagePath . DIRECTORY_SEPARATOR . 'logs', true);
+}
 
 // Log errors to storage/logs/phperrors.log
 if (!defined('CRAFT_LOG_PHP_ERRORS') || CRAFT_LOG_PHP_ERRORS) {
@@ -197,10 +198,6 @@ $libPath = $cmsPath . DIRECTORY_SEPARATOR . 'lib';
 $srcPath = $cmsPath . DIRECTORY_SEPARATOR . 'src';
 require $libPath . DIRECTORY_SEPARATOR . 'yii2' . DIRECTORY_SEPARATOR . 'Yii.php';
 require $srcPath . DIRECTORY_SEPARATOR . 'Craft.php';
-
-// Move Yii's autoloader to the end (Composer's is faster when optimized)
-spl_autoload_unregister(['Yii', 'autoload']);
-spl_autoload_register(['Yii', 'autoload'], true, false);
 
 // Set aliases
 Craft::setAlias('@root', $rootPath);

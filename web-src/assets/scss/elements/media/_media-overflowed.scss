@@ -1,0 +1,15 @@
+.media--overflowed {
+    .media__wrapper {
+        overflow: hidden;
+        transform: translateY(-101%);
+    }
+
+    .media__inner {
+        transform: translateY(101%);
+    }
+
+    .media__link {
+        transform: scale(1.2);
+        transform-origin: top;
+    }
+}

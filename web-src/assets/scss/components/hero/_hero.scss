@@ -1,8 +1,32 @@
 .hero {
-    position: relative;
-    height: 100vh;
     overflow: hidden;
-    margin-bottom: 2rem;
+
+    > .hero__media {
+        height: 100vh;
+    }
+
+    &--narrow > .hero__media {
+        height: 65vh;
+    }
+
+    &--narrow {
+        @include media-breakpoint-up(lg) {
+            max-height: 80vh;
+        }
+    }
+}
+
+.hero__media {
+    height: 100%;
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.hero__image {
+    width: 100%;
+    height: 100%;
+
+    @include object-fit(cover);
 }
 
 .hero__video-wrapper {
@@ -10,6 +34,10 @@
     padding-bottom: 56.25%;
     height: 0;
     overflow: hidden;
+
+    .hero__image {
+        height: unset;
+    }
 }
 
 .hero__video {
@@ -20,20 +48,22 @@
     height: 100%;
 }
 
-.hero__anchor {
+.hero__btn {
     position: absolute;
-    left: 50%;
-    top: 85%;
-    transform: translate(-50%, -85%);
-    animation: move 1s infinite alternate;
+    right: 0;
+    top: 100%;
+    left: 0;
+    background: linear-gradient(to top, rgba($black, 0.75), rgba($black, 0));
+    padding: map-get($spacers, 2);
+    text-align: center;
 
-    @include media-breakpoint-up(lg) {
-        left: 2rem;
-        transform: none;
+    .btn-link {
+        color: $white;
+        font-size: px-to-rem(24);
+        text-transform: uppercase;
+
+        .btn__content {
+            pointer-events: none;
+        }
     }
-}
-
-@keyframes move {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(-15px); }
 }

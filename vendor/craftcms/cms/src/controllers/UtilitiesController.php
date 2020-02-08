@@ -30,9 +30,6 @@ use ZipArchive;
 
 class UtilitiesController extends Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * Index
      *
@@ -86,6 +83,8 @@ class UtilitiesController extends Controller
             'id' => $id,
             'displayName' => $class::displayName(),
             'contentHtml' => $class::contentHtml(),
+            'toolbarHtml' => $class::toolbarHtml(),
+            'footerHtml' => $class::footerHtml(),
             'utilities' => $this->_utilityInfo(),
         ]);
     }
@@ -165,7 +164,6 @@ class UtilitiesController extends Controller
 
         // Initial request
         if (!empty($params['start'])) {
-
             $sessionId = Craft::$app->getAssetIndexer()->getIndexingSessionId();
 
             $response = [
@@ -337,8 +335,6 @@ class UtilitiesController extends Controller
     {
         $this->requirePermission('utility:db-backup');
 
-        $params = Craft::$app->getRequest()->getRequiredBodyParam('params');
-
         try {
             $backupPath = Craft::$app->getDb()->backup();
         } catch (\Throwable $e) {
@@ -349,7 +345,7 @@ class UtilitiesController extends Controller
             throw new Exception("Could not create backup: the backup file doesn't exist.");
         }
 
-        if (empty($params['downloadBackup'])) {
+        if (!Craft::$app->getRequest()->getBodyParam('downloadBackup')) {
             return $this->asJson(['success' => true]);
         }
 
@@ -373,8 +369,8 @@ class UtilitiesController extends Controller
         $zip->addFile($backupPath, $filename);
         $zip->close();
 
-        return $this->asJson([
-            'backupFile' => pathinfo($filename, PATHINFO_FILENAME)
+        return Craft::$app->getResponse()->sendFile($zipPath, null, [
+            'mimeType' => 'application/zip',
         ]);
     }
 
@@ -446,9 +442,6 @@ class UtilitiesController extends Controller
 
         return $this->redirect('utilities/migrations');
     }
-
-    // Private Methods
-    // =========================================================================
 
     /**
      * Returns info about all of the utilities.

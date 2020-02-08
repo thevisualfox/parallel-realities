@@ -18,13 +18,10 @@ use yii\base\Exception;
  * DeleteAssets represents a Delete Assets element action.
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 3.0
+ * @since 3.0.0
  */
 class DeleteAssets extends ElementAction
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */

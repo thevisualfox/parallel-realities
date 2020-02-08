@@ -11,8 +11,8 @@ use Craft;
 use craft\base\Element;
 use craft\base\ElementInterface;
 use craft\behaviors\DraftBehavior;
-use craft\behaviors\RevisionBehavior;
 use craft\elements\Entry;
+use craft\errors\InvalidElementException;
 use craft\helpers\ArrayHelper;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\ElementHelper;
@@ -21,6 +21,7 @@ use craft\models\Section;
 use craft\models\Section_SiteSettings;
 use yii\base\Exception;
 use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\ServerErrorHttpException;
@@ -31,13 +32,10 @@ use yii\web\ServerErrorHttpException;
  * Note that all actions in the controller require an authenticated Craft session via [[allowAnonymous]].
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 3.0
+ * @since 3.0.0
  */
 class EntryRevisionsController extends BaseEntriesController
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * Creates a new entry draft and redirects the client to its edit URL
      *
@@ -124,7 +122,7 @@ class EntryRevisionsController extends BaseEntriesController
         // Save it and redirect to its edit page
         $entry->setScenario(Element::SCENARIO_ESSENTIALS);
         if (!Craft::$app->getDrafts()->saveElementAsDraft($entry, Craft::$app->getUser()->getId())) {
-            throw new Exception('Unable to save entry');
+            throw new Exception('Unable to save entry as a draft: ' . implode(', ', $entry->getErrorSummary(true)));
         }
 
         return $this->redirect(UrlHelper::url($entry->getCpEditUrl(), [
@@ -154,7 +152,8 @@ class EntryRevisionsController extends BaseEntriesController
         // Are we creating a new entry too?
         if (!$draftId && !$entryId) {
             $entry = new Entry();
-            $entry->sectionId = $request->getBodyParam('entryId');
+            $entry->siteId = $siteId;
+            $entry->sectionId = $request->getBodyParam('sectionId');
             $this->_setDraftAttributesFromPost($entry);
             $this->enforceEditEntryPermissions($entry);
             $entry->setFieldValuesFromRequest($fieldsLocation);
@@ -257,6 +256,7 @@ class EntryRevisionsController extends BaseEntriesController
                 'docTitle' => $this->docTitle($draft),
                 'title' => $this->pageTitle($draft),
                 'duplicatedElements' => $elementsService::$duplicatedElementIds,
+                'previewTargets' => $draft->getPreviewTargets(),
             ]);
         }
 
@@ -311,6 +311,7 @@ class EntryRevisionsController extends BaseEntriesController
      * @return Response|null
      * @throws NotFoundHttpException if the requested entry draft cannot be found
      * @throws ServerErrorHttpException if the entry draft is missing its entry
+     * @throws ForbiddenHttpException if the user doesn't have the necessary permissions
      */
     public function actionPublishDraft()
     {
@@ -333,14 +334,13 @@ class EntryRevisionsController extends BaseEntriesController
 
         // Permission enforcement
         /** @var Entry|null $entry */
-        $entry = $draft->getSource();
-        $this->enforceEditEntryPermissions($entry ?? $draft);
-        $section = ($entry ?? $draft)->getSection();
+        $entry = ElementHelper::sourceElement($draft);
+        $this->enforceEditEntryPermissions($entry);
+        $section = $entry->getSection();
 
         // Is this another user's entry (and it's not a Single)?
         $userId = Craft::$app->getUser()->getId();
         if (
-            $entry &&
             $entry->authorId != $userId &&
             $section->type != Section::TYPE_SINGLE &&
             $entry->enabled
@@ -358,8 +358,13 @@ class EntryRevisionsController extends BaseEntriesController
         $this->_setDraftAttributesFromPost($draft);
 
         // Even more permission enforcement
-        if ($draft->enabled) {
-            $this->requirePermission('publishEntries:' . $section->uid);
+        if ($draft->enabled && !Craft::$app->getUser()->checkPermission("publishEntries:{$section->uid}")) {
+            if ($draft->getIsUnsavedDraft()) {
+                // Just disable it
+                $draft->enabled = false;
+            } else {
+                throw new ForbiddenHttpException('User is not permitted to perform this action');
+            }
         }
 
         // Populate the field content
@@ -372,7 +377,18 @@ class EntryRevisionsController extends BaseEntriesController
             $draft->setScenario(Element::SCENARIO_LIVE);
         }
 
-        if (!Craft::$app->getElements()->saveElement($draft)) {
+        if ($draft->getIsUnsavedDraft() && $request->getBodyParam('propagateAll')) {
+            $draft->propagateAll = true;
+        }
+
+        try {
+            if (!Craft::$app->getElements()->saveElement($draft)) {
+                throw new InvalidElementException($draft);
+            }
+
+            // Publish the draft (finally!)
+            $newEntry = Craft::$app->getDrafts()->applyDraft($draft);
+        } catch (InvalidElementException $e) {
             Craft::$app->getSession()->setError(Craft::t('app', 'Couldn’t publish draft.'));
 
             // Send the draft back to the template
@@ -382,16 +398,13 @@ class EntryRevisionsController extends BaseEntriesController
             return null;
         }
 
-        // Publish the draft (finally!)
-        $newEntry = Craft::$app->getDrafts()->applyDraft($draft);
-        Craft::$app->getSession()->setNotice(Craft::t('app', 'Entry saved.'));
-
         if ($request->getAcceptsJson()) {
             return $this->asJson([
                 'success' => true,
             ]);
         }
 
+        Craft::$app->getSession()->setNotice(Craft::t('app', 'Entry saved.'));
         return $this->redirectToPostedUrl($newEntry);
     }
 
@@ -419,12 +432,8 @@ class EntryRevisionsController extends BaseEntriesController
         }
 
         // Permission enforcement
-        /** @var Entry|RevisionBehavior $revision */
-        $entry = $revision->getSource();
-
-        if (!$entry) {
-            throw new ServerErrorHttpException('Entry version is missing its entry');
-        }
+        /** @var Entry $entry */
+        $entry = ElementHelper::sourceElement($revision);
 
         $this->enforceEditEntryPermissions($entry);
         $userId = Craft::$app->getUser()->getId();
@@ -449,9 +458,6 @@ class EntryRevisionsController extends BaseEntriesController
         return $this->redirectToPostedUrl($revision);
     }
 
-    // Private Methods
-    // =========================================================================
-
     /**
      * Sets a draft's attributes from the post data.
      *
@@ -474,8 +480,15 @@ class EntryRevisionsController extends BaseEntriesController
         if (($expiryDate = $request->getBodyParam('expiryDate')) !== null) {
             $draft->expiryDate = DateTimeHelper::toDateTime($expiryDate) ?: null;
         }
-        $draft->enabled = (bool)$request->getBodyParam('enabled');
-        $draft->enabledForSite = (bool)$request->getBodyParam('enabledForSite', $draft->enabledForSite);
+
+        $enabledForSite = $this->enabledForSiteValue();
+        if (is_array($enabledForSite)) {
+            // Set the global status to true if it's enabled for *any* sites, or if already enabled.
+            $draft->enabled = in_array(true, $enabledForSite, false) || $draft->enabled;
+        } else {
+            $draft->enabled = (bool)$request->getBodyParam('enabled', $draft->enabled);
+        }
+        $draft->setEnabledForSite($enabledForSite ?? $draft->getEnabledForSite());
         $draft->title = $request->getBodyParam('title');
 
         if (!$draft->typeId) {

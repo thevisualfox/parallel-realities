@@ -7,8 +7,6 @@ use craft\db\Migration;
 use craft\db\Query;
 use craft\db\Table;
 use craft\helpers\Db;
-use craft\helpers\MigrationHelper;
-use craft\services\UserPermissions;
 
 /**
  * m190417_085010_add_image_editor_permissions migration.
@@ -54,7 +52,7 @@ class m190417_085010_add_image_editor_permissions extends Migration
                 $newPermissions = [];
                 foreach ($groupUids as $groupUid) {
                     $permissions = $projectConfig->get('users.groups.' . $groupUid . '.permissions');
-                    
+
                     // If user group permissions are defined
                     if ($permissions !== null) {
                         foreach ($volumeUids as $volumeUid) {
@@ -90,7 +88,6 @@ class m190417_085010_add_image_editor_permissions extends Migration
 
                 // Migrate the users
                 foreach ($volumeUids as $volumeUid) {
-
                     $savePermission = 'saveassetinvolume:' . $volumeUid;
                     $deletePermission = 'deletefilesandfoldersinvolume:' . $volumeUid;
 

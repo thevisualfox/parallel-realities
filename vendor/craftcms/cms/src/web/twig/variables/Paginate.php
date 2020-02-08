@@ -17,18 +17,16 @@ use yii\base\BaseObject;
  *
  * @property string $basePath
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 3.0
+ * @since 3.0.0
  */
 class Paginate extends BaseObject
 {
-    // Static
-    // =========================================================================
-
     /**
      * Creates a new instance based on a Paginator object
      *
      * @param Paginator $paginator
      * @return static
+     * @since 3.1.19
      */
     public static function create(Paginator $paginator): self
     {
@@ -43,9 +41,6 @@ class Paginate extends BaseObject
             'totalPages' => $paginator->getTotalPages(),
         ]);
     }
-
-    // Properties
-    // =========================================================================
 
     /**
      * @var
@@ -79,9 +74,6 @@ class Paginate extends BaseObject
      */
     private $_basePath;
 
-    // Public Methods
-    // =========================================================================
-
     /**
      * Returns the base path that should be used for pagination URLs.
      *
@@ -99,6 +91,7 @@ class Paginate extends BaseObject
      * Sets the base path that should be used for pagination URLs.
      *
      * @param string $basePath
+     * @since 3.1.28
      */
     public function setBasePath(string $basePath)
     {
@@ -226,7 +219,7 @@ class Paginate extends BaseObject
      *
      * @param int $start
      * @param int $end
-     * @return array
+     * @return string[]
      */
     public function getRangeUrls(int $start, int $end): array
     {
@@ -245,5 +238,21 @@ class Paginate extends BaseObject
         }
 
         return $urls;
+    }
+
+    /**
+     * Returns a dynamic range of page URLs that surround (and include) the current page.
+     *
+     * @param int $max The maximum number of links to return
+     * @return string[]
+     */
+    public function getDynamicRangeUrls($max = 10)
+    {
+        $start = max(1, $this->currentPage - floor($max / 2));
+        $end = min($this->totalPages, $start + $max - 1);
+        if ($end - $start < $max) {
+            $start = max(1, $end - $max + 1);
+        }
+        return $this->getRangeUrls($start, $end);
     }
 }

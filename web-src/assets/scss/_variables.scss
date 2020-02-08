@@ -41,6 +41,7 @@ $danger: #c00;
 
 $theme-colors: (
     "base": $base,
+    "black": $black,
     "primary": $primary,
     "secondary": $secondary,
     "tertiary": $tertiary,
@@ -102,7 +103,7 @@ $enable-print-styles: true;
 
 // Spacing
 
-$spacer: pxToRem(35);
+$spacer: px-to-rem(35);
 $spacers: (
     0: 0,
     1: (
@@ -182,6 +183,9 @@ $grid-gutter-width: 40px;
 
 $grid-gutter-widths: (
     0: 0,
+    h1: (
+        $grid-gutter-width * 0.125
+    ),
     1: (
         $grid-gutter-width * 0.25
     ),
@@ -225,7 +229,7 @@ $component-active-bg: $primary;
 $caret-width: 0.3em;
 
 $transition-base: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-$transition-bezier: cubic-bezier(0.23, 1, 0.32, 1);
+$transition-bezier: cubic-bezier(0.785, 0.135, 0.15, 0.86);
 $transition-fade: opacity 0.15s linear;
 $transition-collapse: height 0.35s ease;
 
@@ -235,7 +239,7 @@ $font-family-sans-serif: "roboto", Arial, Helvatica, sans-serif;
 $font-family-monospace: "Courier New", monospace;
 $font-family-base: $font-family-sans-serif;
 
-$font-size-base: pxToRem(18);
+$font-size-base: px-to-rem(18);
 $font-size-sm: $font-size-base;
 $font-size-lg: $font-size-base;
 
@@ -252,12 +256,12 @@ $font-weight-black: 900;
 $font-weight-base: $font-weight-light;
 $line-height-base: 1.5;
 
-$h1-font-size: pxToRem(28);
-$h2-font-size: pxToRem(26);
-$h3-font-size: pxToRem(22);
-$h4-font-size: pxToRem(18);
-$h5-font-size: pxToRem(16);
-$h6-font-size: pxToRem(14);
+$h1-font-size: px-to-rem(28);
+$h2-font-size: px-to-rem(26);
+$h3-font-size: px-to-rem(22);
+$h4-font-size: px-to-rem(18);
+$h5-font-size: px-to-rem(16);
+$h6-font-size: px-to-rem(14);
 
 $headings-margin-bottom: 1.75rem;
 $headings-font-family: inherit;
@@ -330,20 +334,20 @@ $table-caption-color: $text-muted;
 
 // Buttons + forms
 
-$input-btn-padding-x: pxToRem(23);
-$input-btn-padding-y: pxToRem(13);
+$input-btn-padding-x: px-to-rem(23);
+$input-btn-padding-y: px-to-rem(13);
 $input-btn-line-height: $line-height-base;
 
 $input-btn-focus-width: 0.2rem;
 $input-btn-focus-color: none;
 $input-btn-focus-box-shadow: 0 0 0 $input-btn-focus-width $input-btn-focus-color;
 
-$input-btn-padding-x-sm: pxToRem(13);
-$input-btn-padding-y-sm: pxToRem(5);
+$input-btn-padding-x-sm: px-to-rem(13);
+$input-btn-padding-y-sm: px-to-rem(5);
 $input-btn-line-height-sm: $line-height-sm;
 
-$input-btn-padding-x-lg: pxToRem(33);
-$input-btn-padding-y-lg: pxToRem(23);
+$input-btn-padding-x-lg: px-to-rem(33);
+$input-btn-padding-y-lg: px-to-rem(23);
 $input-btn-line-height-lg: $line-height-lg;
 
 $input-btn-border-width: 2px;
@@ -772,12 +776,12 @@ $popover-arrow-outer-color: fade-in($popover-border-color, 0.05);
 
 // Badges
 
-$badge-font-size: pxToRem(18);
+$badge-font-size: px-to-rem(18);
 $badge-font-weight: $font-weight-normal;
-$badge-padding-x: pxToRem(15);
-$badge-padding-y: pxToRem(7);
+$badge-padding-x: px-to-rem(15);
+$badge-padding-y: px-to-rem(7);
 $badge-border-radius: $border-radius;
-$badge-pill-padding-x: pxToRem(20);
+$badge-pill-padding-x: px-to-rem(20);
 $badge-pill-border-radius: 10rem;
 
 // Modals
@@ -926,3 +930,9 @@ $print-body-min-width: map-get($grid-breakpoints, "lg");
 // Icons
 
 $icon-sizes: 10, 12, 16, 20, 24, 30, 32, 36, 40, 48, 64, 80, 96, 112, 128;
+
+// Custom properties
+
+:root {
+    --headerColor: #{$base};
+}

@@ -1,0 +1,31 @@
+
+.media--visual {
+    height: 100vh;
+
+    .media__image {
+        height: 100%;
+        width: 100%;
+
+        @include object-fit(contain);
+    }
+
+    .media__container {
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .media__caption {
+        bottom: map-get($spacers, 1);
+        left: map-get($spacers, 3);
+        transform: translateY(-50%);
+
+        @include media-breakpoint-up(lg) {
+            bottom: map-get($spacers, 2);
+            left: map-get($spacers, 4) * 1.25;
+        }
+    }
+
+    &.gradient:after {
+        opacity: 1;
+    }
+}

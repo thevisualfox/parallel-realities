@@ -19,22 +19,16 @@ use yii\web\ServerErrorHttpException;
  * Preview controller.
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 3.2
+ * @since 3.2.0
  */
 class PreviewController extends Controller
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
     public $allowAnonymous = [
         'preview' => self::ALLOW_ANONYMOUS_LIVE | self::ALLOW_ANONYMOUS_OFFLINE,
     ];
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc
@@ -85,8 +79,7 @@ class PreviewController extends Controller
             ]
         ];
 
-        $expiryDate = (new \DateTime())->add(new \DateInterval('P1D'));
-        $token = Craft::$app->getTokens()->createToken($route, null, $expiryDate);
+        $token = Craft::$app->getTokens()->createToken($route);
 
         if (!$token) {
             throw new ServerErrorHttpException(Craft::t('app', 'Could not create a preview token.'));

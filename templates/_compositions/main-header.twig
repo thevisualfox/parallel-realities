@@ -1,33 +1,33 @@
-<div class="container d-flex flex-column align-items-center justify-content-lg-between">
-    <div class="main-header__logo logo">
-        <a class="logo__link" href="{{ siteUrl }}#hero" title="Parallel Realities">
-            <svg class="logo__image">
-                <use xlink:href="{{ alias('@web/app/assets/img/symbols.svg#logo') }}"></use>
-            </svg>
-        </a>
+
+{% set navigation = craft.entries.section('navigation').all() %}
+
+<header class="main-header main-header--{{ headerColor }} py-2" data-toggler data-toggler-observe="[data-toggle-nav]" data-toggler-class="is-nav-open">
+    <div class="container d-flex align-items-center justify-content-between">
+        <div class="main-header__logo logo">
+            <a class="logo__link" href="{{ siteUrl }}" title="Parallel Realities">
+                <h2 class="logo__title text-uppercase">Parallel</h2>
+            </a>
+        </div>
+        <div class="main-header__nav-toggle d-lg-none">
+            <button class="btn btn-link px-0" data-toggle-nav>
+                <div class="icon icon--hamburger">
+                    <div class="icon__top"></div>
+                    <div class="icon__middle"></div>
+                    <div class="icon__bottom"></div>
+                </div>
+            </button>
+        </div>
+        <nav class="main-header__nav">
+            <ul class="nav nav--primary flex-nowrap">
+                {% nav item in navigation %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ item.navigationLink[0].url }}" title="{{ item.title }}">
+                            <span class="nav-text">{{ item.title }}</span>
+                        </a>
+                    </li>
+                {% endnav %}
+            </ul>
+        </nav>
     </div>
-    <nav class="main-header__nav mt-2">
-        <ul class="nav nav--primary flex-nowrap" id="main-nav">
-            <li class="nav-item">
-                <a class="nav-link" href="{{ siteUrl }}#hero">
-                    <span class="nav-text">Parallel</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ siteUrl }}#about">
-                    <span class="nav-text">About</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ siteUrl }}#cases">
-                    <span class="nav-text">Cases</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ siteUrl }}#contact">
-                    <span class="nav-text">Contact</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-</div>
+</header>
+<div class="main-header-observer"></div>

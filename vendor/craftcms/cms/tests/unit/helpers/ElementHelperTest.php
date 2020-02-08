@@ -25,19 +25,10 @@ use UnitTester;
  */
 class ElementHelperTest extends Unit
 {
-    // Public Properties
-    // =========================================================================
-
     /**
      * @var UnitTester
      */
     protected $tester;
-
-    // Public Methods
-    // =========================================================================
-
-    // Fixtures
-    // =========================================================================
 
     public function _fixtures(): array
     {
@@ -47,9 +38,6 @@ class ElementHelperTest extends Unit
             ]
         ];
     }
-
-    // Tests
-    // =========================================================================
 
     /**
      * @dataProvider createSlugDataProvider
@@ -158,9 +146,6 @@ class ElementHelperTest extends Unit
         $this->assertNull($three->getNext());
     }
 
-    // Data Providers
-    // =========================================================================
-
     /**
      * @return array
      */
@@ -169,6 +154,7 @@ class ElementHelperTest extends Unit
         return [
             ['wordWord', 'wordWord'],
             ['word[separator-here]word', 'word word'],
+            ['foo[separator-here]0', 'foo 0'],
             ['word', 'word'],
             ['123456789', '123456789'],
             ['abc...dfg', 'abc...dfg'],

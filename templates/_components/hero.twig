@@ -1,17 +1,40 @@
-{% set image  = entry.backgroundImage.one() %}
-{% set imageTransform = { width: 2560, height: 1440, mode: 'crop' } %}
+{% set image  = entry.heroImage.one() %}
+{% set videoId = entry.heroVideoId %}
+{% set imageTransform = { width: 1920, height: 1080, mode: 'crop' } %}
+{% set retinaImageTransform = { width: 3840, height: 2160, mode: 'crop' } %}
 
-<section id="hero" class="hero" {% if image %}style="background: url({{ image.getUrl(imageTransform) }}) no-repeat 50% 50% / cover"{% endif %}>
-    <div class="hero__video-wrapper d-none d-lg-flex">
-        {% if entry.video_id %}
-            <iframe class="hero__video" src="https://player.vimeo.com/video/{{ entry.video_id }}?background=1" frameborder="0" webkitallowfullscreen
-                    mozallowfullscreen allowfullscreen></iframe>
-        {% endif %}
-    </div>
-        <a class="hero__anchor" href="#highlights" title="Scoll Down" data-smooth-scroll>
-            <svg class="icon icon--24">
-                <use xlink:href="{{ alias('@web/app/assets/img/symbols.svg#anchor') }}"></use>
-            </svg>
-        </a>
-    <div class="main-header__observer"></div>
+{% set heroClass = ['hero'] %}
+
+{% if extensionClasses|default %}
+    {% set heroClass = heroClass|merge(extensionClasses) %}
+{% endif %}
+
+<section class="{{ heroClass|join(' ') }}">
+    {% if videoId and image %}
+        <div class="hero__video-wrapper">
+            <figure class="hero__media media">
+                <img class="hero__image img-fluid" src="{{ image.getUrl(imageTransform) }}" srcset="{{ image.getUrl(retinaImageTransform) }} 2x" alt="{{ image.title }}">
+            </figure>
+            <iframe class="hero__video" src="https://player.vimeo.com/video/{{ videoId }}?background=1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+        </div>
+         <div class="hero__btn d-xl-none">
+            <button class="btn btn-link px-0" data-toggle-nav>
+                <span class="btn-text">Enter</span>
+            </button>
+        </div>
+    {% elseif image %}
+        <figure class="hero__media media">
+            <img class="hero__image img-fluid" src="{{ image.getUrl(imageTransform) }}" alt="{{ image.title }}">
+        </figure>
+         <div class="hero__btn d-lg-none">
+            <button class="btn btn-link" data-toggle-nav>
+                <div class="btn__content">
+                    <span>Enter</span>
+                    <svg class="icon icon--24  mt-0 ml-2">
+                        <use xlink:href="{{ rev('/app/assets/img/symbols.svg') }}#arrow"></use>
+                    </svg>
+                </div>
+            </button>
+        </div>
+    {% endif %}
 </section>

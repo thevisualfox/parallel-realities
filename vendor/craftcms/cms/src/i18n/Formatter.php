@@ -18,13 +18,10 @@ use yii\base\InvalidConfigException;
 /**
  * @inheritdoc
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 3.0
+ * @since 3.0.0
  */
 class Formatter extends \yii\i18n\Formatter
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var array The locale’s date/time formats.
      */
@@ -64,9 +61,6 @@ class Formatter extends \yii\i18n\Formatter
      * @var array|null The locale's currency symbols.
      */
     public $currencySymbols;
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc
@@ -292,8 +286,14 @@ class Formatter extends \yii\i18n\Formatter
         return parent::asText($value);
     }
 
-    // Private Methods
-    // =========================================================================
+    /**
+     * @inheritdoc
+     * @since 3.4.0
+     */
+    public function asShortSize($value, $decimals = null, $options = [], $textOptions = [])
+    {
+        return strtoupper(parent::asShortSize($value, $decimals, $options, $textOptions));
+    }
 
     /**
      * Formats a given date/time.
@@ -309,8 +309,8 @@ class Formatter extends \yii\i18n\Formatter
      * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
      * @param string $format The format used to convert the value into a date string.
      * @param string $type 'date', 'time', or 'datetime'.
-     * @throws InvalidConfigException if the date format is invalid.
      * @return string the formatted result.
+     * @throws InvalidConfigException if the date format is invalid.
      */
     private function _formatDateTimeValue($value, string $format, string $type): string
     {

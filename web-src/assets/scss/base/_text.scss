@@ -3,15 +3,15 @@
 }
 
 .text-larger {
-    font-size: pxToRem(40)
+    font-size: px-to-rem(30);
 }
 
 .text-small {
-    font-size: pxToRem(15);
+    font-size: px-to-rem(15);
 }
 
 .text-smaller {
-    font-size: pxToRem(13);
+    font-size: px-to-rem(13);
 }
 
 .text-light {
@@ -20,4 +20,9 @@
 
 .text-spaced {
     letter-spacing: 1.2px;
+}
+
+.text-muted {
+    opacity: 0.6 !important;
+    color: inherit;
 }

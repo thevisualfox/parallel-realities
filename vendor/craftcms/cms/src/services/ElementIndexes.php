@@ -22,17 +22,11 @@ use yii\base\Component;
  * An instance of ElementIndexes service is globally accessible in Craft via [[\craft\base\ApplicationTrait::getElementIndexes()|`Craft::$app->elementIndexes`]].
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 3.0
+ * @since 3.0.0
  */
 class ElementIndexes extends Component
 {
-    // Properties
-    // =========================================================================
-
     private $_indexSettings;
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * Returns the element index settings for a given element type.
@@ -293,9 +287,6 @@ class ElementIndexes extends Component
 
         return $availableFields;
     }
-
-    // Private Methods
-    // =========================================================================
 
     /**
      * Normalizes an element type’s source list.

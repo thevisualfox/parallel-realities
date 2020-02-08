@@ -1,11 +1,30 @@
 .main-footer {
-    padding-top: 20px;
+    padding-top: 30px;
     padding-bottom: 20px;
+    margin-top: auto;
+    color: var(--colorTheme);
+
+    a,
+    p {
+        color: var(--colorTheme) !important;
+    }
+
+    .btn-link:after {
+        background-color: var(--colorTheme);
+    }
 
     // Medium and up
 
     @include media-breakpoint-up(md) {
-        padding-top: 40px;
-        padding-bottom: 40px;
+        padding-top: 50px;
+        padding-bottom: 20px;
     }
+
+    .list__link:hover .icon {
+        transform: translateY(-5px);
+    }
+}
+
+.main-footer__title {
+    line-height: 1.3;
 }
