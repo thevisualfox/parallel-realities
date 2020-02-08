@@ -1,10 +1,10 @@
+
 .media--visual {
     height: 100vh;
 
     .media__image {
         height: 100%;
         width: 100%;
-        object-position: right;
 
         @include object-fit(contain);
     }
