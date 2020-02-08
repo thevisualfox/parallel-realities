@@ -17,9 +17,24 @@
             </figure>
             <iframe class="hero__video" src="https://player.vimeo.com/video/{{ videoId }}?background=1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
         </div>
+         <div class="hero__btn d-xl-none">
+            <button class="btn btn-link px-0" data-toggle-nav>
+                <span class="btn-text">Enter</span>
+            </button>
+        </div>
     {% elseif image %}
         <figure class="hero__media media">
             <img class="hero__image img-fluid" src="{{ image.getUrl(imageTransform) }}" alt="{{ image.title }}">
         </figure>
+         <div class="hero__btn d-lg-none">
+            <button class="btn btn-link" data-toggle-nav>
+                <div class="btn__content">
+                    <span>Enter</span>
+                    <svg class="icon icon--24  mt-0 ml-2">
+                        <use xlink:href="{{ rev('/app/assets/img/symbols.svg') }}#arrow"></use>
+                    </svg>
+                </div>
+            </button>
+        </div>
     {% endif %}
 </section>
