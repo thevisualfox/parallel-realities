@@ -1,8 +1,8 @@
 {
   "require": {
-    "craftcms/cms": "3.3.18.4",
+    "craftcms/cms": "3.4.5",
     "vlucas/phpdotenv": "^2.4.0",
-    "craftcms/redactor": "2.4.0",
+    "craftcms/redactor": "2.5.0",
     "craftcms/contact-form": "2.2.6",
     "matt-west/craft-recaptcha": "1.4.0",
     "clubstudioltd/craft-asset-rev": "6.0.2"

@@ -22,16 +22,151 @@ $.extend(Craft,
             }
 
             if (params) {
-                for (var key in params) {
-                    if (!params.hasOwnProperty(key)) {
-                        continue;
-                    }
-
-                    message = message.replace('{' + key + '}', params[key]);
-                }
+                return this.formatMessage(message, params);
             }
 
             return message;
+        },
+
+        formatMessage: function(pattern, args) {
+            let tokens;
+            if ((tokens = this._tokenizePattern(pattern)) === false) {
+                throw 'Message pattern is invalid.';
+            }
+            for (let i = 0; i < tokens.length; i++) {
+                let token = tokens[i];
+                if (typeof token === 'object') {
+                    if ((tokens[i] = this._parseToken(token, args)) === false) {
+                        throw 'Message pattern is invalid.';
+                    }
+                }
+            }
+            return tokens.join('');
+        },
+
+        _tokenizePattern: function(pattern) {
+            let depth = 1, start, pos;
+            // Get an array of the string characters (factoring in 3+ byte chars)
+            const chars = [...pattern];
+            if ((start = pos = chars.indexOf('{')) === -1) {
+                return [pattern];
+            }
+            tokens = [chars.slice(0, pos).join('')];
+            while (true) {
+                let open = chars.indexOf('{', pos + 1);
+                let close = chars.indexOf('}', pos + 1);
+                if (open === -1) {
+                    open = false;
+                }
+                if (close === -1) {
+                    close = false;
+                }
+                if (open === false && close === false) {
+                    break;
+                }
+                if (open === false) {
+                    open = chars.length;
+                }
+                if (close > open) {
+                    depth++;
+                    pos = open;
+                } else {
+                    depth--;
+                    pos = close;
+                }
+                if (depth === 0) {
+                    tokens.push(chars.slice(start + 1, pos).join('').split(',', 3));
+                    start = pos + 1;
+                    tokens.push(chars.slice(start, open).join(''));
+                    start = open;
+                }
+
+                if (depth !== 0 && (open === false || close === false)) {
+                    break;
+                }
+            }
+            if (depth !== 0) {
+                return false;
+            }
+
+            return tokens;
+        },
+
+        _parseToken: function(token, args) {
+            // parsing pattern based on ICU grammar:
+            // http://icu-project.org/apiref/icu4c/classMessageFormat.html#details
+            const param = Craft.trim(token[0]);
+            if (typeof args[param] === 'undefined') {
+                return `{${token.join(',')}}`;
+            }
+            const arg = args[param];
+            const type = typeof token[1] !== 'undefined' ? Craft.trim(token[1]) : 'none';
+            switch (type) {
+                case 'number':
+                    let format = typeof token[2] !== 'undefined' ? Craft.trim(token[2]) : null;
+                    if (format !== null && format !== 'integer') {
+                        throw `Message format 'number' is only supported for integer values.`;
+                    }
+                    let number = Craft.formatNumber(arg);
+                    let pos;
+                    if (format === null && (pos = `${arg}`.indexOf('.')) !== -1) {
+                        number += `.${arg.substr(pos + 1)}`;
+                    }
+
+                    return number;
+                case 'none':
+                    return arg;
+                case 'plural':
+                    /* http://icu-project.org/apiref/icu4c/classicu_1_1PluralFormat.html
+                    pluralStyle = [offsetValue] (selector '{' message '}')+
+                    offsetValue = "offset:" number
+                    selector = explicitValue | keyword
+                    explicitValue = '=' number  // adjacent, no white space in between
+                    keyword = [^[[:Pattern_Syntax:][:Pattern_White_Space:]]]+
+                    message: see MessageFormat
+                    */
+                    if (typeof token[2] === 'undefined') {
+                        return false;
+                    }
+                    plural = this._tokenizePattern(token[2]);
+                    const c = plural.length;
+                    let message = false;
+                    let offset = 0;
+                    for (let i = 0; i + 1 < c; i++) {
+                        if (typeof plural[i] === 'object' || typeof plural[i + 1] !== 'object') {
+                            return false;
+                        }
+                        let selector = Craft.trim(plural[i++]);
+                        let selectorChars = [...selector];
+
+                        if (i === 1 && selector.substring(0, 7) === 'offset:') {
+                            let pos = [...selector.replace(/[\n\r\t]/g, ' ')].indexOf(' ', 7);
+                            if (pos === -1) {
+                                throw 'Message pattern is invalid.';
+                            }
+                            let offset = parseInt(Craft.trim(selectorChars.slice(7, pos).join('')));
+                            selector = Craft.trim(selectorChars.slice(pos + 1, pos + 1 + selectorChars.length).join(''));
+                        }
+                        if (
+                            message === false &&
+                            selector === 'other' ||
+                            selector[0] === '=' && parseInt(selectorChars.slice(1, 1 + selectorChars.length).join('')) === arg ||
+                            selector === 'one' && arg - offset === 1
+                        ) {
+                            message = (typeof plural[i] === 'string' ? [plural[i]] : plural[i]).map((p) => {
+                                return p.replace('#', arg - offset);
+                            }).join(',');
+                        }
+                    }
+                    if (message !== false) {
+                        return this.formatMessage(message, args);
+                    }
+                    break;
+                default:
+                    throw `Message format '${type}' is not supported.`;
+            }
+
+            return false;
         },
 
         formatDate: function(date) {
@@ -49,7 +184,7 @@ $.extend(Craft,
          * @return string D3 format
          */
         formatNumber: function(number, format) {
-            if(typeof format == 'undefined') {
+            if (typeof format == 'undefined') {
                 format = ',.0f';
             }
 
@@ -129,8 +264,7 @@ $.extend(Craft,
                 // Select the whole value
                 var length = val.length * 2;
                 $input[0].setSelectionRange(0, length);
-            }
-            else {
+            } else {
                 // Refresh the value to get the cursor positioned at the end
                 $input.val(val);
             }
@@ -172,8 +306,7 @@ $.extend(Craft,
 
                     if (name === '#') {
                         anchor = value;
-                    }
-                    else if (value !== null && value !== '') {
+                    } else if (value !== null && value !== '') {
                         aParams.push(name + '=' + value);
                     }
                 }
@@ -183,9 +316,18 @@ $.extend(Craft,
 
             if (Garnish.isArray(params)) {
                 params = params.join('&');
-            }
-            else {
+            } else {
                 params = Craft.trim(params, '&?');
+            }
+
+            // Was there already an anchor on the path?
+            var apos = path.indexOf('#');
+            if (apos !== -1) {
+                // Only keep it if the params didn't specify a new anchor
+                if (!anchor) {
+                    anchor = path.substr(apos + 1);
+                }
+                path = path.substr(0, apos);
             }
 
             // Were there already any query string params in the path?
@@ -197,7 +339,7 @@ $.extend(Craft,
 
             // Return path if it appears to be an absolute URL.
             if (path.search('://') !== -1 || path[0] === '/') {
-                return path + (params ? '?' + params : '');
+                return path + (params ? '?' + params : '') + (anchor ? '#' + anchor : '');
             }
 
             path = Craft.trim(path, '/');
@@ -216,8 +358,7 @@ $.extend(Craft,
                         path = '';
                     }
                 }
-            }
-            else {
+            } else {
                 url = Craft.baseUrl;
             }
 
@@ -234,8 +375,7 @@ $.extend(Craft,
                     if (url.search(Craft.scriptName) === -1) {
                         url = Craft.rtrim(url, '/') + '/' + Craft.scriptName;
                     }
-                }
-                else {
+                } else {
                     // Move the path into the query string params
 
                     // Is the path param already set?
@@ -246,8 +386,7 @@ $.extend(Craft,
                         if (endPath !== -1) {
                             basePath = params.substring(2, endPath);
                             params = params.substr(endPath + 1);
-                        }
-                        else {
+                        } else {
                             basePath = params.substr(2);
                             params = null;
                         }
@@ -325,8 +464,7 @@ $.extend(Craft,
         getCsrfInput: function() {
             if (Craft.csrfTokenName) {
                 return '<input type="hidden" name="' + Craft.csrfTokenName + '" value="' + Craft.csrfTokenValue + '"/>';
-            }
-            else {
+            } else {
                 return '';
             }
         },
@@ -362,7 +500,7 @@ $.extend(Craft,
                 'X-Registered-Js-Files': Object.keys(Craft.registeredJsFiles).join(',')
             };
 
-            if (Craft.csrfTokenValue && Craft.csrfTokenName) {
+            if (Craft.csrfTokenValue) {
                 headers['X-CSRF-Token'] = Craft.csrfTokenValue;
             }
 
@@ -383,7 +521,7 @@ $.extend(Craft,
                     if (typeof Craft.cp !== 'undefined') {
                         Craft.cp.displayError();
                     } else {
-                        alert(Craft.t('app', 'An unknown error occurred.'));
+                        alert(Craft.t('app', 'A server error occurred.'));
                     }
 
                     if (callback) {
@@ -433,8 +571,7 @@ $.extend(Craft,
 
                 if (Craft._ajaxQueue.length) {
                     Craft._postNextActionRequestInQueue();
-                }
-                else {
+                } else {
                     Craft._waitingOnAjax = false;
                 }
             }, args[3]);
@@ -473,6 +610,55 @@ $.extend(Craft,
         },
 
         /**
+         * Requests a URL and downloads the response.
+         *
+         * @param {string} method the request method to use
+         * @param {string} url the URL
+         * @param {string|Object} [body] the request body, if method = POST
+         * @return {Promise}
+         */
+        downloadFromUrl: function(method, url, body) {
+            return new Promise((resolve, reject) => {
+                // h/t https://nehalist.io/downloading-files-from-post-requests/
+                let request = new XMLHttpRequest();
+                request.open(method, url, true);
+                if (typeof body === 'object') {
+                    request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+                    body = JSON.stringify(body);
+                } else {
+                    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+                }
+                request.responseType = 'blob';
+
+                request.onload = function() {
+                    // Only handle status code 200
+                    if (request.status === 200) {
+                        // Try to find out the filename from the content disposition `filename` value
+                        let disposition = request.getResponseHeader('content-disposition');
+                        let matches = /"([^"]*)"/.exec(disposition);
+                        let filename = (matches != null && matches[1] ? matches[1] : 'Download');
+
+                        // Encode the download into an anchor href
+                        let contentType = request.getResponseHeader('content-type');
+                        let blob = new Blob([request.response], {type: contentType});
+                        let link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = filename;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+
+                        resolve();
+                    } else {
+                        reject();
+                    }
+                }.bind(this);
+
+                request.send(body);
+            });
+        },
+
+        /**
          * Converts a comma-delimited string into an array.
          *
          * @param {string} str
@@ -488,6 +674,79 @@ $.extend(Craft,
                 arr[i] = $.trim(arr[i]);
             }
             return arr;
+        },
+
+        /**
+         * Compares old and new post data, and removes any values that haven't
+         * changed within the given list of delta namespaces.
+         *
+         * @param {string} oldData
+         * @param {string} newData
+         * @param {object} deltaNames
+         */
+        findDeltaData: function(oldData, newData, deltaNames) {
+            // Sort the delta namespaces from least -> most specific
+            deltaNames.sort(function(a, b) {
+                if (a.length === b.length) {
+                    return 0;
+                }
+                return a.length > b.length ? 1 : -1;
+            });
+
+            // Group all of the old & new params by namespace
+            var groupedOldParams = this._groupParamsByDeltaNames(oldData.split('&'), deltaNames, false);
+            var groupedNewParams = this._groupParamsByDeltaNames(newData.split('&'), deltaNames, true);
+
+            // Figure out which of the new params should actually be posted
+            var params = groupedNewParams.__root__;
+            var modifiedDeltaNames = [];
+            for (var n = 0; n < deltaNames.length; n++) {
+                if (Craft.inArray(deltaNames[n], Craft.modifiedDeltaNames) || (
+                    typeof groupedNewParams[deltaNames[n]] === 'object' &&
+                    (
+                        typeof groupedOldParams[deltaNames[n]] !== 'object' ||
+                        JSON.stringify(groupedOldParams[deltaNames[n]]) !== JSON.stringify(groupedNewParams[deltaNames[n]])
+                    )
+                )) {
+                    params = params.concat(groupedNewParams[deltaNames[n]]);
+                    params.push('modifiedDeltaNames[]=' + deltaNames[n]);
+                }
+            }
+
+            return params.join('&');
+        },
+
+        _groupParamsByDeltaNames: function(params, deltaNames, withRoot) {
+            var grouped = {};
+
+            if (withRoot) {
+                grouped.__root__ = [];
+            }
+
+            var n, paramName;
+
+            paramLoop: for (var p = 0; p < params.length; p++) {
+                // loop through the delta names from most -> least specific
+                for (n = deltaNames.length - 1; n >= 0; n--) {
+                    paramName = decodeURIComponent(params[p]).substr(0, deltaNames[n].length + 1);
+                    if (
+                        paramName === deltaNames[n] + '=' ||
+                        paramName === deltaNames[n] + '['
+                    ) {
+                        if (typeof grouped[deltaNames[n]] === 'undefined') {
+                            grouped[deltaNames[n]] = [];
+                        }
+                        grouped[deltaNames[n]].push(params[p]);
+                        continue paramLoop;
+                    }
+                }
+
+                if (withRoot) {
+                    grouped.__root__.push(params[p]);
+                }
+            }
+
+            return grouped;
         },
 
         /**
@@ -517,8 +776,7 @@ $.extend(Craft,
                     for (i = 0; i < keys.length; i++) {
                         keys[i] = keys[i].substring(1, keys[i].length - 1);
                     }
-                }
-                else {
+                } else {
                     keys = [];
                 }
 
@@ -532,15 +790,13 @@ $.extend(Craft,
                             // Figure out what this will be by looking at the next key
                             if (!keys[i + 1] || parseInt(keys[i + 1]) == keys[i + 1]) {
                                 parentElem[keys[i]] = [];
-                            }
-                            else {
+                            } else {
                                 parentElem[keys[i]] = {};
                             }
                         }
 
                         parentElem = parentElem[keys[i]];
-                    }
-                    else {
+                    } else {
                         // Last one. Set the value
                         if (!keys[i]) {
                             keys[i] = parentElem.length;
@@ -552,6 +808,37 @@ $.extend(Craft,
             }
 
             return expanded;
+        },
+
+        /**
+         * Creates a form element populated with hidden inputs based on a string of serialized form data.
+         *
+         * @param {string} data
+         * @returns {jQuery|HTMLElement}
+         */
+        createForm: function(data) {
+            var $form = $('<form/>', {
+                attr: {
+                    method: 'post',
+                    action: '',
+                    'accept-charset': 'UTF-8',
+                },
+            });
+
+            if (typeof data === 'string') {
+                var values = data.split('&');
+                var chunks;
+                for (var i = 0; i < values.length; i++) {
+                    chunks = values[i].split('=', 2);
+                    $('<input/>', {
+                        type: 'hidden',
+                        name: decodeURIComponent(chunks[0]),
+                        value: decodeURIComponent(chunks[1] || '')
+                    }).appendTo($form);
+                }
+            }
+
+            return $form;
         },
 
         /**
@@ -586,8 +873,7 @@ $.extend(Craft,
                         if (!Craft.compare(Craft.getObjectKeys(obj1).sort(), Craft.getObjectKeys(obj2).sort())) {
                             return false;
                         }
-                    }
-                    else {
+                    } else {
                         if (!Craft.compare(Craft.getObjectKeys(obj1), Craft.getObjectKeys(obj2))) {
                             return false;
                         }
@@ -607,8 +893,7 @@ $.extend(Craft,
 
                 // All clear
                 return true;
-            }
-            else {
+            } else {
                 return (obj1 === obj2);
             }
         },
@@ -730,8 +1015,7 @@ $.extend(Craft,
 
                 if (typeof callback === 'function') {
                     include = callback(arr[i], i);
-                }
-                else {
+                } else {
                     include = arr[i];
                 }
 
@@ -751,6 +1035,9 @@ $.extend(Craft,
          * @return boolean
          */
         inArray: function(elem, arr) {
+            if ($.isPlainObject(arr)) {
+                arr = Object.values(arr);
+            }
             return ($.inArray(elem, arr) !== -1);
         },
 
@@ -766,8 +1053,7 @@ $.extend(Craft,
             if (index !== -1) {
                 arr.splice(index, 1);
                 return true;
-            }
-            else {
+            } else {
                 return false;
             }
         },
@@ -861,8 +1147,7 @@ $.extend(Craft,
             if (showSeconds) {
                 minutes = Math.floor(seconds / secondsInMinute);
                 seconds = seconds % secondsInMinute;
-            }
-            else {
+            } else {
                 minutes = Math.round(seconds / secondsInMinute);
                 seconds = 0;
             }
@@ -1085,8 +1370,7 @@ $.extend(Craft,
 
             if (typeof this._elementIndexClasses[elementType] !== 'undefined') {
                 func = this._elementIndexClasses[elementType];
-            }
-            else {
+            } else {
                 func = Craft.BaseElementIndex;
             }
 
@@ -1104,8 +1388,7 @@ $.extend(Craft,
 
             if (typeof this._elementSelectorModalClasses[elementType] !== 'undefined') {
                 func = this._elementSelectorModalClasses[elementType];
-            }
-            else {
+            } else {
                 func = Craft.BaseElementSelectorModal;
             }
 
@@ -1124,8 +1407,7 @@ $.extend(Craft,
 
             if (typeof this._elementEditorClasses[elementType] !== 'undefined') {
                 func = this._elementEditorClasses[elementType];
-            }
-            else {
+            } else {
                 func = Craft.BaseElementEditor;
             }
 
@@ -1143,8 +1425,7 @@ $.extend(Craft,
 
             if (typeof localStorage !== 'undefined' && typeof localStorage[key] !== 'undefined') {
                 return JSON.parse(localStorage[key]);
-            }
-            else {
+            } else {
                 return defaultValue;
             }
         },
@@ -1164,8 +1445,7 @@ $.extend(Craft,
                 // but has a max size of 0 bytes.
                 try {
                     localStorage[key] = JSON.stringify(value);
-                }
-                catch (e) {
+                } catch (e) {
                 }
             }
         },
@@ -1244,8 +1524,7 @@ $.extend($.fn,
         animateLeft: function(pos, duration, easing, complete) {
             if (Craft.orientation === 'ltr') {
                 return this.velocity({left: pos}, duration, easing, complete);
-            }
-            else {
+            } else {
                 return this.velocity({right: pos}, duration, easing, complete);
             }
         },
@@ -1253,8 +1532,7 @@ $.extend($.fn,
         animateRight: function(pos, duration, easing, complete) {
             if (Craft.orientation === 'ltr') {
                 return this.velocity({right: pos}, duration, easing, complete);
-            }
-            else {
+            } else {
                 return this.velocity({left: pos}, duration, easing, complete);
             }
         },
@@ -1358,8 +1636,7 @@ $.extend($.fn,
                 if (typeof settingName === 'string') {
                     settings = {};
                     settings[settingName] = settingValue;
-                }
-                else {
+                } else {
                     settings = settingName;
                 }
 
@@ -1369,8 +1646,7 @@ $.extend($.fn,
                         obj.setSettings(settings);
                     }
                 });
-            }
-            else {
+            } else {
                 if (!$.isPlainObject(settings)) {
                     settings = {};
                 }
@@ -1380,6 +1656,10 @@ $.extend($.fn,
 
                     if (Garnish.hasAttr(this, 'data-value')) {
                         thisSettings.value = $(this).attr('data-value');
+                    }
+
+                    if (Garnish.hasAttr(this, 'data-indeterminate-value')) {
+                        thisSettings.indeterminateValue = $(this).attr('data-indeterminate-value');
                     }
 
                     if (!$.data(this, 'lightswitch')) {
@@ -1417,7 +1697,7 @@ $.extend($.fn,
                 }
 
                 var $anchor = $btn.data('menu') ? $btn.data('menu').$anchor : $btn;
-                var $form = $anchor.attr('data-form') ? $('#'+$anchor.attr('data-form')) : $anchor.closest('form');
+                var $form = $anchor.attr('data-form') ? $('#' + $anchor.attr('data-form')) : $anchor.closest('form');
 
                 if ($btn.data('action')) {
                     $('<input type="hidden" name="action"/>')
