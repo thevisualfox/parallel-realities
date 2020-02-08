@@ -20,7 +20,6 @@ use craft\errors\WrongEditionException;
 use craft\events\EditionChangeEvent;
 use craft\helpers\App;
 use craft\helpers\Db;
-use craft\helpers\StringHelper;
 use craft\i18n\Formatter;
 use craft\i18n\I18N;
 use craft\i18n\Locale;
@@ -29,8 +28,10 @@ use craft\queue\Queue;
 use craft\queue\QueueInterface;
 use craft\services\AssetTransforms;
 use craft\services\Categories;
+use craft\services\Elements;
 use craft\services\Fields;
 use craft\services\Globals;
+use craft\services\Gql;
 use craft\services\Matrix;
 use craft\services\ProjectConfig;
 use craft\services\Sections;
@@ -49,6 +50,7 @@ use yii\base\Event;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\caching\Cache;
+use yii\db\Exception as DbException;
 use yii\mutex\Mutex;
 use yii\web\ServerErrorHttpException;
 
@@ -79,6 +81,7 @@ use yii\web\ServerErrorHttpException;
  * @property-read \craft\services\Fields $fields The fields service
  * @property-read \craft\services\Gc $gc The garbage collection service
  * @property-read \craft\services\Globals $globals The globals service
+ * @property-read \craft\services\Gql $gql The GraphQl service
  * @property-read \craft\services\Images $images The images service
  * @property-read \craft\services\Matrix $matrix The matrix service
  * @property-read \craft\services\Path $path The path service
@@ -126,13 +129,10 @@ use yii\web\ServerErrorHttpException;
  * @method Security getSecurity() Returns the security component.
  * @method View getView() Returns the view component.
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 3.0
+ * @since 3.0.0
  */
 trait ApplicationTrait
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var string|null Craft’s schema version number.
      */
@@ -147,6 +147,20 @@ trait ApplicationTrait
      * @var string|null The environment ID Craft is currently running in.
      */
     public $env;
+
+    /**
+     * @var string The base Craftnet API URL to use.
+     * @since 3.3.16
+     * @internal
+     */
+    public $baseApiUrl = 'https://api.craftcms.com/v1/';
+
+    /**
+     * @var string[]|null Query params that should be appended to Craftnet API requests.
+     * @since 3.3.16
+     * @internal
+     */
+    public $apiParams;
 
     /**
      * @var
@@ -185,14 +199,11 @@ trait ApplicationTrait
      */
     private $_waitingToSaveInfo = false;
 
-    // Public Methods
-    // =========================================================================
-
     /**
      * Sets the target application language.
      *
      * @param bool|null $useUserLanguage Whether the user's preferred language should be used.
-     * If null, it will be based on whether it's a CP or console request.
+     * If null, the user’s preferred language will be used if this is a control panel request or a console request.
      */
     public function updateTargetLanguage(bool $useUserLanguage = null)
     {
@@ -247,15 +258,21 @@ trait ApplicationTrait
      */
     public function getIsInstalled(): bool
     {
-        /** @var WebApplication|ConsoleApplication $this */
         if ($this->_isInstalled !== null) {
             return $this->_isInstalled;
         }
 
-        return $this->_isInstalled = (
-            $this->getIsDbConnectionValid() &&
-            $this->getDb()->tableExists(Table::INFO, false)
-        );
+        if (!$this->getIsDbConnectionValid()) {
+            return $this->_isInstalled = false;
+        }
+
+        try {
+            $info = $this->getInfo(true);
+        } catch (DbException $e) {
+            return $this->_isInstalled = false;
+        }
+
+        return $this->_isInstalled = !empty($info->id);
     }
 
     /**
@@ -273,6 +290,7 @@ trait ApplicationTrait
      * Returns the installed schema version.
      *
      * @return string
+     * @since 3.2.0
      */
     public function getInstalledSchemaVersion(): string
     {
@@ -283,6 +301,7 @@ trait ApplicationTrait
      * Returns whether Craft has been fully initialized.
      *
      * @return bool
+     * @since 3.0.13
      */
     public function getIsInitialized(): bool
     {
@@ -385,7 +404,7 @@ trait ApplicationTrait
     {
         /** @var WebApplication|ConsoleApplication $this */
         $oldEdition = $this->getEdition();
-        $this->getProjectConfig()->set('system.edition', App::editionHandle($edition));
+        $this->getProjectConfig()->set('system.edition', App::editionHandle($edition), "Craft CMS edition change");
 
         // Fire an 'afterEditionChange' event
         /** @var WebRequest|ConsoleRequest $request */
@@ -479,6 +498,7 @@ trait ApplicationTrait
      * Returns whether the system is currently live.
      *
      * @return bool
+     * @since 3.1.0
      */
     public function getIsLive(): bool
     {
@@ -494,7 +514,7 @@ trait ApplicationTrait
      * Returns whether the system is currently live.
      *
      * @return bool
-     * @deprecated in 3.1. Use [[getIsLive()]] instead.
+     * @deprecated in 3.1.0. Use [[getIsLive()]] instead.
      */
     public function getIsSystemOn(): bool
     {
@@ -544,23 +564,34 @@ trait ApplicationTrait
     /**
      * Returns the info model, or just a particular attribute.
      *
+     * @param $throwException Whether an exception should be thrown if the `info` table doesn't exist
      * @return Info
+     * @throws DbException if the `info` table doesn’t exist yet and `$throwException` is `true`
      * @throws ServerErrorHttpException if the info table is missing its row
      */
-    public function getInfo(): Info
+    public function getInfo($throwException = false): Info
     {
         /** @var WebApplication|ConsoleApplication $this */
         if ($this->_info !== null) {
             return $this->_info;
         }
 
-        if (!$this->getIsInstalled()) {
-            return new Info();
+        try {
+            $row = (new Query())
+                ->from([Table::INFO])
+                ->where(['id' => 1])
+                ->one();
+        } catch (DbException $e) {
+            if ($throwException) {
+                throw $e;
+            }
+            return $this->_info = new Info();
+        } catch (DbConnectException $e) {
+            if ($throwException) {
+                throw $e;
+            }
+            return $this->_info = new Info();
         }
-
-        $row = (new Query())
-            ->from([Table::INFO])
-            ->one();
 
         if (!$row) {
             $tableName = $this->getDb()->getSchema()->getRawTableName(Table::INFO);
@@ -585,11 +616,7 @@ trait ApplicationTrait
 
             $row['version'] = $version;
         }
-        unset($row['edition'], $row['name'], $row['timezone'], $row['on'], $row['siteName'], $row['siteUrl'], $row['build'], $row['releaseDate'], $row['track']);
-
-        if (Craft::$app->getDb()->getIsMysql() && isset($row['config'])) {
-            $row['config'] = StringHelper::decdec($row['config']);
-        }
+        unset($row['edition'], $row['name'], $row['timezone'], $row['on'], $row['siteName'], $row['siteUrl'], $row['build'], $row['releaseDate'], $row['track'], $row['config']);
 
         return $this->_info = new Info($row);
     }
@@ -645,53 +672,41 @@ trait ApplicationTrait
             return false;
         }
 
-        $attributes = Db::prepareValuesForDb($info);
-
-        // TODO: Remove this after the next breakpoint
-        unset($attributes['build'], $attributes['releaseDate'], $attributes['track']);
+        $attributes = [
+            'version' => $info->version,
+            'schemaVersion' => $info->schemaVersion,
+            'maintenance' => $info->maintenance,
+            'configMap' => Db::prepareValueForDb($info->configMap),
+            'fieldVersion' => $info->fieldVersion,
+        ];
 
         // TODO: Remove this after the next breakpoint
         if (version_compare($info['version'], '3.1', '<')) {
             unset($attributes['config'], $attributes['configMap']);
         }
 
-        if (array_key_exists('id', $attributes) && $attributes['id'] === null) {
-            unset($attributes['id']);
+
+        // TODO: Remove this after the next breakpoint
+        if (version_compare($info['version'], '3.0', '<')) {
+            unset($attributes['fieldVersion']);
         }
 
-        if (
-            isset($attributes['config']) &&
-            (
-                !mb_check_encoding($attributes['config'], 'UTF-8') ||
-                (Craft::$app->getDb()->getIsMysql() && StringHelper::containsMb4($attributes['config']))
-            )
-        ) {
-            $attributes['config'] = 'base64:' . base64_encode($attributes['config']);
-        }
+        $infoRowExists = (new Query())
+            ->from([Table::INFO])
+            ->where(['id' => 1])
+            ->exists();
 
-        if ($this->getIsInstalled()) {
-            // TODO: Remove this after the next breakpoint
-            if (version_compare($info['version'], '3.0', '<')) {
-                unset($attributes['fieldVersion']);
-            }
-
+        if ($infoRowExists) {
             $this->getDb()->createCommand()
-                ->update(Table::INFO, $attributes)
+                ->update(Table::INFO, $attributes, ['id' => 1])
                 ->execute();
         } else {
             $this->getDb()->createCommand()
-                ->insert(Table::INFO, $attributes)
+                ->insert(Table::INFO, $attributes + ['id' => 1])
                 ->execute();
-
-            $this->setIsInstalled();
-
-            $row = (new Query())
-                ->from([Table::INFO])
-                ->one();
-
-            // Reload from DB with the new ID and modified dates.
-            $info = new Info($row);
         }
+
+        $this->setIsInstalled();
 
         // Use this as the new cached Info
         $this->_info = $info;
@@ -703,6 +718,7 @@ trait ApplicationTrait
      * Returns the system name.
      *
      * @return string
+     * @since 3.1.4
      */
     public function getSystemName(): string
     {
@@ -878,7 +894,7 @@ trait ApplicationTrait
      * Returns the drafts service.
      *
      * @return \craft\services\Drafts The drafts service
-     * @since 3.2
+     * @since 3.2.0
      */
     public function getDrafts()
     {
@@ -934,7 +950,7 @@ trait ApplicationTrait
      * Returns the entry revisions service.
      *
      * @return \craft\services\EntryRevisions The entry revisions service
-     * @deprecated in 3.2.
+     * @deprecated in 3.2.0.
      */
     public function getEntryRevisions()
     {
@@ -983,6 +999,18 @@ trait ApplicationTrait
     {
         /** @var WebApplication|ConsoleApplication $this */
         return $this->get('globals');
+    }
+
+    /**
+     * Returns the GraphQL service.
+     *
+     * @return \craft\services\Gql The GraphQL service
+     * @since 3.3.0
+     */
+    public function getGql()
+    {
+        /** @var WebApplication|ConsoleApplication $this */
+        return $this->get('gql');
     }
 
     /**
@@ -1110,7 +1138,7 @@ trait ApplicationTrait
      * Returns the revisions service.
      *
      * @return \craft\services\Revisions The revisions service
-     * @since 3.2
+     * @since 3.2.0
      */
     public function getRevisions()
     {
@@ -1294,9 +1322,6 @@ trait ApplicationTrait
         return $this->get('volumes');
     }
 
-    // Private Methods
-    // =========================================================================
-
     /**
      * Initializes things that should happen before the main Application::init()
      */
@@ -1319,6 +1344,9 @@ trait ApplicationTrait
         // Register all the listeners for config items
         $this->_registerConfigListeners();
 
+        // Register all the listeners for invalidating GraphQL Cache.
+        $this->_registerGraphQlListeners();
+
         // Load the plugins
         $this->getPlugins()->loadPlugins();
 
@@ -1329,8 +1357,10 @@ trait ApplicationTrait
             $this->trigger(WebApplication::EVENT_INIT);
         }
 
-        // Possibly run garbage collection
-        $this->getGc()->run();
+        if (!$this->getUpdates()->getIsCraftDbMigrationNeeded()) {
+            // Possibly run garbage collection
+            $this->getGc()->run();
+        }
     }
 
     /**
@@ -1407,6 +1437,22 @@ trait ApplicationTrait
 
         // Default to the source language.
         return $this->sourceLanguage;
+    }
+
+    /**
+     * Register listeners for GraphQL
+     */
+    private function _registerGraphQlListeners()
+    {
+        $invalidate = [$this->getGql(), 'invalidateCaches'];
+
+        $this->getProjectConfig()->on(ProjectConfig::EVENT_ADD_ITEM, $invalidate);
+        $this->getProjectConfig()->on(ProjectConfig::EVENT_REMOVE_ITEM, $invalidate);
+        $this->getProjectConfig()->on(ProjectConfig::EVENT_UPDATE_ITEM, $invalidate);
+        $this->getProjectConfig()->on(ProjectConfig::EVENT_REBUILD, $invalidate);
+        $this->getProjectConfig()->on(ProjectConfig::EVENT_AFTER_APPLY_CHANGES, $invalidate);
+        $this->getElements()->on(Elements::EVENT_AFTER_SAVE_ELEMENT, $invalidate);
+        $this->getElements()->on(Elements::EVENT_AFTER_DELETE_ELEMENT, $invalidate);
     }
 
     /**
@@ -1528,5 +1574,12 @@ trait ApplicationTrait
             ->onUpdate(Sections::CONFIG_SECTIONS_KEY . '.{uid}.' . Sections::CONFIG_ENTRYTYPES_KEY . '.{uid}', [$sectionsService, 'handleChangedEntryType'])
             ->onRemove(Sections::CONFIG_SECTIONS_KEY . '.{uid}.' . Sections::CONFIG_ENTRYTYPES_KEY . '.{uid}', [$sectionsService, 'handleDeletedEntryType']);
         Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$sectionsService, 'pruneDeletedField']);
+
+        // GraphQL Scopes
+        $gqlService = $this->getGql();
+        $projectConfigService
+            ->onAdd(Gql::CONFIG_GQL_SCHEMAS_KEY . '.{uid}', [$gqlService, 'handleChangedSchema'])
+            ->onUpdate(Gql::CONFIG_GQL_SCHEMAS_KEY . '.{uid}', [$gqlService, 'handleChangedSchema'])
+            ->onRemove(Gql::CONFIG_GQL_SCHEMAS_KEY . '.{uid}', [$gqlService, 'handleDeletedSchema']);
     }
 }

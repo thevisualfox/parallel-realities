@@ -1,0 +1,33 @@
+{% extends "_layouts/default" %}
+
+{% set entry = craft.entries.section('contact').one() %}
+{% set headerColor = entry.headerColor.value %}
+{% set title = entry.title %}
+
+{% block header %}
+    {% include '_compositions/main-header.twig' with {
+        headerColor: headerColor
+    } %}
+{% endblock %}
+
+{% block content %}
+    <main role="main">
+        {% include '_components/hero.twig' with {
+            extensionClasses: ['hero--narrow']
+        } %}
+        <div class="pane">
+            <div class="container">
+                <div class="row row--equalized justify-content-center gutters-4 gutters-lg-6">
+                    <div class="col-12 col-lg-4">
+                        {% include "_elements/text.twig" with {
+                            entry: entry
+                        } %}
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        {% include "_compositions/contact-form.twig" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

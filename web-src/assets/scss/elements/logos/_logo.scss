@@ -1,0 +1,18 @@
+.logo {}
+
+.logo__title {
+    font-size: px-to-rem(30);
+    letter-spacing: normal;
+    margin-bottom: 0;
+    color: var(--headerColor);
+    transition: color 250ms 250ms $transition-bezier;
+
+    .is-nav-open & {
+        color: $base;
+        transition: color 250ms $transition-bezier;
+    }
+
+    @include media-breakpoint-up(lg) {
+        font-size: px-to-rem(45);
+    }
+}

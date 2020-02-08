@@ -15,19 +15,13 @@ use craft\image\Svg;
  * Class Image
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 3.0
+ * @since 3.0.0
  */
 class Image
 {
-    // Constants
-    // =========================================================================
-
     const EXIF_IFD0_ROTATE_180 = 3;
     const EXIF_IFD0_ROTATE_90 = 6;
     const EXIF_IFD0_ROTATE_270 = 8;
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * Calculates a missing target dimension for an image.
@@ -40,6 +34,11 @@ class Image
      */
     public static function calculateMissingDimension($targetWidth, $targetHeight, $sourceWidth, $sourceHeight): array
     {
+        // If neither were supplied, just use the source dimensions
+        if (empty($targetWidth) && empty($targetHeight)) {
+            return [(int)$sourceWidth, (int)$sourceHeight];
+        }
+
         $factor = $sourceWidth / $sourceHeight;
 
         if (empty($targetHeight)) {
@@ -86,11 +85,11 @@ class Image
      * Adapted from https://github.com/ktomk/Miscellaneous/tree/master/get_png_imageinfo.
      *
      * @param string $file The path to the PNG file.
-     * @author Tom Klingenberg <lastflood.net>
+     * @return array|bool Info embedded in the PNG file, or `false` if it wasn’t found.
      * @license Apache 2.0
      * @version 0.1.0
      * @link http://www.libpng.org/pub/png/spec/iso/index-object.html#11IHDR
-     * @return array|bool Info embedded in the PNG file, or `false` if it wasn’t found.
+     * @author Tom Klingenberg <lastflood.net>
      */
     public static function pngImageInfo(string $file)
     {
@@ -354,9 +353,6 @@ class Image
         }
     }
 
-    // Private Methods
-    // =========================================================================
-
     /**
      * Returns the multiplier that should be used to convert an image size unit to pixels.
      *
@@ -368,8 +364,6 @@ class Image
         $ppi = 72;
 
         switch ($unit) {
-            case 'px':
-                return 1;
             case 'in':
                 return $ppi;
             case 'pt':

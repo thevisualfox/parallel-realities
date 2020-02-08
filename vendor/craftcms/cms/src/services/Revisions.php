@@ -13,11 +13,10 @@ use craft\base\ElementInterface;
 use craft\behaviors\RevisionBehavior;
 use craft\db\Query;
 use craft\db\Table;
-use craft\elements\Entry;
 use craft\errors\InvalidElementException;
 use craft\events\RevisionEvent;
 use craft\helpers\ArrayHelper;
-use craft\helpers\Json;
+use craft\helpers\ElementHelper;
 use yii\base\Component;
 use yii\base\InvalidArgumentException;
 use yii\db\Exception;
@@ -27,13 +26,10 @@ use yii\db\Exception;
  * An instance of the Revisions service is globally accessible in Craft via [[\craft\base\ApplicationTrait::getRevisions()|`Craft::$app->revisions`]].
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 3.2
+ * @since 3.2.0
  */
 class Revisions extends Component
 {
-    // Constants
-    // =========================================================================
-
     /**
      * @event DraftEvent The event that is triggered before a revision is created.
      */
@@ -53,9 +49,6 @@ class Revisions extends Component
      * @event DraftEvent The event that is triggered after an element is reverted to a revision.
      */
     const EVENT_AFTER_REVERT_TO_REVISION = 'afterRevertToRevision';
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * Creates a new revision for the given element.
@@ -195,7 +188,7 @@ class Revisions extends Component
                 ->siteId($source->siteId)
                 ->anyStatus()
                 ->orderBy(['num' => SORT_DESC])
-                ->offset($maxRevisions + 1)
+                ->offset($maxRevisions)
                 ->all();
 
             foreach ($extraRevisions as $extraRevision) {
@@ -219,7 +212,7 @@ class Revisions extends Component
     {
         /** @var Element|RevisionBehavior $revision */
         /** @var Element $source */
-        $source = $revision->getSource();
+        $source = ElementHelper::sourceElement($revision);
 
         // Fire a 'beforeRevertToRevision' event
         if ($this->hasEventHandlers(self::EVENT_BEFORE_REVERT_TO_REVISION)) {

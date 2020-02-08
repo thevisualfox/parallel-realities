@@ -1,0 +1,51 @@
+{% extends "_layouts/default" %}
+
+{% set headerColor = entry.headerColor.value %}
+{% set title = entry.title|lower|capitalize %}
+{% set bodyClass = 'bg-black' %}
+
+{% block header %}
+    {% include '_compositions/main-header.twig' with {
+        headerColor: headerColor
+    } %}
+{% endblock %}
+
+{% block content %}
+    <main role="main">
+        {% set image  = entry.image.one() %}
+        {% set imageTransform = { width: 1920, mode: 'crop' } %}
+        {% set retinaImageTransform = { width: 2560, mode: 'crop' } %}
+
+        {% if image or entry.video %}
+            {% embed "_components/media/media.twig" with {
+                extensionClasses: ['media--visual', 'media--overflowed', 'justify-content-center'],
+                extensionAttributes: ['data-lazy-component']
+            } %}
+                {% block mediaVideo %}
+                    {% if entry.video %}
+                        <div class="media__container">
+                            <iframe data-vimeo-player data-calculate-video-height class="media__video" src="https://player.vimeo.com/video/{{ entry.video }}?background=1" frameborder="0" webkitallowfullscreen
+                                    mozallowfullscreen allowfullscreen></iframe>
+                        </div>
+                    {% endif %}
+                {% endblock %}
+
+                {% block mediaImage %}
+                    {% if not entry.video %}
+                        <img class="media__image img-fluid" src="{{ image.getUrl(imageTransform) }}" srcset="{{ image.getUrl(retinaImageTransform) }} 2x" alt="{{ image.title }}">
+                    {% endif %}
+                {% endblock %}
+
+                {% block mediaControls %}
+                    <a class="{{ 'text-' ~ textColor }} text-uppercase mb-3 d-flex align-items-center" href="#0" onclick="window.history.back()">
+                        <svg class="icon icon--24 icon--reverse mt-0 mr-2">
+                            <use xlink:href="{{ rev('/app/assets/img/symbols.svg') }}#arrow"></use>
+                        </svg>
+                    </a>
+                {% endblock %}
+            {% endembed %}
+        {% endif %}
+    </main>
+{% endblock %}
+
+{% block footer %}{% endblock %}

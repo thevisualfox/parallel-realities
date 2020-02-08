@@ -44,13 +44,10 @@ use yii\base\InvalidArgumentException;
  * An instance of the Asset Transforms service is globally accessible in Craft via [[\craft\base\ApplicationTrait::getAssetTransforms()|`Craft::$app->assetTransforms`]].
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 3.0
+ * @since 3.0.0
  */
 class AssetTransforms extends Component
 {
-    // Constants
-    // =========================================================================
-
     /**
      * @event AssetTransformEvent The event that is triggered before an asset transform is saved
      */
@@ -83,6 +80,7 @@ class AssetTransforms extends Component
 
     /**
      * @event AssetTransformEvent The event that is triggered before a transform delete is applied to the database.
+     * @since 3.1.0
      */
     const EVENT_BEFORE_APPLY_TRANSFORM_DELETE = 'beforeApplyTransformDelete';
 
@@ -92,9 +90,6 @@ class AssetTransforms extends Component
     const EVENT_AFTER_DELETE_TRANSFORMS = 'afterDeleteTransforms';
 
     const CONFIG_TRANSFORM_KEY = 'imageTransforms';
-
-    // Properties
-    // =========================================================================
 
     /**
      * @var AssetTransform[]
@@ -115,9 +110,6 @@ class AssetTransforms extends Component
      * @var AssetTransformIndex|null
      */
     private $_activeTransformIndex;
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * Returns all named asset transforms.
@@ -166,6 +158,7 @@ class AssetTransforms extends Component
      *
      * @param string $uid
      * @return AssetTransform|null
+     * @since 3.1.0
      */
     public function getTransformByUid(string $uid)
     {
@@ -177,8 +170,8 @@ class AssetTransforms extends Component
      *
      * @param AssetTransform $transform The transform to be saved
      * @param bool $runValidation Whether the transform should be validated
-     * @throws AssetTransformException If attempting to update a non-existing transform.
      * @return bool
+     * @throws AssetTransformException If attempting to update a non-existing transform.
      */
     public function saveTransform(AssetTransform $transform, bool $runValidation = true): bool
     {
@@ -218,7 +211,7 @@ class AssetTransforms extends Component
         ];
 
         $configPath = self::CONFIG_TRANSFORM_KEY . '.' . $transform->uid;
-        $projectConfig->set($configPath, $configData);
+        $projectConfig->set($configPath, $configData, "Saving transform “{$transform->handle}”");
 
         if ($isNewTransform) {
             $transform->id = Db::idByUid(Table::ASSETTRANSFORMS, $transform->uid);
@@ -339,7 +332,7 @@ class AssetTransforms extends Component
             ]));
         }
 
-        Craft::$app->getProjectConfig()->remove(self::CONFIG_TRANSFORM_KEY . '.' . $transform->uid);
+        Craft::$app->getProjectConfig()->remove(self::CONFIG_TRANSFORM_KEY . '.' . $transform->uid, "Delete transform “{$transform->handle}”");
         return true;
     }
 
@@ -385,7 +378,7 @@ class AssetTransforms extends Component
     /**
      * Eager-loads transform indexes for a given set of file IDs.
      *
-     * @param Asset[] $assets The files to eager-load tranforms for
+     * @param Asset[]|array $assets The files to eager-load tranforms for
      * @param array $transforms The transform definitions to eager-load
      */
     public function eagerLoadTransforms(array $assets, array $transforms)
@@ -395,10 +388,7 @@ class AssetTransforms extends Component
         }
 
         // Index the assets by ID
-        $assetsById = [];
-        foreach ($assets as $asset) {
-            $assetsById[$asset->id] = $asset;
-        }
+        $assetsById = ArrayHelper::index($assets, 'id');
 
         // Get the index conditions
         $transformsByFingerprint = [];
@@ -532,8 +522,8 @@ class AssetTransforms extends Component
             'volumeId' => $asset->volumeId,
             'dateIndexed' => Db::prepareDateForDb(new DateTime()),
             'location' => $transformLocation,
-            'fileExists' => 0,
-            'inProgress' => 0
+            'fileExists' => false,
+            'inProgress' => false
         ]);
 
         return $this->storeTransformIndexData($transformIndex);
@@ -544,26 +534,36 @@ class AssetTransforms extends Component
      *
      * @param array $result
      * @param AssetTransform $transform
-     * @param Asset $asset
+     * @param Asset|array $asset The asset object or a raw database result
      * @return bool Whether the index result is still valid
      */
-    public function validateTransformIndexResult(array $result, AssetTransform $transform, Asset $asset): bool
+    public function validateTransformIndexResult(array $result, AssetTransform $transform, $asset): bool
     {
-        $indexedAfterFileModified = $result['dateIndexed'] >= Db::prepareDateForDb($asset->dateModified);
-        $indexedAfterTransformParameterChange =
-            (!$transform->getIsNamedTransform()
-                || ($transform->getIsNamedTransform()
-                    && $result['dateIndexed'] >= Db::prepareDateForDb($transform->dimensionChangeTime)));
+        // If the asset has been modified since the time the index was created, it's no longer valid
+        $dateModified = ArrayHelper::getValue($asset, 'dateModified');
+        if ($result['dateIndexed'] < Db::prepareDateForDb($dateModified)) {
+            return false;
+        }
 
-        return $indexedAfterFileModified && $indexedAfterTransformParameterChange;
+        // If it's not a named transform, consider it valid
+        if (!$transform->getIsNamedTransform()) {
+            return true;
+        }
+
+        // If the named transform's dimensions have changed since the time the index was created, it's no longer valid
+        if ($result['dateIndexed'] < Db::prepareDateForDb($transform->dimensionChangeTime)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
      * Get a transform URL by the transform index model.
      *
      * @param AssetTransformIndex $index
-     * @throws AssetTransformException If there was an error generating the transform.
      * @return string
+     * @throws AssetTransformException If there was an error generating the transform.
      */
     public function ensureTransformUrlByIndexModel(AssetTransformIndex $index): string
     {
@@ -672,7 +672,7 @@ class AssetTransforms extends Component
                     'and',
                     [
                         'assetId' => $asset->id,
-                        'fileExists' => 1,
+                        'fileExists' => true,
                         'location' => $possibleLocations,
                         'format' => $index->detectedFormat,
                     ],
@@ -895,9 +895,9 @@ class AssetTransforms extends Component
      * Get a local image source to use for transforms.
      *
      * @param Asset $asset
-     * @throws VolumeObjectNotFoundException If the file cannot be found.
-     * @throws VolumeException If there was an error downloading the remote file.
      * @return string
+     * @throws VolumeException If there was an error downloading the remote file.
+     * @throws VolumeObjectNotFoundException If the file cannot be found.
      */
     public function getLocalImageSource(Asset $asset): string
     {
@@ -908,7 +908,6 @@ class AssetTransforms extends Component
         try {
             if (!$volume instanceof LocalVolumeInterface) {
                 if (!is_file($imageSourcePath) || filesize($imageSourcePath) === 0) {
-
                     // Delete it just in case it's a 0-byter
                     try {
                         FileHelper::unlink($imageSourcePath);
@@ -964,7 +963,7 @@ class AssetTransforms extends Component
         }
 
         if (!is_file($imageSourcePath)) {
-            throw new VolumeObjectNotFoundException("The file \"{$asset->filename}\" does not exist,");
+            throw new VolumeObjectNotFoundException("The file \"{$asset->filename}\" does not exist.");
         }
 
         $asset->setTransformSource($imageSourcePath);
@@ -1025,7 +1024,6 @@ class AssetTransforms extends Component
 
         // Resize if constrained by maxCachedImageSizes setting
         if ($maxCachedImageSize > 0 && Image::canManipulateAsImage(pathinfo($source, PATHINFO_EXTENSION))) {
-
             $image = Craft::$app->getImages()->loadImage($source);
 
             if ($image instanceof Raster) {
@@ -1044,8 +1042,8 @@ class AssetTransforms extends Component
      * Detect the auto web-safe format for the Asset. Returns null, if the Asset is not an image.
      *
      * @param Asset $asset
-     * @throws AssetLogicException If attempting to detect an image format for a non-image.
      * @return mixed|string
+     * @throws AssetLogicException If attempting to detect an image format for a non-image.
      */
     public function detectAutoTransformFormat(Asset $asset)
     {
@@ -1188,12 +1186,20 @@ class AssetTransforms extends Component
         ];
 
         foreach ($dirs as $dir) {
-            $files = glob($dir . '/[0-9]*/' . $asset->id . '.[a-z]*');
-            foreach ($files as $path) {
-                try {
-                    FileHelper::unlink($path);
-                } catch (ErrorException $e) {
-                    Craft::warning('Unable to delete asset thumbnails: ' . $e->getMessage(), __METHOD__);
+            if (file_exists($dir)) {
+                $files = glob($dir . '/[0-9]*/' . $asset->id . '.[a-z]*');
+
+                if (!is_array($files)) {
+                    Craft::warning('Could not list files in ' . $dir . ' when deleting resized asset versions.');
+                    continue;
+                }
+
+                foreach ($files as $path) {
+                    try {
+                        FileHelper::unlink($path);
+                    } catch (ErrorException $e) {
+                        Craft::warning('Unable to delete asset thumbnails: ' . $e->getMessage(), __METHOD__);
+                    }
                 }
             }
         }
@@ -1267,9 +1273,6 @@ class AssetTransforms extends Component
         $this->_activeTransformIndex = $index;
     }
 
-
-    // Private Methods
-    // =========================================================================
 
     /**
      * Returns a Query object prepped for retrieving transform indexes.
@@ -1434,7 +1437,7 @@ class AssetTransforms extends Component
                 } else {
                     $position = $transform->position;
                 }
-                $image->scaleAndCrop($transform->width, $transform->height, true, $position);
+                $image->scaleAndCrop($transform->width, $transform->height, Craft::$app->getConfig()->getGeneral()->upscaleImages, $position);
         }
 
         if ($image instanceof Raster) {
@@ -1486,5 +1489,4 @@ class AssetTransforms extends Component
     {
         return AssetTransformRecord::findOne(['uid' => $uid]) ?? new AssetTransformRecord();
     }
-
 }

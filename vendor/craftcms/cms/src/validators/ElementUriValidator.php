@@ -17,13 +17,10 @@ use yii\base\InvalidConfigException;
  * Class ElementUriValidator.
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 3.0
+ * @since 3.0.0
  */
 class ElementUriValidator extends UriValidator
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -46,7 +43,13 @@ class ElementUriValidator extends UriValidator
 
         // If this is a draft or revision and it already has a URI, leave it alone
         /** @var Element $model */
-        if (($model->getIsDraft() || $model->getIsRevision()) && $model->uri) {
+        if (
+            $model->uri &&
+            (
+                ($model->getIsDraft() && !$model->getIsUnsavedDraft()) ||
+                $model->getIsRevision()
+            )
+        ) {
             return;
         }
 

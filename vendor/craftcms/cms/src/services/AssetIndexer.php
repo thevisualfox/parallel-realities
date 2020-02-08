@@ -32,13 +32,10 @@ use yii\base\Exception;
  * @license http://craftcms.com/license Craft License Agreement
  * @see http://craftcms.com
  * @package craft.app.services
- * @since 3.0
+ * @since 3.0.0
  */
 class AssetIndexer extends Component
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * Returns a unique indexing session id.
      *
@@ -428,9 +425,6 @@ class AssetIndexer extends Component
 
         return $asset;
     }
-
-    // Private Methods
-    // =========================================================================
 
     /**
      * Indexes a file.

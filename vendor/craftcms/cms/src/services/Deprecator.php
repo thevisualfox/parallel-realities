@@ -27,15 +27,13 @@ use yii\db\IntegrityException;
  * An instance of the Deprecator service is globally accessible in Craft via [[\craft\base\ApplicationTrait::getDeprecator()|`Craft::$app->deprecator`]].
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 3.0
+ * @since 3.0.0
  */
 class Deprecator extends Component
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var bool Whether deprecation warnings should throw exceptions rather than being logged.
+     * @since 3.1.18
      */
     public $throwExceptions = false;
 
@@ -45,6 +43,8 @@ class Deprecator extends Component
      *
      * Changing this will prevent deprecation errors from showing up in the "Deprecation Warnings" utility
      * or in the "Deprecated" panel in the Debug Toolbar.
+     *
+     * @since 3.0.7
      */
     public $logTarget = 'db';
 
@@ -57,9 +57,6 @@ class Deprecator extends Component
      * @var DeprecationError[]|null All the unique deprecation errors that have been logged
      */
     private $_allLogs;
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * Logs a new deprecation error.
@@ -231,9 +228,6 @@ class Deprecator extends Component
 
         return (bool)$affectedRows;
     }
-
-    // Private Methods
-    // =========================================================================
 
     /**
      * Returns a Query object prepped for retrieving deprecation logs.

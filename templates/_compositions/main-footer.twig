@@ -1,80 +1,54 @@
-<div class="container">
-    <div class="row justify-content-center text-center">
-        <div class="col">
-            <h1 class="text-larger">{{ footer.companyName }}</h1>
-        </div>
-    </div>
-    <div class="row justify-content-center mt-3 mb-6">
-        <div class="col-12 col-lg-10 col-xl-8">
-            <div class="row gutters-3">
-                <div class="col-12 col-md-5 d-flex align-items-center align-items-md-baseline flex-column">
-                    <h3 class="d-none d-md-block">Any questions?<br> Send us an Email</h3>
-                    <ul class="list list--spaced mt-auto">
-                        <li class="list__item">
-                             <a href="https://goo.gl/maps/v826RK52vydbqAk16" target="_blank" rel="noopener noreferrer">
-                                {{ footer.companyAddress|raw }}
-                            </a>
-                        </li>
-                        <li class="list__item d-flex align-items-center">
-                            <a class="text-regular" href="tel:{{ footer.companyPhone }}"
-                                title="{{ footer.companyName }} | Phone Number">
-                                <svg class="icon icon--20 mr-1">
-                                    <use xlink:href="{{ alias('@web/app/assets/img/symbols.svg#phone') }}"></use>
-                                </svg>
-                                {{ footer.companyPhone }}
-                            </a>
-                        </li>
-                        <li class="list__item">
-                            <a class="text-regular" href="mailto:{{ footer.companyEmail }}" title="{{ footer.companyName }} | Email">
-                                <svg class="icon icon--20 mr-1">
-                                    <use xlink:href="{{ alias('@web/app/assets/img/symbols.svg#mail') }}"></use>
-                                </svg>{{ footer.companyEmail }}
-                            </a>
-                        </li>
-                        <li class="list__item">
-                             <ul class="list d-flex align-items-center justify-content-center justify-content-md-start">
-                                {% for block in footer.socialMedia.all() %}
-                                    {% include '_elements/footer/social-media.twig' %}
-                                {% endfor %}
-                            </ul>
-                        </li>
-                    </ul>
+<footer class="main-footer" role="contentinfo">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10">
+                <div class="row row--equalized justify-content-md-between gutters-2">
+                    <div class="col-12 col-lg-auto col-xl-3">
+                        <h2 class="main-footer__title text-larger mb-0">{{ footer.companyName }}</h2>
+                        <p class="main-footer__subtitle text-uppercase">{{ footer.companySlogan }}</p>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-2">
+                        <a class="text-small" href="https://goo.gl/maps/v826RK52vydbqAk16" target="_blank" rel="noopener noreferrer">
+                            {{ footer.companyAddress|raw }}
+                        </a>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-2 d-flex flex-column align-items-baseline">
+                        <a class="btn btn-link text-small flex-grow-0" href="mailto:{{ footer.companyEmail }}" title="{{ footer.companyName }} | Email">
+                        <span>{{ footer.companyEmail }}</span>
+                        </a>
+                        <a class="btn btn-link text-small flex-grow-0 mt-xl-auto" href="tel:{{ footer.companyPhone }}" title="{{ footer.companyName }} | Phone Number">
+                            <span>{{ footer.companyPhone }}</span>
+                        </a>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-auto">
+                        <ul class="list d-flex">
+                            {% for block in footer.socialMedia.all() %}
+                                {% include '_blocks/social-media.twig' %}
+                            {% endfor %}
+                        </ul>
+                    </div>
                 </div>
-                <div class="col-12 col-md-7">
-                    {% include "_compositions/contact-form.twig" %}
+            </div>
+            <div class="col-12 col-lg-10 border-top pt-2 mt-2">
+                <div class="row gutters-2">
+                    {% set guidelines = footer.guidelines.one() %}
+                    {% set termsConditions = footer.termsConditions.one() %}
+
+                    {% if guidelines is not empty %}
+                        <div class="col-auto">
+                            <a class="btn btn-link text-small text-muted" href="{{ guidelines.getUrl() }}" title="{{ footer.companyName }} | Guidelines" target="_blank" rel="noreferrer">Guidelines</a>
+                        </div>
+                    {% endif %}
+                    {% if termsConditions is not empty %}
+                        <div class="col-auto">
+                            <a class="btn btn-link text-small text-muted" href="{{ termsConditions.getUrl() }}" title="{{ footer.companyName }} | Terms and Conditions" target="_blank" rel="noreferrer">Terms & conditions</a>
+                        </div>
+                    {% endif %}
+                    <div class="col-auto">
+                        <a class="btn btn-link text-small text-muted" href="mailto:work@pa-re.eu" title="{{ footer.companyName }} | Jobs">Jobs</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row justify-content-center text-center m-4">
-        <div class="col">
-            {{ footer.customText|raw }}
-        </div>
-    </div>
-    <div class="row justify-content-center text-center">
-        <div class="col">
-            <p class="text-smaller text-light">
-                {% set termsConditions = footer.termsConditions.one() %}
-                {% if termsConditions %}
-                    <a href="{{ termsConditions.getUrl() }}" target="_blank" rel="noreferrer"
-                       title="{{ footer.companyName }} | Terms and Conditions">Download
-                    </a>
-                {% endif %}
-                our general terms and conditions (Dutch, 2019)
-            </p>
-        </div>
-    </div>
-     <div class="row justify-content-center text-center">
-        <div class="col">
-            <p class="text-smaller text-light">
-                {% set guidelines = footer.guidelines.one() %}
-                Download our
-                {% if guidelines %}
-                    <a href="{{ guidelines.getUrl() }}" target="_blank" rel="noreferrer"
-                       title="{{ footer.companyName }} | Guidelines">guidelines
-                    </a>
-                {% endif %}
-            </p>
-        </div>
-    </div>
-</div>
+</footer>

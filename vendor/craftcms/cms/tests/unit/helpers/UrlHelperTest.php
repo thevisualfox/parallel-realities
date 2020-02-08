@@ -25,9 +25,6 @@ use yii\base\Exception;
  */
 class UrlHelperTest extends Unit
 {
-    // Constants
-    // =========================================================================
-
     const ABSOLUTE_URL = 'http://craftcms.com/';
     const ABSOLUTE_URL_HTTPS = 'https://craftcms.com/';
     const ABSOLUTE_URL_WWW = 'http://www.craftcms.com/';
@@ -35,9 +32,6 @@ class UrlHelperTest extends Unit
     const NON_ABSOLUTE_URL = 'craftcms.com/';
     const NON_ABSOLUTE_URL_WWW = 'www.craftcms.com/';
     const PROTOCOL_RELATIVE_URL = '//craftcms.com/';
-
-    // Public Properties
-    // =========================================================================
 
     /**
      * @var UnitTester
@@ -68,9 +62,6 @@ class UrlHelperTest extends Unit
      * @var string
      */
     protected $cpTrigger;
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * Replaces the http or https in a url to the $scheme variable.
@@ -105,8 +96,16 @@ class UrlHelperTest extends Unit
         return !Craft::$app->getRequest()->getIsConsoleRequest() && Craft::$app->getRequest()->getIsSecureConnection() ? 'https' : 'http';
     }
 
-    // Tests
-    // =========================================================================
+    /**
+     * @dataProvider buildQueryDataProvider
+     *
+     * @param $result
+     * @param $input
+     */
+    public function testBuildQuery($result, $input)
+    {
+        $this->assertSame($result, UrlHelper::buildQuery($input));
+    }
 
     /**
      * Tests various methods of the UrlHelper which check that a URL confirms to a specification. I.E. Is it protocol relative or absolute
@@ -127,7 +126,7 @@ class UrlHelperTest extends Unit
     }
 
     /**
-     * Test that CP Urls are created. We do some hand modification work to construct an 'expected' result based on the cp trigger
+     * Test that control panel URLs are created. We do some hand modification work to construct an 'expected' result based on the cp trigger
      * config variable. We cant do this (yet)(https://github.com/Codeception/Codeception/issues/4087) as the Craft::$app var and thus
      * the cpTrigger variable inst easily accessible in the dataProvider methods.
      *
@@ -346,8 +345,27 @@ class UrlHelperTest extends Unit
         });
     }
 
-    // Data Providers
-    // =========================================================================
+    /**
+     * @return array
+     */
+    public function buildQueryDataProvider(): array
+    {
+        return [
+            ['', []],
+            ['', ['foo' => null]],
+            ['foo=1', ['foo' => true]],
+            ['foo=1&bar=2', ['foo' => 1, 'bar' => 2]],
+            ['foo[0]=1&foo[1]=2', ['foo' => [1, 2]]],
+            ['foo[bar]=baz', ['foo[bar]' => 'baz']],
+            ['foo[bar]=baz', ['foo' => ['bar' => 'baz']]],
+            ['foo=bar%2Bbaz', ['foo' => 'bar+baz']],
+            ['foo+bar=baz', ['foo+bar' => 'baz']],
+            ['foo=bar%5Bbaz%5D', ['foo' => 'bar[baz]']],
+            ['foo={bar}', ['foo' => '{bar}']],
+            ['foo[1]=bar', ['foo[1]' => 'bar']],
+            ['foo[1][bar]=1&foo[1][baz]=2', ['foo[1][bar]' => 1, 'foo[1][baz]' => 2]],
+        ];
+    }
 
     /**
      * @return array
@@ -513,7 +531,7 @@ class UrlHelperTest extends Unit
                 'urlWithParams'
             ],
             '4-spaces' => [
-                self::ABSOLUTE_URL_HTTPS_WWW . '?    =',
+                self::ABSOLUTE_URL_HTTPS_WWW,
                 self::ABSOLUTE_URL_HTTPS_WWW,
                 '    ',
                 'urlWithParams'
@@ -694,6 +712,8 @@ class UrlHelperTest extends Unit
     {
         return [
             ['http://test.craftcms.test/index.php?p=endpoint', 'endpoint'],
+            // https://github.com/craftcms/cms/issues/4778
+            ['http://test.craftcms.test/index.php?p=endpoint&param1=x&param2[0]=y&param2[1]=z', 'endpoint', 'param1=x&param2[]=y&param2[]=z'],
         ];
     }
 
@@ -703,9 +723,6 @@ class UrlHelperTest extends Unit
             ['http://test.craftcms.test/index.php?p=endpoint', 'endpoint'],
         ];
     }
-
-    // Protected Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

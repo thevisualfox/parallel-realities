@@ -26,7 +26,6 @@ use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\i18n\Locale;
 use craft\models\UserGroup;
-use craft\records\Session as SessionRecord;
 use craft\records\User as UserRecord;
 use craft\validators\DateTimeValidator;
 use craft\validators\UniqueValidator;
@@ -55,13 +54,10 @@ use yii\web\IdentityInterface;
  * @property \DateInterval|null $remainingCooldownTime the remaining cooldown time for this user, if they've entered their password incorrectly too many times
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 3.0
+ * @since 3.0.0
  */
 class User extends Element implements IdentityInterface
 {
-    // Constants
-    // =========================================================================
-
     /**
      * @event AuthenticateUserEvent The event that is triggered before a user is authenticated.
      *
@@ -98,9 +94,6 @@ class User extends Element implements IdentityInterface
     const SCENARIO_REGISTRATION = 'registration';
     const SCENARIO_PASSWORD = 'password';
 
-    // Static
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -112,9 +105,25 @@ class User extends Element implements IdentityInterface
     /**
      * @inheritdoc
      */
+    public static function lowerDisplayName(): string
+    {
+        return Craft::t('app', 'user');
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function pluralDisplayName(): string
     {
         return Craft::t('app', 'Users');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function pluralLowerDisplayName(): string
+    {
+        return Craft::t('app', 'users');
     }
 
     /**
@@ -360,6 +369,15 @@ class User extends Element implements IdentityInterface
         return parent::eagerLoadingMap($sourceElements, $handle);
     }
 
+    /**
+     * @inheritdoc
+     * @since 3.3.0
+     */
+    public static function gqlTypeNameByContext($context): string
+    {
+        return 'User';
+    }
+
     // IdentityInterface Methods
     // -------------------------------------------------------------------------
 
@@ -405,9 +423,6 @@ class User extends Element implements IdentityInterface
     {
         throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
     }
-
-    // Properties
-    // =========================================================================
 
     /**
      * @var string|null Username
@@ -481,6 +496,7 @@ class User extends Element implements IdentityInterface
 
     /**
      * @var bool Whether the user has a dashboard
+     * @since 3.0.4
      */
     public $hasDashboard = false;
 
@@ -548,9 +564,6 @@ class User extends Element implements IdentityInterface
      * @var array|null The user’s preferences
      */
     private $_preferences;
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc
@@ -636,6 +649,7 @@ class User extends Element implements IdentityInterface
         $labels['lastName'] = Craft::t('app', 'Last Name');
         $labels['newPassword'] = Craft::t('app', 'New Password');
         $labels['password'] = Craft::t('app', 'Password');
+        $labels['unverifiedEmail'] = Craft::t('app', 'Email');
         $labels['username'] = Craft::t('app', 'Username');
         return $labels;
     }
@@ -643,9 +657,9 @@ class User extends Element implements IdentityInterface
     /**
      * @inheritdoc
      */
-    public function rules()
+    protected function defineRules(): array
     {
-        $rules = parent::rules();
+        $rules = parent::defineRules();
         $rules[] = [['lastLoginDate', 'lastInvalidLoginDate', 'lockoutDate', 'lastPasswordChangeDate', 'verificationCodeIssuedDate'], DateTimeValidator::class];
         $rules[] = [['invalidLoginCount', 'photoId'], 'number', 'integerOnly' => true];
         $rules[] = [['username', 'email', 'unverifiedEmail', 'firstName', 'lastName'], 'trim', 'skipOnEmpty' => true];
@@ -975,7 +989,7 @@ class User extends Element implements IdentityInterface
      *
      * @param int $size The width and height the photo should be sized to
      * @return string|null
-     * @deprecated in 3.0. Use getPhoto().getUrl() instead.
+     * @deprecated in 3.0.0. Use getPhoto().getUrl() instead.
      */
     public function getPhotoUrl(int $size = 100)
     {
@@ -1021,15 +1035,12 @@ class User extends Element implements IdentityInterface
      */
     public function getIsCurrent(): bool
     {
-        if ($this->id !== null) {
-            $currentUser = Craft::$app->getUser()->getIdentity();
-
-            if ($currentUser) {
-                return ($this->id === $currentUser->id);
-            }
+        if (!$this->id) {
+            return false;
         }
 
-        return false;
+        $currentUser = Craft::$app->getUser()->getIdentity();
+        return $currentUser && $currentUser->id == $this->id;
     }
 
     /**
@@ -1237,11 +1248,10 @@ class User extends Element implements IdentityInterface
     {
         switch ($attribute) {
             case 'email':
-                return $this->email ? Html::encodeParams('<a href="mailto:{email}">{email}</a>', ['email' => $this->email]) : '';
+                return $this->email ? Html::mailto(Html::encode($this->email)) : '';
 
             case 'preferredLanguage':
                 $language = $this->getPreferredLanguage();
-
                 return $language ? (new Locale($language))->getDisplayName(Craft::$app->language) : '';
         }
 
@@ -1262,6 +1272,15 @@ class User extends Element implements IdentityInterface
         $html .= parent::getEditorHtml();
 
         return $html;
+    }
+
+    /**
+     * @inheritdoc
+     * @since 3.3.0
+     */
+    public function getGqlTypeName(): string
+    {
+        return static::gqlTypeNameByContext($this);
     }
 
     // Events
@@ -1388,7 +1407,7 @@ class User extends Element implements IdentityInterface
                             ],
                             [
                                 $column => $this->id
-                            ])
+                            ], [], false)
                         ->execute();
                 }
             } else {
@@ -1417,9 +1436,6 @@ class User extends Element implements IdentityInterface
 
         return true;
     }
-
-    // Private Methods
-    // =========================================================================
 
     /**
      * Validates a cookie's stored user agent against the current request's user agent string,

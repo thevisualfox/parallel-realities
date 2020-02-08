@@ -1,0 +1,39 @@
+.badge--bordered {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    background-color: $white;
+    border: 1px solid $base;
+
+    @include media-breakpoint-up(lg) {
+        width: 40px;
+        height: 40px;
+    }
+
+    &:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: $black;
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform 350ms $transition-bezier;
+    }
+
+    &:hover:before,
+    &:focus:before {
+        transform: scaleX(1);
+        transform-origin: left;
+    }
+
+    .badge__text {
+        mix-blend-mode: difference;
+        color: $white;
+    }
+}

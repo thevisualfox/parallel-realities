@@ -1,0 +1,18 @@
+{% extends "_layouts/default" %}
+
+{% set entry = craft.entries.section('work').one() %}
+{% set headerColor = entry.headerColor.value %}
+{% set title = entry.title %}
+{% set bodyClass = 'bg-black' %}
+
+{% block header %}
+    {% include '_compositions/main-header.twig' with {
+        headerColor: headerColor
+    } %}
+{% endblock %}
+
+{% block content %}
+    <main role="main">
+        {% include "_components/case/case-overview.twig" with { entries: 'workEntries' } %}
+    </main>
+{% endblock %}

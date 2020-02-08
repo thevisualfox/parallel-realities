@@ -1,0 +1,11 @@
+{% set image  = entry.image.one() %}
+{% set preImageTransform = { width: 100, mode: 'crop' } %}
+{% set imageTransform = { width: 1024, mode: 'crop' } %}
+{% set retinaImageTransform = { width: 2048, mode: 'crop' } %}
+
+{% if image or entry.video %}
+    {% include "_components/media/media.twig" with {
+        extensionClasses: ['media--case', 'media--overflowed', 'image-zoom'],
+        url: entry.url
+    } %}
+{% endif %}

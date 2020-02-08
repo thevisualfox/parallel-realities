@@ -44,6 +44,11 @@ window.livePreviewHideFullscreen = false;
                     this.redactorConfig.plugins = [];
                 }
 
+                // Prevent Redactor from saving block elements inconsistently
+                if (typeof this.redactorConfig.removeNewLines === 'undefined') {
+                    this.redactorConfig.removeNewLines = true;
+                }
+
                 this.redactorConfig.plugins.push('craftAssetImages');
                 this.redactorConfig.plugins.push('craftAssetFiles');
                 this.redactorConfig.plugins.push('craftEntryLinks');
@@ -135,7 +140,7 @@ window.livePreviewHideFullscreen = false;
 
                 if (toolbarButtons.indexOf('link') !== -1) {
                     this.redactor.plugin.craftEntryLinks.setElementSiteId(this.elementSiteId);
-                    
+
                     if (this.linkOptions.length) {
                         this.redactor.plugin.craftEntryLinks.setLinkOptions(this.linkOptions);
                     }
@@ -161,7 +166,7 @@ window.livePreviewHideFullscreen = false;
                 // Add the .focusable-input class for Craft.CP
                 this.redactor.container.getElement().addClass('focusable-input');
 
-                this.leaveFullscreetOnSaveShortcut();
+                this.leaveFullscreenOnSaveShortcut();
 
                 if (this.redactor.opts.toolbarFixed && !Craft.RedactorInput.scrollPageOnReady) {
                     Garnish.$doc.ready(function() {
@@ -173,16 +178,14 @@ window.livePreviewHideFullscreen = false;
             },
 
             onEditorFocus: function() {
-                this.redactor.container.getElement().addClass('focus');
                 this.redactor.container.getElement().trigger('focus');
             },
 
             onEditorBlur: function() {
-                this.redactor.container.getElement().removeClass('focus');
                 this.redactor.container.getElement().trigger('blur');
             },
 
-            leaveFullscreetOnSaveShortcut: function() {
+            leaveFullscreenOnSaveShortcut: function() {
                 if (typeof this.redactor.plugin.fullscreen !== 'undefined' && typeof this.redactor.plugin.fullscreen.close === 'function') {
                     Craft.cp.on('beforeSaveShortcut', $.proxy(function() {
                         if (this.redactor.plugin.fullscreen.isOpen) {
@@ -193,15 +196,13 @@ window.livePreviewHideFullscreen = false;
             },
 
             replaceRedactorButton: function(key, title) {
-                // Ignore if the button isn't in use
-                var allButtons = this.redactor.toolbar.getButtonsKeys();
-                var currentButtonIndex = allButtons.indexOf(key);
+                var previousButton = this.redactor.toolbar.getButton(key);
 
-                if (currentButtonIndex == -1) {
+                // Ignore if the button isn't in use
+                if (!previousButton) {
                     return;
                 }
 
-                var previousButton = this.redactor.toolbar.getButtonByIndex(allButtons.indexOf(key));
                 var icon = previousButton.$icon.get(0);
 
                 var placeholderKey = key+'_placeholder';

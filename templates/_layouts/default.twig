@@ -1,7 +1,7 @@
 {% extends "_layouts/base" %}
 
 {% if bodyClass is not defined %}
-    {% set bodyClass = entry is defined? entry.section.handle: craft.app.request.segments | first %}
+    {% set bodyClass = entry is defined ? entry.section.handle: craft.app.request.segments | first %}
 {% endif %}
 
 {# Set the `title` variable to the nav item that matches the first segment #}
@@ -14,18 +14,15 @@
 
 {% block body %}
 
-    {% set headerColor = header.headerColor.value|default("") %}
-    <header id="main-header" class="main-header {{ 'main-header--'~ headerColor }} py-3" role="banner">
+    {% block header %}
         {% include '_compositions/main-header.twig' %}
-    </header>
+    {% endblock %}
 
-    <main id="main" role="main">
-        {% block main %}{% endblock %}
-    </main>
+    {% block content %}{% endblock %}
 
-    <footer id="contact" class="main-footer" role="contentinfo">
+    {% block footer %}
         {% include '_compositions/main-footer.twig' %}
-    </footer>
+    {% endblock %}
 
 {% endblock %}
 
