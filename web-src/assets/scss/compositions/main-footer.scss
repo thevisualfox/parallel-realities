@@ -2,6 +2,16 @@
     padding-top: 30px;
     padding-bottom: 20px;
     margin-top: auto;
+    color: var(--colorTheme);
+
+    a,
+    p {
+        color: var(--colorTheme) !important;
+    }
+
+    .btn-link:after {
+        background-color: var(--colorTheme);
+    }
 
     // Medium and up
 

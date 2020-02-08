@@ -3,6 +3,7 @@
 {% set entry = craft.entries.section('studio').one() %}
 {% set headerColor = entry.headerColor.value %}
 {% set title = entry.title %}
+{% set bodyClass = 'bg-black' %}
 
 {% block header %}
     {% include '_compositions/main-header.twig' with {
