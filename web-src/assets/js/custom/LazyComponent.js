@@ -70,19 +70,31 @@ export class LazyItems {
         const itemInner = item.querySelector(".media__inner");
         const itemContent = item.querySelector(".media__link");
 
-        gsap.to([itemWrapper, itemInner], {
-            duration: 1,
-            translateY: 0,
-            ease: "circ.inOut"
-        });
+        this.tl = new gsap.timeline({
+            onComplete: () => {
+                if (this.masonry !== null) this.masonry.layout();
+            }
+        }).add("begin");
 
-        gsap.to(itemContent, {
-            duration: 0.75,
-            scale: 1,
-            ease: "circ.inOut"
-        });
-
-        if (this.masonry !== null) this.masonry.layout();
+        this.tl
+            .to(
+                [itemWrapper, itemInner],
+                {
+                    duration: 1,
+                    translateY: 0,
+                    ease: "circ.inOut"
+                },
+                "begin"
+            )
+            .to(
+                itemContent,
+                {
+                    duration: 0.75,
+                    scale: 1,
+                    ease: "circ.inOut"
+                },
+                "begin"
+            );
     };
 }
 
