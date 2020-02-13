@@ -123,3 +123,7 @@ body.showcase main {
 .overflow-hidden {
     overflow: hidden;
 }
+
+.custom-control-label:before {
+    border: 1px solid $black;
+}

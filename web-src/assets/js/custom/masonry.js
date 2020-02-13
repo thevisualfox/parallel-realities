@@ -41,7 +41,7 @@ class MasonryGrid {
 
             switch (type) {
                 case "videos":
-                    new LazyVideo(this.DOM.items);
+                    new LazyVideo(this.DOM.videos);
                     break;
                 case "items":
                     new LazyItems(this.DOM.items, this.masonry);
