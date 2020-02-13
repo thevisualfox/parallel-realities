@@ -7,14 +7,12 @@
     width: 100%;
     z-index: $zindex-fixed;
 
-    @include media-breakpoint-up(lg) {
-        &--white {
-            --headerColor: #{$white};
-        }
+    &--white {
+        --headerColor: #{$white};
+    }
 
-        &--black {
-            --headerColor: #{$black};
-        }
+    &--black {
+        --headerColor: #{$black};
     }
 
     &--gradient {
