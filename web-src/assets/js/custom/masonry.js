@@ -31,6 +31,11 @@ class MasonryGrid {
                         this.masonry.on("layoutComplete", () => {
                             this.initLazyTypes(["videos", "items"]);
                         });
+                    } else {
+                        this.masonry.layout();
+                        this.masonry.on("layoutComplete", () => {
+                            this.initLazyTypes(["videos", "items"]);
+                        });
                     }
                 });
             } else {
