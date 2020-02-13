@@ -42,9 +42,9 @@
             {{ message is defined and message ? errorList(message.getErrors('message')) }}
         </div>
         <div class="col-12 col-md-9">
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="privacyConditions" required>
-                <label class="form-check-label" name="privacyConditions" for="privacyConditions">I agree with the privacy conditions *</label>
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="privacyConditions" name="privacyConditions" required>
+                <label class="custom-control-label" name="privacyConditions" for="privacyConditions">I agree with the privacy conditions *</label>
             </div>
         </div>
         <div class="col-12 col-md-3 d-flex align-items-end order-2 order-md-1">

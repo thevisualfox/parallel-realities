@@ -11,7 +11,9 @@
 
 {% block content %}
     <main role="main">
-        {% include '_components/hero.twig' %}
+        {% include '_components/hero.twig' with {
+            showEnter: true
+        } %}
     </main>
 {% endblock %}
 

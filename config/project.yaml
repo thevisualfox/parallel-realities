@@ -1,4 +1,4 @@
-dateModified: 1581161729
+dateModified: 1581612729
 email:
   fromEmail: jurjen.p.vos@gmail.com
   fromName: 'Parallel Realities'
@@ -302,6 +302,24 @@ fields:
     translationKeyFormat: null
     translationMethod: none
     type: craft\fields\Dropdown
+  88ea8897-a7e9-4846-bd1a-a70fd8ecf6f7:
+    contentColumnType: text
+    fieldGroup: c36ca5f6-39f2-48c9-9490-ded81eab1ccc
+    handle: externalLink
+    instructions: 'Choose an external link that should appear in the navigation'
+    name: 'External link'
+    searchable: true
+    settings:
+      byteLimit: null
+      charLimit: null
+      code: ''
+      columnType: null
+      initialRows: '4'
+      multiline: ''
+      placeholder: ''
+    translationKeyFormat: null
+    translationMethod: none
+    type: craft\fields\PlainText
   b1956beb-f17c-445d-9106-83c7cb35e660:
     contentColumnType: string
     fieldGroup: f697421b-6984-4171-af0e-2199e664da5b
@@ -763,6 +781,9 @@ sections:
             tabs:
               -
                 fields:
+                  88ea8897-a7e9-4846-bd1a-a70fd8ecf6f7:
+                    required: false
+                    sortOrder: 2
                   d93adb5e-4370-4955-b348-afb5c5243b32:
                     required: false
                     sortOrder: 1
@@ -813,10 +834,6 @@ sections:
         titleLabel: ''
     handle: studio
     name: Studio
-    previewTargets:
-      -
-        label: 'Primaire invoer-pagina'
-        urlFormat: '{url}'
     propagationMethod: all
     siteSettings:
       bbf8cb32-62ed-4353-8c5a-c091131d4962:
