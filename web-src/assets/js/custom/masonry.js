@@ -27,11 +27,17 @@ class MasonryGrid {
                     const status = await videoPlayers.editVideo(video, videoIndex);
 
                     if (status === "done") {
-                        this.initLazyTypes(["videos", "items"]);
+                        this.masonry.layout();
+                        this.masonry.on("layoutComplete", () => {
+                            this.initLazyTypes(["videos", "items"]);
+                        });
                     }
                 });
             } else {
-                this.initLazyTypes(["items"]);
+                this.masonry.layout();
+                this.masonry.on("layoutComplete", () => {
+                    this.initLazyTypes(["items"]);
+                });
             }
         });
     };
