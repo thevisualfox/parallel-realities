@@ -70,11 +70,7 @@ export class LazyItems {
         const itemInner = item.querySelector(".media__inner");
         const itemContent = item.querySelector(".media__link");
 
-        this.tl = new gsap.timeline({
-            onComplete: () => {
-                if (this.masonry !== null) this.masonry.layout();
-            }
-        }).add("begin");
+        this.tl = new gsap.timeline().add("begin");
 
         this.tl
             .to(
