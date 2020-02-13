@@ -16,23 +16,27 @@ document.addEventListener("DOMContentLoaded", () => {
 export class LazyVideo {
     constructor(videos) {
         this.DOM = { videos };
+        this.players = [];
+        this.DOM.videos.forEach(video => this.players.push(new Player(video)));
         this.observer = null;
 
-        this.initEvents();
+        this.initVideoObserver();
     }
-    initEvents = () => {
-        this.DOM.videos.forEach(video => {
-            const videoNode = video.querySelector("[data-vimeo-player]");
-
-            if (videoNode !== null) {
-                const videoPlayer = new Player(videoNode);
-
-                video.addEventListener("mouseenter", () => this.toggleVideoPlayer("play", videoPlayer));
-                video.addEventListener("mouseleave", () => this.toggleVideoPlayer("pause", videoPlayer));
-            }
+    initVideoObserver = () => {
+        this.observer = new IntersectionObserver(videos => {
+            videos.forEach(video => {
+                if (video.isIntersecting) {
+                    this.toggleVideoPlayer("play", video.target);
+                } else {
+                    this.toggleVideoPlayer("pause", video.target);
+                }
+            });
         });
+
+        this.DOM.videos.forEach(video => this.observer.observe(video));
     };
-    toggleVideoPlayer = (action, videoPlayer) => {
+    toggleVideoPlayer = (action, video) => {
+        const videoPlayer = this.players.filter(player => player.element.src === video.src)[0];
         action === "play" ? videoPlayer.play() : videoPlayer.pause();
     };
 }
