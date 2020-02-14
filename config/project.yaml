@@ -1,4 +1,4 @@
-dateModified: 1581612729
+dateModified: 1581661997
 email:
   fromEmail: jurjen.p.vos@gmail.com
   fromName: 'Parallel Realities'
@@ -15,6 +15,8 @@ email:
 fieldGroups:
   4d3dab93-ed84-46d8-a38c-37042926fda1:
     name: Footer
+  69f67abc-b39c-4c21-8205-8f0e8ad0597b:
+    name: 'Work Page'
   7f6ceebb-ff32-4474-a724-971cd458e4ef:
     name: 'Work Preview'
   c36ca5f6-39f2-48c9-9490-ded81eab1ccc:
@@ -224,12 +226,13 @@ fields:
   5c93d5a7-8552-4922-bcbf-4a6433846899:
     contentColumnType: text
     fieldGroup: 7f6ceebb-ff32-4474-a724-971cd458e4ef
-    handle: video
-    instructions: 'Add the vimeo video url (eg: https://vimeo.com/14592941). If no video is inserted, the image will be the main asset'
-    name: Video
+    handle: teaserVideo
+    instructions: 'Add a vimeo video url (eg: https://vimeo.com/14592941). If no video is inserted, the image will be the main asset; This field is meant for short teaser videos!'
+    name: 'Teaser video'
     searchable: true
     settings:
-      charLimit: ''
+      byteLimit: null
+      charLimit: null
       code: ''
       columnType: text
       initialRows: '4'
@@ -308,6 +311,24 @@ fields:
     handle: externalLink
     instructions: 'Choose an external link that should appear in the navigation'
     name: 'External link'
+    searchable: true
+    settings:
+      byteLimit: null
+      charLimit: null
+      code: ''
+      columnType: null
+      initialRows: '4'
+      multiline: ''
+      placeholder: ''
+    translationKeyFormat: null
+    translationMethod: none
+    type: craft\fields\PlainText
+  a658d0b9-839f-4171-bac9-239c4ce26ca4:
+    contentColumnType: text
+    fieldGroup: 69f67abc-b39c-4c21-8205-8f0e8ad0597b
+    handle: video
+    instructions: 'Add a vimeo video url (eg: https://vimeo.com/14592941). If no video is inserted, the image will be the main asset; This field is meant for the main video!'
+    name: Video
     searchable: true
     settings:
       byteLimit: null
@@ -609,10 +630,13 @@ sections:
                 fields:
                   8475a05c-de96-4ea1-980c-93f358a94c2d:
                     required: false
-                    sortOrder: 2
-                  b1956beb-f17c-445d-9106-83c7cb35e660:
+                    sortOrder: 3
+                  a658d0b9-839f-4171-bac9-239c4ce26ca4:
                     required: false
                     sortOrder: 1
+                  b1956beb-f17c-445d-9106-83c7cb35e660:
+                    required: false
+                    sortOrder: 2
                 name: 'Studio page'
                 sortOrder: 2
         handle: studioEntries
@@ -623,10 +647,6 @@ sections:
         titleLabel: Title
     handle: studioEntries
     name: 'Studio entries'
-    previewTargets:
-      -
-        label: 'Primaire invoer-pagina'
-        urlFormat: '{url}'
     propagationMethod: all
     siteSettings:
       bbf8cb32-62ed-4353-8c5a-c091131d4962:
@@ -665,10 +685,13 @@ sections:
                 fields:
                   8475a05c-de96-4ea1-980c-93f358a94c2d:
                     required: false
-                    sortOrder: 2
-                  b1956beb-f17c-445d-9106-83c7cb35e660:
+                    sortOrder: 3
+                  a658d0b9-839f-4171-bac9-239c4ce26ca4:
                     required: false
                     sortOrder: 1
+                  b1956beb-f17c-445d-9106-83c7cb35e660:
+                    required: false
+                    sortOrder: 2
                 name: 'Work page'
                 sortOrder: 2
         handle: workEntry
@@ -679,10 +702,6 @@ sections:
         titleLabel: Title
     handle: workEntries
     name: 'Work entries'
-    previewTargets:
-      -
-        label: 'Primaire invoer-pagina'
-        urlFormat: '{url}'
     propagationMethod: all
     siteSettings:
       bbf8cb32-62ed-4353-8c5a-c091131d4962:
