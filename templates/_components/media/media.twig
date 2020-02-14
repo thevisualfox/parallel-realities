@@ -21,9 +21,9 @@
                 {% endif %}
 
                     {% block mediaVideo %}
-                        {% if entry.video %}
+                        {% if entry.teaserVideo %}
                             <div class="media__container media__container--16by9">
-                                <iframe data-vimeo-player class="media__video" src="https://player.vimeo.com/video/{{ entry.video }}?autoplay=0&controls=0&muted=1&loop=1" frameborder="0" webkitallowfullscreen
+                                <iframe data-vimeo-player class="media__video" src="https://player.vimeo.com/video/{{ entry.teaserVideo }}?autoplay=0&controls=0&muted=1&loop=1" frameborder="0" webkitallowfullscreen
                                         mozallowfullscreen allowfullscreen></iframe>
                             </div>
                         {% endif %}
