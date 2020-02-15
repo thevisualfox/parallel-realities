@@ -16,13 +16,12 @@
 
     .media__caption {
         position: fixed;
-        bottom: map-get($spacers, 1);
+        bottom: map-get($spacers, 3);
         left: map-get($spacers, 3);
-        transform: translateY(-50%);
 
         @include media-breakpoint-up(lg) {
             position: absolute;
-            bottom: map-get($spacers, 2);
+            bottom: map-get($spacers, 4) * 1.25;
             left: map-get($spacers, 4) * 1.25;
         }
     }
