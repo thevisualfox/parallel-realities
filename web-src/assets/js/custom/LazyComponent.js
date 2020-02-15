@@ -66,6 +66,7 @@ export class LazyItems {
         this.DOM.items.forEach(item => this.observer.observe(item));
     };
     animateItem = item => {
+        gsap.set(item, { pointerEvents: "auto" });
         const itemWrapper = item.querySelector(".media__wrapper");
         const itemInner = item.querySelector(".media__inner");
         const itemContent = item.querySelector(".media__link");
