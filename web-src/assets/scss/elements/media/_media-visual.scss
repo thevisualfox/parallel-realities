@@ -12,6 +12,7 @@
     .media__container {
         top: 50%;
         transform: translateY(-50%);
+        pointer-events: auto;
     }
 
     .media__caption {
