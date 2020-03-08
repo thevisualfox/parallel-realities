@@ -9,6 +9,7 @@ class MasonryGrid {
         this.DOM.videos = Array.from(this.DOM.el.querySelectorAll("[data-vimeo-player]"));
         this.DOM.images = Array.from(this.DOM.el.querySelectorAll(".img-lazy"));
         this.DOM.items = Array.from(this.DOM.el.querySelectorAll(".media"));
+        this.loading = false;
 
         this.masonry = new Masonry(this.DOM.el, {
             itemSelector: ".row__item",
@@ -19,6 +20,8 @@ class MasonryGrid {
         this.initMasonry();
     }
     initMasonry = () => {
+        this.setLoading(true);
+
         imagesLoaded(this.DOM.el, () => {
             if (this.DOM.videos.length > 0) {
                 const videoPlayers = new CalculateVideoHeight(this.DOM.videos);
@@ -35,6 +38,8 @@ class MasonryGrid {
                         this.masonry.layout();
                         this.masonry.on("layoutComplete", () => {
                             this.initLazyTypes(["videos", "items"]);
+
+                            this.setLoading(false);
                         });
                     }
                 });
@@ -42,6 +47,8 @@ class MasonryGrid {
                 this.masonry.layout();
                 this.masonry.on("layoutComplete", () => {
                     this.initLazyTypes(["items"]);
+
+                    this.setLoading(false);
                 });
             }
         });
@@ -59,6 +66,11 @@ class MasonryGrid {
                     break;
             }
         }
+    };
+    setLoading = loading => {
+        this.loading = loading;
+
+        document.body.classList[loading ? "add" : "remove"]("is-loading");
     };
 }
 

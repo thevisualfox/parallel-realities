@@ -33,7 +33,7 @@
                         {% block mediaImage %}
                             {% if image %}
                                 <img class="media__image img-fluid w-100" src="{{ image.getUrl(preImageTransform) }}" alt="{{ image.title }}">
-                                <img class="media__image img-fluid w-100" data-normal="{{ image.getUrl(imageTransform) }}" data-retina="{{ image.getUrl(retinaImageTransform) }}" data-srcset="{{ image.getUrl(retinaImageTransform) }} 2x" alt="{{ image.title }}">
+                                <img class="media__image img-fluid w-100" data-normal="{{ image.getUrl(imageTransform) }}" data-srcset="{{ image.getUrl(smallImageTransform) }} 512w, {{ image.getUrl(mediumImageTransform) }} 1024w, {{ image.getUrl(largeImageTransform) }} 1536w, {{ image.getUrl(extraLargeImageTransform) }} 2048w" alt="{{ image.title }}">
                             {% endif %}
                         {% endblock %}
 
