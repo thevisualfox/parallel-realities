@@ -1,7 +1,12 @@
 {% set image  = entry.image.one() %}
+{% set mobileImageTransform = { width: 1028, mode: 'crop' } %}
+{% set imageTransform = { width: 2048, mode: 'crop' } %}
+
 {% set preImageTransform = { width: 100, mode: 'crop' } %}
-{% set imageTransform = { width: 1024, mode: 'crop' } %}
-{% set retinaImageTransform = { width: 2048, mode: 'crop' } %}
+{% set smallImageTransform = { width: 512, mode: 'crop' } %}
+{% set mediumImageTransform = { width: 1024, mode: 'crop' } %}
+{% set largeImageTransform = { width: 1536, mode: 'crop' } %}
+{% set extraLargeImageTransform = { width: 2048, mode: 'crop' } %}
 
 {% if image or entry.video %}
     {% include "_components/media/media.twig" with {
