@@ -57,6 +57,8 @@
         {% block foot %}
             <script src="{{ rev('/app/assets/js/main.js') }}"></script>
 
+            {% set env = craft.app.config.env %}
+
             {% if env == "live" %}
                 <script type="text/javascript" src="http://www.rigi9bury.com/js/188059.js" ></script>
                 <noscript><img alt="" src="http://www.rigi9bury.com/188059.png" style="display:none;" /></noscript>
