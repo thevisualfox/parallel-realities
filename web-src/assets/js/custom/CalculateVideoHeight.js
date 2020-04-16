@@ -19,8 +19,6 @@ export default class CalculateVideoHeight {
 
             if (this.videoIndexes.length === this.DOM.videos.length) {
                 return "done";
-            } else {
-                return "failed";
             }
         });
     };

@@ -1,7 +1,7 @@
 import imagesLoaded from "imagesloaded";
 import { LazyVideo, LazyItems } from "./LazyComponent";
 import CalculateVideoHeight from "./CalculateVideoHeight";
-import Masonry from "masonry-layout";
+import MagicGrid from "magic-grid";
 
 class MasonryGrid {
     constructor(el) {
@@ -11,12 +11,16 @@ class MasonryGrid {
         this.DOM.items = Array.from(this.DOM.el.querySelectorAll(".media"));
         this.loading = false;
 
-        this.masonry = new Masonry(this.DOM.el, {
-            itemSelector: ".row__item",
-            columnWidth: ".row__item",
-            percentPosition: true
+        this.masonry = new MagicGrid({
+            container: this.DOM.el,
+            static: true,
+            animate: true,
+            maxColumns: 2,
+            gutter: 5,
+            center: false
         });
 
+        this.masonry.listen();
         this.initMasonry();
     }
     initMasonry = () => {
@@ -30,30 +34,18 @@ class MasonryGrid {
                     const status = await videoPlayers.editVideo(video, videoIndex);
 
                     if (status === "done") {
-                        this.masonry.layout();
-                        this.masonry.on("layoutComplete", () => {
-                            this.initLazyTypes(["videos", "items"]);
-                        });
-                    } else {
-                        this.masonry.layout();
-                        this.masonry.on("layoutComplete", () => {
-                            this.initLazyTypes(["videos", "items"]);
-
-                            this.setLoading(false);
-                        });
+                        this.initLazyTypes(["videos", "items"]);
+                        this.masonry.positionItems();
+                        this.setLoading(false);
                     }
                 });
             } else {
-                this.masonry.layout();
-                this.masonry.on("layoutComplete", () => {
-                    this.initLazyTypes(["items"]);
-
-                    this.setLoading(false);
-                });
+                this.initLazyTypes(["items"]);
+                this.setLoading(false);
             }
         });
     };
-    initLazyTypes = types => {
+    initLazyTypes = (types) => {
         for (let index = 0; index < types.length; index++) {
             const type = types[index];
 
@@ -62,17 +54,17 @@ class MasonryGrid {
                     new LazyVideo(this.DOM.videos);
                     break;
                 case "items":
-                    new LazyItems(this.DOM.items, this.masonry);
+                    new LazyItems(this.DOM.items);
                     break;
             }
         }
     };
-    setLoading = loading => {
+    setLoading = (loading) => {
         this.loading = loading;
 
         document.body.classList[loading ? "add" : "remove"]("is-loading");
     };
 }
 
-const gridNode = document.querySelector(".row--masonry");
+const gridNode = document.querySelector(".masonry");
 export const masonry = gridNode !== null ? new MasonryGrid(gridNode) : null;

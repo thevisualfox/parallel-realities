@@ -84,3 +84,11 @@
         max-width: 992px;
     }
 }
+
+.masonry .masonry__item {
+    width: 100%;
+
+    @include media-breakpoint-up(md) {
+        width: calc(50% - 5px);
+    }
+}
