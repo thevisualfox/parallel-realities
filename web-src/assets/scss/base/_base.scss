@@ -114,6 +114,7 @@ h6 {
 
 img {
     max-width: 100%;
+    pointer-events: none;
 }
 
 body.showcase main {
@@ -122,4 +123,8 @@ body.showcase main {
 
 .overflow-hidden {
     overflow: hidden;
+}
+
+.custom-control-label:before {
+    border: 1px solid $black;
 }

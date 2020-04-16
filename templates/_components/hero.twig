@@ -1,7 +1,9 @@
 {% set image  = entry.heroImage.one() %}
 {% set videoId = entry.heroVideoId %}
-{% set imageTransform = { width: 1920, height: 1080, mode: 'crop' } %}
-{% set retinaImageTransform = { width: 3840, height: 2160, mode: 'crop' } %}
+{% set smallImageTransform = { width: 1024, mode: 'crop' } %}
+{% set mediumImageTransform = { width: 1920, mode: 'crop' } %}
+{% set largeImageTransform = { width: 2560, mode: 'crop' } %}
+{% set extraLargeImageTransform = { width: 3840, mode: 'crop' } %}
 
 {% set heroClass = ['hero'] %}
 
@@ -13,28 +15,32 @@
     {% if videoId and image %}
         <div class="hero__video-wrapper">
             <figure class="hero__media media">
-                <img class="hero__image img-fluid" src="{{ image.getUrl(imageTransform) }}" srcset="{{ image.getUrl(retinaImageTransform) }} 2x" alt="{{ image.title }}">
+                <img class="hero__image img-fluid" src="{{ image.getUrl(smallImageTransform) }}" srcset="{{ image.getUrl(smallImageTransform) }} 1024w, {{ image.getUrl(mediumImageTransform) }} 1920w, {{ image.getUrl(largeImageTransform) }} 2560w, {{ image.getUrl(extraLargeImageTransform) }} 3840w" alt="{{ image.title }}">
             </figure>
             <iframe class="hero__video" src="https://player.vimeo.com/video/{{ videoId }}?background=1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
         </div>
-         <div class="hero__btn d-xl-none">
-            <button class="btn btn-link px-0" data-toggle-nav>
-                <span class="btn-text">Enter</span>
-            </button>
-        </div>
+        {% if showEnter is defined %}
+            <div class="hero__btn d-xl-none">
+                <button class="btn btn-link px-0" data-toggle-nav>
+                    <span class="btn-text">Enter</span>
+                </button>
+            </div>
+        {% endif %}
     {% elseif image %}
         <figure class="hero__media media">
-            <img class="hero__image img-fluid" src="{{ image.getUrl(imageTransform) }}" alt="{{ image.title }}">
+            <img class="hero__image img-fluid" src="{{ image.getUrl(smallImageTransform) }}" srcset="{{ image.getUrl(smallImageTransform) }} 1024w, {{ image.getUrl(mediumImageTransform) }} 1920w, {{ image.getUrl(largeImageTransform) }} 2560w, {{ image.getUrl(extraLargeImageTransform) }} 3840w" alt="{{ image.title }}">
         </figure>
-         <div class="hero__btn d-lg-none">
-            <button class="btn btn-link" data-toggle-nav>
-                <div class="btn__content">
-                    <span>Enter</span>
-                    <svg class="icon icon--24  mt-0 ml-2">
-                        <use xlink:href="{{ rev('/app/assets/img/symbols.svg') }}#arrow"></use>
-                    </svg>
-                </div>
-            </button>
-        </div>
+        {% if showEnter is defined %}
+            <div class="hero__btn d-lg-none">
+                <button class="btn btn-link" data-toggle-nav>
+                    <div class="btn__content">
+                        <span>Enter</span>
+                        <svg class="icon icon--24  mt-0 ml-2">
+                            <use xlink:href="{{ rev('/app/assets/img/symbols.svg') }}#arrow"></use>
+                        </svg>
+                    </div>
+                </button>
+            </div>
+        {% endif %}
     {% endif %}
 </section>

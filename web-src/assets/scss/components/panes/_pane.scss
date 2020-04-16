@@ -21,6 +21,10 @@
     padding: 0 !important;
 }
 
+.pane--case {
+    min-height: 100vh;
+}
+
 // Pane colors
 
 @each $name, $color in $theme-colors {

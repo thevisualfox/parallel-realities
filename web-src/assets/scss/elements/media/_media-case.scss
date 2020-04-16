@@ -1,5 +1,6 @@
 .media--case {
     position: relative;
+    pointer-events: none;
 
     .media__text {
         display: block;
@@ -7,14 +8,14 @@
         transition: transform 500ms $transition-bezier;
     }
 
+    &:hover .media__caption .media__text {
+        transform: translateY(0);
+    }
+
     .media__link {
         height: 100%;
         width: 100%;
         overflow: hidden;
-
-        &:hover + .media__caption .media__text {
-            transform: translateY(0);
-        }
 
         &:hover.gradient:after {
             opacity: 1;
@@ -26,6 +27,7 @@
             top: 0;
             right: 0;
             bottom: 0;
+            height: 100%;
         }
     }
 

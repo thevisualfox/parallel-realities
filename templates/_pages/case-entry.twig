@@ -6,15 +6,18 @@
 
 {% block header %}
     {% include '_compositions/main-header.twig' with {
-        headerColor: headerColor
+        headerColor: headerColor,
+        extensionClasses: ['main-header--gradient']
     } %}
 {% endblock %}
 
 {% block content %}
     <main role="main">
         {% set image  = entry.image.one() %}
-        {% set imageTransform = { width: 1920, mode: 'crop' } %}
-        {% set retinaImageTransform = { width: 2560, mode: 'crop' } %}
+        {% set smallImageTransform = { width: 1024, mode: 'crop' } %}
+        {% set mediumImageTransform = { width: 1920, mode: 'crop' } %}
+        {% set largeImageTransform = { width: 2560, mode: 'crop' } %}
+        {% set extraLargeImageTransform = { width: 3840, mode: 'crop' } %}
 
         {% if image or entry.video %}
             {% embed "_components/media/media.twig" with {
@@ -24,7 +27,7 @@
                 {% block mediaVideo %}
                     {% if entry.video %}
                         <div class="media__container">
-                            <iframe data-vimeo-player data-calculate-video-height class="media__video" src="https://player.vimeo.com/video/{{ entry.video }}?background=1" frameborder="0" webkitallowfullscreen
+                            <iframe data-vimeo-player data-calculate-video-height class="media__video" src="https://player.vimeo.com/video/{{ entry.video }}?controls=1&autoplay=1&muted=1&loop=1" frameborder="0" webkitallowfullscreen
                                     mozallowfullscreen allowfullscreen></iframe>
                         </div>
                     {% endif %}
@@ -32,12 +35,12 @@
 
                 {% block mediaImage %}
                     {% if not entry.video %}
-                        <img class="media__image img-fluid" src="{{ image.getUrl(imageTransform) }}" srcset="{{ image.getUrl(retinaImageTransform) }} 2x" alt="{{ image.title }}">
+                        <img class="media__image img-fluid" src="{{ image.getUrl(smallImageTransform) }}" srcset="{{ image.getUrl(smallImageTransform) }} 1024w, {{ image.getUrl(mediumImageTransform) }} 1920w, {{ image.getUrl(largeImageTransform) }} 2560w, {{ image.getUrl(extraLargeImageTransform) }} 3840w" alt="{{ image.title }}">
                     {% endif %}
                 {% endblock %}
 
                 {% block mediaControls %}
-                    <a class="{{ 'text-' ~ textColor }} text-uppercase mb-3 d-flex align-items-center" href="#0" onclick="window.history.back()">
+                    <a class="{{ 'text-' ~ textColor }} text-uppercase mb-2 mb-lg-3 d-flex align-items-center" href="#0" onclick="window.history.back()">
                         <svg class="icon icon--24 icon--reverse mt-0 mr-2">
                             <use xlink:href="{{ rev('/app/assets/img/symbols.svg') }}#arrow"></use>
                         </svg>

@@ -1,10 +1,10 @@
+
 .media--visual {
     height: 100vh;
 
     .media__image {
         height: 100%;
         width: 100%;
-        object-position: right;
 
         @include object-fit(contain);
     }
@@ -12,15 +12,17 @@
     .media__container {
         top: 50%;
         transform: translateY(-50%);
+        pointer-events: auto;
     }
 
     .media__caption {
-        bottom: map-get($spacers, 1);
+        position: fixed;
+        bottom: map-get($spacers, 3);
         left: map-get($spacers, 3);
-        transform: translateY(-50%);
 
         @include media-breakpoint-up(lg) {
-            bottom: map-get($spacers, 2);
+            position: absolute;
+            bottom: map-get($spacers, 4) * 1.25;
             left: map-get($spacers, 4) * 1.25;
         }
     }

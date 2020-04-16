@@ -7,25 +7,25 @@
     width: 100%;
     z-index: $zindex-fixed;
 
-    @include media-breakpoint-up(lg) {
-        &--white {
-            --headerColor: #{$white};
-        }
-
-        &--black {
-            --headerColor: #{$base};
-        }
+    &--white {
+        --headerColor: #{$white};
     }
 
-    &:before {
-        content: "";
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        background: linear-gradient(to bottom, rgba($base, 0.5) 0%, rgba($white, 0) 100%);
-        pointer-events: none;
+    &--black {
+        --headerColor: #{$black};
+    }
+
+    &--gradient {
+        &:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(to bottom, rgba($black, 0.5) 0%, rgba($black, 0) 100%);
+            pointer-events: none;
+        }
     }
 }
 
