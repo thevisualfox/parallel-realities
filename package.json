@@ -43,7 +43,7 @@
         "file-loader": "^3.0.1",
         "ie-array-find-polyfill": "^1.1.0",
         "mini-css-extract-plugin": "0.4.2",
-        "node-sass": "^4.11.0",
+        "node-sass": "^4.13.1",
         "nodelist-foreach-polyfill": "^1.2.0",
         "postcss-loader": "^3.0.0",
         "sass-loader": "^7.1.0",
