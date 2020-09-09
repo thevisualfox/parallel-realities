@@ -1,4 +1,4 @@
-{% extends "_layouts/default" %}
+{% extends (craft.request.isAjax and not craft.request.isLivePreview) ? "_layouts/default-ajax" : "_layouts/default" %}
 
 {% set headerColor = entry.headerColor.value %}
 {% set title = entry.title|lower|capitalize %}

@@ -1,5 +1,4 @@
 html {
-    height: 100%;
     font-size: 0.8rem;
 
     // Medium and up
@@ -25,7 +24,6 @@ body {
     --backgroundTheme: #{$white};
     --colorTheme: #{$black};
 
-    height: 100%;
     display: flex;
     flex-direction: column;
 

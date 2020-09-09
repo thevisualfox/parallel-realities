@@ -4,25 +4,23 @@
     {% set bodyClass = entry is defined ? entry.section.handle: craft.app.request.segments | first %}
 {% endif %}
 
-{# Set the `title` variable to the nav item that matches the first segment #}
-{% if nav[bodyClass] is defined %}
-    {% set title %}
-        {% if title is defined %}{{ title }}
-            -
-        {% endif %}{{ nav[bodyClass].title }}{% endset %}
-{% endif %}
-
 {% block body %}
 
-    {% block header %}
-        {% include '_compositions/main-header.twig' %}
-    {% endblock %}
+    <main id="swup">
+        <div id="wrapper" class="overflow-hidden">
+            <div id="wrapper-inner">
+                {% block header %}
+                    {% include '_compositions/main-header.twig' %}
+                {% endblock %}
 
-    {% block content %}{% endblock %}
+                {% block content %}
+                {% endblock %}
 
-    {% block footer %}
-        {% include '_compositions/main-footer.twig' %}
-    {% endblock %}
-
+                {% block footer %}
+                    {% include '_compositions/main-footer.twig' %}
+                {% endblock %}
+            </div>
+        </div>
+    </main>
 {% endblock %}
 

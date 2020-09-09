@@ -3,7 +3,7 @@ import { LazyVideo, LazyItems } from "./LazyComponent";
 import CalculateVideoHeight from "./CalculateVideoHeight";
 import Masonry from "masonry-layout";
 
-class MasonryGrid {
+export default class MasonryGrid {
     constructor(el) {
         this.DOM = { el: el };
         this.DOM.videos = Array.from(this.DOM.el.querySelectorAll("[data-vimeo-player]"));
@@ -74,5 +74,9 @@ class MasonryGrid {
     };
 }
 
-const gridNode = document.querySelector(".row--masonry");
-export const masonry = gridNode !== null ? new MasonryGrid(gridNode) : null;
+export const checkMasonryNode = () => {
+    const gridNode = document.querySelector(".row--masonry");
+    gridNode !== null ? new MasonryGrid(gridNode) : null;
+};
+
+checkMasonryNode();
