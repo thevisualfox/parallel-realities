@@ -5,7 +5,7 @@
         {% set totalEntries = caseEntries|length %}
 
         {% for entry in caseEntries %}
-            <div class="row__item {{ entry.fullWidth ? 'col-12 col-lg-12' : 'col-12 col-lg-6' }}">
+            <div class="row__item {{ entry.fullWidth ? 'col-12 col-lg-12' : 'col-12 col-lg-4' }}">
                 {% include '_components/case/case-preview.twig' %}
             </div>
         {% endfor %}
