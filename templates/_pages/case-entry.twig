@@ -4,6 +4,8 @@
 {% set title = entry.title|lower|capitalize %}
 {% set bodyClass = 'bg-black' %}
 
+{% set id = random(100000) %}
+
 {% block header %}
     {% include '_compositions/main-header.twig' with {
         headerColor: headerColor,
@@ -27,7 +29,7 @@
                 {% block mediaVideo %}
                     {% if entry.video %}
                         <div class="media__container">
-                            <iframe data-vimeo-player data-calculate-video-height class="media__video" src="https://player.vimeo.com/video/{{ entry.video }}?controls=1&autoplay=1&muted=1&loop=1" frameborder="0" webkitallowfullscreen
+                            <iframe data-vimeo-player data-calculate-video-height data-vimeo-id="{{ id }}" class="media__video" src="https://player.vimeo.com/video/{{ entry.video }}?controls=1&autoplay=1&muted=1&loop=1" frameborder="0" webkitallowfullscreen
                                     mozallowfullscreen allowfullscreen></iframe>
                         </div>
                     {% endif %}

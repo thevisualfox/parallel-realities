@@ -1,7 +1,7 @@
 import imagesLoaded from "imagesloaded";
 import { LazyVideo, LazyItems } from "./LazyComponent";
-import CalculateVideoHeight from "./CalculateVideoHeight";
 import MagicGrid from "magic-grid";
+import calcVideoRatio from "./calcVideoRatio";
 
 class MasonryGrid {
     constructor(el) {
@@ -15,9 +15,9 @@ class MasonryGrid {
             container: this.DOM.el,
             static: true,
             animate: true,
-            maxColumns: 2,
+            maxColumns: 3,
             gutter: 5,
-            center: false
+            center: false,
         });
 
         this.masonry.listen();
@@ -28,16 +28,10 @@ class MasonryGrid {
 
         imagesLoaded(this.DOM.el, () => {
             if (this.DOM.videos.length > 0) {
-                const videoPlayers = new CalculateVideoHeight(this.DOM.videos);
-
-                this.DOM.videos.forEach(async (video, videoIndex) => {
-                    const status = await videoPlayers.editVideo(video, videoIndex);
-
-                    if (status === "done") {
-                        this.initLazyTypes(["videos", "items"]);
-                        this.masonry.positionItems();
-                        this.setLoading(false);
-                    }
+                Promise.allSettled(this.DOM.videos.map((video) => calcVideoRatio(video))).then(() => {
+                    this.initLazyTypes(["videos", "items"]);
+                    this.masonry.positionItems();
+                    this.setLoading(false);
                 });
             } else {
                 this.initLazyTypes(["items"]);
