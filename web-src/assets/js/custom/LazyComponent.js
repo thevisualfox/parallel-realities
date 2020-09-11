@@ -1,6 +1,6 @@
 import gsap from "gsap";
-import Player from "@vimeo/player";
 import Layzr from "layzr.js";
+import { vimeoPlayers } from "./vimeo";
 
 const lazyImages = Layzr({
     threshold: 10,
@@ -9,9 +9,8 @@ const lazyImages = Layzr({
 export class LazyVideo {
     constructor(videos) {
         this.DOM = { videos };
-        this.players = [];
-        this.DOM.videos.forEach((video) => this.players.push(new Player(video)));
         this.observer = null;
+        this.players = vimeoPlayers;
 
         this.initVideoObserver();
     }
@@ -29,8 +28,8 @@ export class LazyVideo {
         this.DOM.videos.forEach((video) => this.observer.observe(video));
     };
     toggleVideoPlayer = (action, video) => {
-        const videoPlayer = this.players.filter((player) => player.element.src === video.src)[0];
-        action === "play" ? videoPlayer.play() : videoPlayer.pause();
+        const { vimeoPlayer } = this.players.find((player) => player.id === video.dataset.vimeoId);
+        vimeoPlayer[action]();
     };
 }
 

@@ -89,6 +89,6 @@
     width: 100%;
 
     @include media-breakpoint-up(md) {
-        width: calc(50% - 5px);
+        width: calc((100% / 3) - 5px);
     }
 }
