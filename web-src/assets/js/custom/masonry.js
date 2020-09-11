@@ -1,6 +1,6 @@
 import imagesLoaded from "imagesloaded";
 import { LazyVideo, LazyItems } from "./LazyComponent";
-import MagicGrid from "magic-grid";
+import Masonry from "masonry-layout";
 import calcVideoRatio from "./calcVideoRatio";
 
 class MasonryGrid {
@@ -11,16 +11,12 @@ class MasonryGrid {
         this.DOM.items = Array.from(this.DOM.el.querySelectorAll(".media"));
         this.loading = false;
 
-        this.masonry = new MagicGrid({
-            container: this.DOM.el,
-            static: true,
-            animate: true,
-            maxColumns: 3,
-            gutter: 5,
-            center: false,
+        this.masonry = new Masonry(this.DOM.el, {
+            itemSelector: ".row__item",
+            columnWidth: ".row__item",
+            percentPosition: true,
         });
 
-        this.masonry.listen();
         this.initMasonry();
     }
     initMasonry = () => {
@@ -29,9 +25,11 @@ class MasonryGrid {
         imagesLoaded(this.DOM.el, () => {
             if (this.DOM.videos.length > 0) {
                 Promise.allSettled(this.DOM.videos.map((video) => calcVideoRatio(video))).then(() => {
-                    this.initLazyTypes(["videos", "items"]);
-                    this.masonry.positionItems();
-                    this.setLoading(false);
+                    this.masonry.layout();
+                    this.masonry.on("layoutComplete", () => {
+                        this.initLazyTypes(["videos", "items"]);
+                        this.setLoading(false);
+                    });
                 });
             } else {
                 this.initLazyTypes(["items"]);
@@ -60,5 +58,5 @@ class MasonryGrid {
     };
 }
 
-const gridNode = document.querySelector(".masonry");
+const gridNode = document.querySelector(".row--masonry");
 export const masonry = gridNode !== null ? new MasonryGrid(gridNode) : null;
