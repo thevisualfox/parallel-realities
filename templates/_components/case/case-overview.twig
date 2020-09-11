@@ -1,11 +1,11 @@
 {% set caseEntries = craft.entries.section(entries).all() %}
 
 <section class="pane pane--case py-0 min-vh-100 overflow-hidden">
-    <div class="masonry">
+    <div class="row row--masonry gutters-h1">
         {% set totalEntries = caseEntries|length %}
 
         {% for entry in caseEntries %}
-            <div class="masonry__item">
+            <div class="row__item {{ entry.fullWidth ? 'col-12 col-lg-12' : 'col-12 col-lg-4' }}">
                 {% include '_components/case/case-preview.twig' %}
             </div>
         {% endfor %}
