@@ -1,0 +1,49 @@
+.loading-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -150%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 500ms $transition-bezier, transform 500ms 100ms $transition-bezier;
+
+    .is-loading & {
+        transform: translate(-50%, 50%);
+    opacity: 1;
+    }
+}
+
+.loader {
+    margin: 0 auto;
+    text-align: center;
+    width: 100%;
+    min-height: 100%;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.loading-flip {
+    width: 20px;
+    height: 20px;
+    border: 2px solid $white;
+    margin: 0 auto;
+    animation: flip 8s infinite;
+}
+
+@keyframes flip {
+    0% {
+        transform: rotateX(0) rotateY(0);
+    }
+    20%, 25% {
+        transform: rotateX(0) rotateY(720deg);
+    }
+    45%, 50% {
+        transform: rotateX(720deg) rotateY(720deg);
+    }
+    70%, 75% {
+        transform: rotateX(720deg) rotateY(0);
+    }
+    95%, 100% {
+        transform: rotateX(0) rotateY(0);
+    }
+}

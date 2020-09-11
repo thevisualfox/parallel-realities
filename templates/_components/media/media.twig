@@ -10,7 +10,7 @@
     {% set attributes = attributes|merge(extensionAttributes) %}
 {% endif %}
 
-{% set mediaId = random(100000) %}
+{% set id = random(100000) %}
 
 <figure class="{{ mediaClasses|join(' ') }}" {% if extensionAttributes|default %} {{ attributes|join(' ') }} {% endif %}>
     {% block media %}
@@ -24,7 +24,7 @@
                         {% block mediaVideo %}
                             {% if entry.teaserVideo %}
                                 <div class="media__container media__container--16by9">
-                                    <iframe data-vimeo-player class="media__video" src="https://player.vimeo.com/video/{{ entry.teaserVideo }}?autoplay=0&controls=0&muted=1&loop=1" frameborder="0" webkitallowfullscreen
+                                    <iframe data-vimeo-player class="media__video" data-vimeo-id="{{ id }}" src="https://player.vimeo.com/video/{{ entry.teaserVideo }}?autoplay=0&controls=0&muted=1&loop=1&autopause=0" frameborder="0" webkitallowfullscreen
                                             mozallowfullscreen allowfullscreen></iframe>
                                 </div>
                             {% endif %}

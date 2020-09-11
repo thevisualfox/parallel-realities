@@ -23,28 +23,11 @@
 
 .pane--case {
     min-height: 100vh;
-
-    .loader {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -150%);
-        color: $white;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 300ms $transition-bezier, transform 300ms $transition-bezier;
-    }
-
-    .is-loading & .loader {
-        transform: translate(-50%, 50%);
-        opacity: 1;
-    }
 }
 
 // Pane colors
 
-@each $name,
-$color in $theme-colors {
+@each $name, $color in $theme-colors {
     .pane--#{$name} {
         background-color: $color;
         color: color-yiq($color);
