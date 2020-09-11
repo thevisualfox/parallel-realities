@@ -1,30 +1,22 @@
 import gsap from "gsap";
-import Player from "@vimeo/player";
 import Layzr from "layzr.js";
+import { vimeoPlayers } from "./vimeo";
 
 const lazyImages = Layzr({
-    threshold: 10
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-    lazyImages
-        .update()
-        .check()
-        .handlers(true);
+    threshold: 10,
 });
 
 export class LazyVideo {
     constructor(videos) {
         this.DOM = { videos };
-        this.players = [];
-        this.DOM.videos.forEach(video => this.players.push(new Player(video)));
         this.observer = null;
+        this.players = vimeoPlayers;
 
         this.initVideoObserver();
     }
     initVideoObserver = () => {
-        this.observer = new IntersectionObserver(videos => {
-            videos.forEach(video => {
+        this.observer = new IntersectionObserver((videos) => {
+            videos.forEach((video) => {
                 if (video.isIntersecting) {
                     this.toggleVideoPlayer("play", video.target);
                 } else {
@@ -33,26 +25,26 @@ export class LazyVideo {
             });
         });
 
-        this.DOM.videos.forEach(video => this.observer.observe(video));
+        this.DOM.videos.forEach((video) => this.observer.observe(video));
     };
     toggleVideoPlayer = (action, video) => {
-        const videoPlayer = this.players.filter(player => player.element.src === video.src)[0];
-        action === "play" ? videoPlayer.play() : videoPlayer.pause();
+        const { vimeoPlayer } = this.players.find((player) => player.id === video.dataset.vimeoId);
+        vimeoPlayer[action]();
     };
 }
 
 export class LazyItems {
-    constructor(items, masonry = null) {
+    constructor(items) {
         this.DOM = { items };
         this.observer = null;
-        this.masonry = masonry;
 
         this.initItemsObserver();
+        lazyImages.update().check().handlers(true);
     }
     initItemsObserver = () => {
         this.observer = new IntersectionObserver(
             (items, observer) => {
-                items.forEach(item => {
+                items.forEach((item) => {
                     if (item.isIntersecting) {
                         this.animateItem(item.target);
 
@@ -63,9 +55,9 @@ export class LazyItems {
             { rootMargin: "0px 0px 0px 0px" }
         );
 
-        this.DOM.items.forEach(item => this.observer.observe(item));
+        this.DOM.items.forEach((item) => this.observer.observe(item));
     };
-    animateItem = item => {
+    animateItem = (item) => {
         gsap.set(item, { pointerEvents: "auto" });
         const itemWrapper = item.querySelector(".media__wrapper");
         const itemInner = item.querySelector(".media__inner");
@@ -79,7 +71,7 @@ export class LazyItems {
                 {
                     duration: 1,
                     translateY: 0,
-                    ease: "circ.inOut"
+                    ease: "circ.inOut",
                 },
                 "begin"
             )
@@ -88,7 +80,7 @@ export class LazyItems {
                 {
                     duration: 0.75,
                     scale: 1,
-                    ease: "circ.inOut"
+                    ease: "circ.inOut",
                 },
                 "begin"
             );
