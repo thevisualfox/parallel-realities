@@ -17,7 +17,7 @@
             <figure class="hero__media media">
                 <img class="hero__image img-fluid" src="{{ image.getUrl(smallImageTransform) }}" srcset="{{ image.getUrl(smallImageTransform) }} 1024w, {{ image.getUrl(mediumImageTransform) }} 1920w, {{ image.getUrl(largeImageTransform) }} 2560w, {{ image.getUrl(extraLargeImageTransform) }} 3840w" alt="{{ image.title }}">
             </figure>
-            <iframe class="hero__video" src="https://player.vimeo.com/video/{{ videoId }}?background=1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+            <iframe class="hero__video" src="https://player.vimeo.com/video/{{ videoId }}?background=1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen data-vimeo-player data-calculate-video-height></iframe>
         </div>
         {% if showEnter is defined %}
             <div class="hero__btn d-xl-none">
