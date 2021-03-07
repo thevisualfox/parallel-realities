@@ -11,20 +11,33 @@
 {% endblock %}
 
 {% block content %}
+
+    {% set image = entry.image.one() %}
+    {% set defaultImageTransform = { width: 800, mode: 'crop' } %}
+    {% set retinaImageTransform = { width: 1600, mode: 'crop' } %}
+
     <main role="main">
         {% include '_components/hero.twig' with {
             extensionClasses: ['hero--narrow']
         } %}
         <div class="pane">
             <div class="container">
-                <div class="row justify-content-center gutters-4 gutters-lg-6">
-                    <div class="col-12 col-lg-4">
+                <div class="row justify-content-center gutters-4 gutters-lg-6 gutters-xl-7">
+                    <div class="col-12 {{ image|default ? 'col-xl' : 'col-lg-5' }}">
                         {% include "_elements/text.twig" with {
                             entry: entry
                         } %}
                     </div>
-                    <div class="col-12 col-lg-6">
+                    <div class="col-12 col-lg-7 {{ image|default ? 'col-xl' }}">
                         {% include "_compositions/contact-form.twig" %}
+                    </div>
+                    <div class="col-12 col-lg-6 col-xl-5">
+                    {% if image|default is not empty %}
+                        <img class="img-fluid"
+                            src="{{ image.getUrl(defaultImageTransform) }}"
+                            srcset="{{ image.getUrl(retinaImageTransform) }} 2x"
+                            alt="{{ image.title }}">
+                    {% endif %}
                     </div>
                 </div>
             </div>
