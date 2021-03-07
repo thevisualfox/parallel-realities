@@ -204,6 +204,12 @@ $grid-gutter-widths: (
     ),
     7: (
         $grid-gutter-width * 3
+    ),
+    8: (
+        $grid-gutter-width * 4
+    ),
+    9: (
+        $grid-gutter-width * 5
     )
 );
 
