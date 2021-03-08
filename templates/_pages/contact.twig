@@ -29,6 +29,9 @@
                         } %}
                     </div>
                     <div class="col-12 col-lg-7 {{ image|default ? 'col-xl' }}">
+                        {% if entry.formTitle|default %}
+                            <h2>{{ entry.formTitle }}</h2>
+                        {% endif %}
                         {% include "_compositions/contact-form.twig" %}
                     </div>
                     <div class="col-12 col-lg-6 col-xl-5">

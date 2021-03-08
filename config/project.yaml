@@ -1,4 +1,4 @@
-dateModified: 1615143620
+dateModified: 1615182668
 email:
   fromEmail: jurjen.p.vos@gmail.com
   fromName: 'Parallel Realities'
@@ -19,6 +19,8 @@ fieldGroups:
     name: 'Work Page'
   7f6ceebb-ff32-4474-a724-971cd458e4ef:
     name: 'Work Preview'
+  9968bdcf-fcf4-44b4-806a-191c28cec099:
+    name: Contact
   c36ca5f6-39f2-48c9-9490-ded81eab1ccc:
     name: Navigation
   ef1c93cc-c3d2-4e56-aea3-e04ff1400d2a:
@@ -129,6 +131,24 @@ fields:
       charLimit: ''
       code: ''
       columnType: text
+      initialRows: '4'
+      multiline: ''
+      placeholder: ''
+    translationKeyFormat: null
+    translationMethod: none
+    type: craft\fields\PlainText
+  26dd0e81-b669-4305-aa52-c885d0aec2a9:
+    contentColumnType: text
+    fieldGroup: 9968bdcf-fcf4-44b4-806a-191c28cec099
+    handle: formTitle
+    instructions: 'Add a title to the contact form'
+    name: 'Form title'
+    searchable: true
+    settings:
+      byteLimit: null
+      charLimit: null
+      code: ''
+      columnType: null
       initialRows: '4'
       multiline: ''
       placeholder: ''
@@ -884,10 +904,13 @@ sections:
                 fields:
                   00b3e9bf-8280-4397-8d41-33cc4de75003:
                     required: false
-                    sortOrder: 2
+                    sortOrder: 3
                   1993744d-ae6c-4efd-8a83-e4fb602977c1:
                     required: false
                     sortOrder: 1
+                  26dd0e81-b669-4305-aa52-c885d0aec2a9:
+                    required: false
+                    sortOrder: 2
                 name: Details
                 sortOrder: 2
               -
