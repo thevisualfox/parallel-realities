@@ -1,4 +1,4 @@
-dateModified: 1615182668
+dateModified: 1616927856
 email:
   fromEmail: jurjen.p.vos@gmail.com
   fromName: 'Parallel Realities'
@@ -19,7 +19,7 @@ fieldGroups:
     name: 'Work Page'
   7f6ceebb-ff32-4474-a724-971cd458e4ef:
     name: 'Work Preview'
-  9968bdcf-fcf4-44b4-806a-191c28cec099:
+  91d7bebc-0c9e-4d87-a4a0-014919308b39:
     name: Contact
   c36ca5f6-39f2-48c9-9490-ded81eab1ccc:
     name: Navigation
@@ -93,6 +93,24 @@ fields:
     translationKeyFormat: null
     translationMethod: none
     type: craft\redactor\Field
+  1bfbfdbd-8612-43a8-9eb1-24576accf64a:
+    contentColumnType: text
+    fieldGroup: 69f67abc-b39c-4c21-8205-8f0e8ad0597b
+    handle: iframe
+    instructions: 'Paste iframe code'
+    name: iFrame
+    searchable: true
+    settings:
+      byteLimit: null
+      charLimit: null
+      code: ''
+      columnType: null
+      initialRows: '4'
+      multiline: ''
+      placeholder: ''
+    translationKeyFormat: null
+    translationMethod: none
+    type: craft\fields\PlainText
   24734fcf-ded7-4346-b13f-f726403e1308:
     contentColumnType: string
     fieldGroup: ef1c93cc-c3d2-4e56-aea3-e04ff1400d2a
@@ -131,24 +149,6 @@ fields:
       charLimit: ''
       code: ''
       columnType: text
-      initialRows: '4'
-      multiline: ''
-      placeholder: ''
-    translationKeyFormat: null
-    translationMethod: none
-    type: craft\fields\PlainText
-  26dd0e81-b669-4305-aa52-c885d0aec2a9:
-    contentColumnType: text
-    fieldGroup: 9968bdcf-fcf4-44b4-806a-191c28cec099
-    handle: formTitle
-    instructions: 'Add a title to the contact form'
-    name: 'Form title'
-    searchable: true
-    settings:
-      byteLimit: null
-      charLimit: null
-      code: ''
-      columnType: null
       initialRows: '4'
       multiline: ''
       placeholder: ''
@@ -351,6 +351,24 @@ fields:
     handle: video
     instructions: 'Add a vimeo video url (eg: https://vimeo.com/14592941). If no video is inserted, the image will be the main asset; This field is meant for the main video!'
     name: Video
+    searchable: true
+    settings:
+      byteLimit: null
+      charLimit: null
+      code: ''
+      columnType: null
+      initialRows: '4'
+      multiline: ''
+      placeholder: ''
+    translationKeyFormat: null
+    translationMethod: none
+    type: craft\fields\PlainText
+  ab3fd168-f45d-47c7-ab17-239b53435114:
+    contentColumnType: text
+    fieldGroup: 91d7bebc-0c9e-4d87-a4a0-014919308b39
+    handle: formTitle
+    instructions: 'Add a title to the contact form'
+    name: 'Form title'
     searchable: true
     settings:
       byteLimit: null
@@ -698,22 +716,22 @@ sections:
                   5c93d5a7-8552-4922-bcbf-4a6433846899:
                     required: false
                     sortOrder: 3
-                  8313fac4-f0e0-49b4-b4f3-d7aeafaa513f:
-                    required: false
-                    sortOrder: 4
                 name: 'Work preview'
                 sortOrder: 1
               -
                 fields:
+                  1bfbfdbd-8612-43a8-9eb1-24576accf64a:
+                    required: false
+                    sortOrder: 2
                   8475a05c-de96-4ea1-980c-93f358a94c2d:
                     required: false
-                    sortOrder: 3
+                    sortOrder: 4
                   a658d0b9-839f-4171-bac9-239c4ce26ca4:
                     required: false
                     sortOrder: 1
                   b1956beb-f17c-445d-9106-83c7cb35e660:
                     required: false
-                    sortOrder: 2
+                    sortOrder: 3
                 name: 'Work page'
                 sortOrder: 2
         handle: workEntry
@@ -757,17 +775,13 @@ sections:
         titleLabel: ''
     handle: work
     name: Work
-    previewTargets:
-      -
-        label: 'Primaire invoer-pagina'
-        urlFormat: '{url}'
     propagationMethod: all
     siteSettings:
       bbf8cb32-62ed-4353-8c5a-c091131d4962:
         enabledByDefault: true
         hasUrls: true
         template: _pages/work
-        uriFormat: work
+        uriFormat: __home__
     type: single
   7e37f191-8e39-43ff-b15e-650e919cad4a:
     enableVersioning: true
@@ -801,17 +815,13 @@ sections:
         titleLabel: ''
     handle: home
     name: Home
-    previewTargets:
-      -
-        label: 'Primaire invoer-pagina'
-        urlFormat: '{url}'
     propagationMethod: all
     siteSettings:
       bbf8cb32-62ed-4353-8c5a-c091131d4962:
         enabledByDefault: true
-        hasUrls: true
-        template: _pages/home
-        uriFormat: __home__
+        hasUrls: false
+        template: null
+        uriFormat: ''
     type: single
   8314a5dd-bf6f-4794-b583-319cbf51d123:
     enableVersioning: true
@@ -904,13 +914,10 @@ sections:
                 fields:
                   00b3e9bf-8280-4397-8d41-33cc4de75003:
                     required: false
-                    sortOrder: 3
+                    sortOrder: 2
                   1993744d-ae6c-4efd-8a83-e4fb602977c1:
                     required: false
                     sortOrder: 1
-                  26dd0e81-b669-4305-aa52-c885d0aec2a9:
-                    required: false
-                    sortOrder: 2
                 name: Details
                 sortOrder: 2
               -
