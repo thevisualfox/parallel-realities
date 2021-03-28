@@ -21,7 +21,7 @@
         {% set largeImageTransform = { width: 2560, mode: 'crop' } %}
         {% set extraLargeImageTransform = { width: 3840, mode: 'crop' } %}
 
-        {% if image or entry.video %}
+        {% if image or entry.video or entry.iframe %}
             {% embed "_components/media/media.twig" with {
                 extensionClasses: ['media--visual', 'media--overflowed', 'justify-content-center'],
                 extensionAttributes: ['data-lazy-component']
@@ -33,10 +33,16 @@
                                     mozallowfullscreen allowfullscreen></iframe>
                         </div>
                     {% endif %}
+
+                    {% if entry.iframe %}
+                        <div class="media__container">
+                            {{ entry.iframe|raw }}
+                        </div>
+                    {% endif %}
                 {% endblock %}
 
                 {% block mediaImage %}
-                    {% if not entry.video %}
+                    {% if not entry.video and not entry.iframe %}
                         <img class="media__image img-fluid" src="{{ image.getUrl(smallImageTransform) }}" srcset="{{ image.getUrl(smallImageTransform) }} 1024w, {{ image.getUrl(mediumImageTransform) }} 1920w, {{ image.getUrl(largeImageTransform) }} 2560w, {{ image.getUrl(extraLargeImageTransform) }} 3840w" alt="{{ image.title }}">
                     {% endif %}
                 {% endblock %}
